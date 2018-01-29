@@ -121,7 +121,7 @@ public class ParsedArticleText {
                 if (!"p".equals(topTask.tagName())) {
                     LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p'. This is not expected.", gossId);
                 }
-                topTasks.add(new HippoRichText(topTask.html()));
+                topTasks.add(new HippoRichText(topTask.outerHtml()));
             }
         }
 
