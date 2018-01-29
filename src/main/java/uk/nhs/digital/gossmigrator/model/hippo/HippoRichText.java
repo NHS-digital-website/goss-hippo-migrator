@@ -46,6 +46,9 @@ public class HippoRichText {
 
     private String escapeChars(String source){
         String replaced = source.replaceAll("\"", "&quot;");
+
+        // Looks like the chosen html/xml library adds carriage return line feeds.
+        replaced = replaced.replaceAll("\n", "").replaceAll("\r", "");
         return replaced;
     }
 

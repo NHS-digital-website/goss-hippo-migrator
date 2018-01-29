@@ -114,7 +114,7 @@ public class ParsedArticleText {
         Element gossTopTasksNode = body.selectFirst("#" + ArticleTextSection.TOPTASKS.getId());
         List<HippoRichText> topTasks = null;
 
-        if (null != gossTopTasksNode) {
+        if (null != gossTopTasksNode && gossTopTasksNode.children().size() > 0) {
             topTasks = new ArrayList<>();
             for (Element topTask : gossTopTasksNode.children()) {
                 // Assume all child nodes are <p>'s
