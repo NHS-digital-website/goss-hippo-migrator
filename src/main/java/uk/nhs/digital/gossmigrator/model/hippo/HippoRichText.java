@@ -41,7 +41,12 @@ public class HippoRichText {
 
         parseButtons(contentNode);
 
-        return contentNode.html();
+        return escapeChars(contentNode.html());
+    }
+
+    private String escapeChars(String source){
+        String replaced = source.replaceAll("\"", "&quot;");
+        return replaced;
     }
 
     /**

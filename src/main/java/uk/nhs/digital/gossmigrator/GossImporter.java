@@ -189,6 +189,7 @@ public class GossImporter {
      * Remove .json files from folder or create folder if not exists.
      * If non json files in folder log warning.
      * Does not delete recursively.
+     * Create Directory if not exists.
      */
     private void cleanFolder(Path folder, String fileExtension) {
         File f = folder.toFile();
