@@ -128,6 +128,16 @@ public class ParsedArticleText {
         return topTasks;
     }
 
+    /**
+     * Get immediate children of __DEFAULT node.
+     * If h2 then is a section.
+     * If no h2's then promote any h3's to h2.
+     * Anything before first h2 is the introduction and should have already been dealt with
+     * and removed from tree.
+     * TODO Verify h2/h3 are always immediate children.
+     * @param body The parent of the __DEFAULT span.
+     * @return A list of Sections.
+     */
     private List<Section> extractSections(Element body) {
         Element gossSectionsNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
         promoteH3s(gossSectionsNode);

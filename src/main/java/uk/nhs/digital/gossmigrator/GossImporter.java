@@ -1,7 +1,6 @@
 package uk.nhs.digital.gossmigrator;
 
 import org.apache.commons.cli.*;
-import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -74,8 +73,18 @@ public class GossImporter {
     }
 
     private void createAssetHippoImportables() {
-        // TODO Assets is WIP at the moment.  Leave it not plugged in...
         cleanFolder(Paths.get(ASSET_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
+        if (!Paths.get(ASSET_SOURCE_FOLDER).toFile().exists()) {
+            LOGGER.warn("Assets file path does not exist:{}", Paths.get(ASSET_SOURCE_FOLDER));
+        } else {
+            try {
+                Files.walk(Paths.get(ASSET_SOURCE_FOLDER)).filter(p -> p.toFile().isFile())
+                        .forEach(this::createAsset);
+            } catch (IOException e) {
+                LOGGER.error("Failed reading Asset files.", e);
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private void createContentHippoImportables() {
@@ -106,17 +115,13 @@ public class GossImporter {
         }
     }
 
-    private void createAssets() {
-        try {
-            Files.walk(Paths.get(ASSET_SOURCE_FOLDER)).forEach(this::createAsset);
-        } catch (IOException e) {
-            LOGGER.error("Failed reading Asset files.");
-            throw new RuntimeException(e);
-        }
-    }
-
     private void createAsset(Path file) {
-        Asset a = new Asset(file.getFileName().toString(), JCR_ASSET_ROOT + file.toString(), file);
+        // Remove the local source file path and replace with the jcr prefix.
+        int sourcePathParts = Paths.get(Config.ASSET_SOURCE_FOLDER).getNameCount();
+        String subPart = file.subpath(sourcePathParts, file.getNameCount()).toString();
+
+        // Create the Asset model object and add to importables.
+        Asset a = new Asset(file.getFileName().toString(), JCR_ASSET_ROOT + subPart, file);
         importableAssetItems.add(a);
     }
 
@@ -199,12 +204,14 @@ public class GossImporter {
             if (f.isFile()) {
                 LOGGER.error("Expected {} to be a directory not a file.", f);
             } else {
-                for(File toDelete : f.listFiles()){
-                    if(toDelete.getName().endsWith(fileExtension)){
+                for (File toDelete : f.listFiles()) {
+                    if (toDelete.getName().endsWith(fileExtension)) {
                         toDelete.delete();
                     }
                 }
             }
+        } else {
+            f.mkdir();
         }
     }
 }

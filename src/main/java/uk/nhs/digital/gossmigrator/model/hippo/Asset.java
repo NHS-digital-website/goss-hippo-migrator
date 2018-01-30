@@ -9,12 +9,14 @@ import java.nio.file.Paths;
 public class Asset extends HippoImportable {
 
     String filePath;
+    Path sourceFilePath;
     String lastModifiedDate;
 
     public Asset(String localizedName, String jcrPath, Path sourceFile) {
         super(localizedName, jcrPath);
         this.filePath = "file:///" + sourceFile.toString();
         lastModifiedDate = "2018-01-19T10:07:03.592Z";
+        sourceFilePath = sourceFile;
     }
 
     public String getFilePath() {
@@ -30,7 +32,7 @@ public class Asset extends HippoImportable {
     public String getMimeType() {
         try {
             Tika tika = new Tika();
-            return tika.detect(Paths.get(getFilePath()));
+            return tika.detect(sourceFilePath);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
