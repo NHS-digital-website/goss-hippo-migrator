@@ -1,5 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 
 import java.util.List;
@@ -18,7 +19,8 @@ public class Service extends HippoImportable {
     private HippoRichText contactDetails;
 
     public Service(GossContent gossContent) {
-        super(gossContent.getHeading(), gossContent.getJcrPath());
+        super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
+
         seoSummary = gossContent.getSummary();
         title = gossContent.getHeading();
         summary = gossContent.getIntroduction();

@@ -1,6 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,11 @@ public class GossContent implements Comparable<GossContent> {
         extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
         extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
 
-        jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
+        if(StringUtils.isEmpty(friendlyUrl)) {
+            jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
+        }else{
+            jcrNodeName = friendlyUrl;
+        }
         // TODO logic for content type replaces this.
         setContentType(SERVICE);
     }

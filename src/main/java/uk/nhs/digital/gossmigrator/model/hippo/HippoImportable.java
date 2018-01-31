@@ -11,9 +11,9 @@ public abstract class HippoImportable {
     private String jcrNodeName;
     private String jcrPath;
 
-    protected HippoImportable(final String localizedName, final String jcrPath) {
+    protected HippoImportable(final String localizedName, final String jcrPath, final String jcrNodeName) {
         this.localizedName = localizedName;
-        this.jcrNodeName = toLowerCaseDashedValue(getLocalizedName());
+        this.jcrNodeName = toLowerCaseDashedValue(jcrNodeName);
         this.jcrPath = jcrPath;
     }
 

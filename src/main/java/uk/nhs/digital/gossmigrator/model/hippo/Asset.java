@@ -13,7 +13,7 @@ public class Asset extends HippoImportable {
     String lastModifiedDate;
 
     public Asset(String localizedName, String jcrPath, Path sourceFile) {
-        super(localizedName, jcrPath);
+        super(localizedName, jcrPath, localizedName);
         this.filePath = "file:///" + sourceFile.toString();
         lastModifiedDate = "2018-01-19T10:07:03.592Z";
         sourceFilePath = sourceFile;
