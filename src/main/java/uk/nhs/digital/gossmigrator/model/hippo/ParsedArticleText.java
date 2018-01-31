@@ -13,10 +13,13 @@ import uk.nhs.digital.gossmigrator.model.hippo.enums.SectionTypes;
 import java.util.ArrayList;
 import java.util.List;
 
-import static uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection.COMPONENT;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection.CONTACT_INFO;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection.INTRO_AND_SECTIONS;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection.*;
 
+/**
+ * Parses the Goss extract ARTICLETEXT.
+ * Splits the goss data into parts based upon Goss specific HTML comments.
+ * Constructor runs the parsing code.
+ */
 public class ParsedArticleText {
     private final static Logger LOGGER = LoggerFactory.getLogger(ParsedArticleText.class);
     private HippoRichText introduction;
@@ -25,6 +28,13 @@ public class ParsedArticleText {
     private List<HippoRichText> topTasks;
     private long gossId;
 
+    /**
+     * Parses ARTICLETEXT node from Goss export.
+     * Results available from getters.
+     *
+     * @param gossId          ARTICLEID value for logging.
+     * @param gossArticleText ARTICLETEXT String.
+     */
     public ParsedArticleText(long gossId, String gossArticleText) {
         this.gossId = gossId;
 
@@ -32,7 +42,7 @@ public class ParsedArticleText {
         gossArticleText = gossArticleText.replace("<!--", "<").replace("-->", ">");
         Document doc = Jsoup.parse(gossArticleText);
 
-        // Jsoup library adds html + head + body tags.  Only care about body.
+        // JSoup library adds html + head + body tags.  Only care about body.
         Element body = doc.selectFirst("body");
 
         introduction = extractIntroduction(body);
@@ -43,10 +53,16 @@ public class ParsedArticleText {
         LOGGER.debug(toString());
     }
 
-    private HippoRichText extractContactDetails(Element body){
+    /**
+     * Get the contact details part of the Goss articletext node.
+     *
+     * @param body Articletext as child of a body element.
+     * @return HippoRichText object for the contact details.
+     */
+    private HippoRichText extractContactDetails(Element body) {
         Element gossContactDetails = body.selectFirst("#" + CONTACT_INFO.getId());
         HippoRichText result = null;
-        if(gossContactDetails != null){
+        if (gossContactDetails != null) {
             result = new HippoRichText(gossContactDetails.html());
         }
         return result;
@@ -63,15 +79,15 @@ public class ParsedArticleText {
         Element gossIntroNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
 
         // Assume the intro node has no text of its own, only children.
-        if(!StringUtils.isEmpty(gossIntroNode.ownText())){
+        if (!StringUtils.isEmpty(gossIntroNode.ownText())) {
             LOGGER.warn("Goss article id: {}. Unexpected text in goss article text introduction.", gossId);
         }
         boolean haveIntro = false;
 
         // Going to assume any h2 or h3 is an immediate child of this for now.
         Elements h2h3Elements = body.select("h2, h3");
-        for(Element h2h3Element : h2h3Elements){
-            if(!h2h3Element.parent().equals(gossIntroNode)){
+        for (Element h2h3Element : h2h3Elements) {
+            if (!h2h3Element.parent().equals(gossIntroNode)) {
                 LOGGER.warn("Goss Article Id:{}, Found h2 or h3 in article text nested deeper than expected.", gossId);
             }
         }
@@ -94,11 +110,16 @@ public class ParsedArticleText {
         return null;
     }
 
-    private void extractComponent(Element body){
+    /**
+     * There is a component part of the Goss ARTICLETEXT.
+     * Not used at the moment.  In to log a warning if we find it containing data in full export.
+     * @param body The ARTICLETEXT as child of a body node.
+     */
+    private void extractComponent(Element body) {
         Element componentGossNode = body.selectFirst("#" + COMPONENT.getId());
-        if(null != componentGossNode){
-            if(componentGossNode.children().size() > 0 || !StringUtils.isEmpty(componentGossNode.ownText())){
-                LOGGER.warn("Goss Id:{}.  Has data in ARTICLTEXT 'Component' Section.  Currently ignored in import.", gossId);
+        if (null != componentGossNode) {
+            if (componentGossNode.children().size() > 0 || !StringUtils.isEmpty(componentGossNode.ownText())) {
+                LOGGER.warn("Goss Id:{}.  Has data in ARTICLETEXT 'Component' Section.  Currently ignored in import.", gossId);
             }
         }
     }
@@ -134,7 +155,8 @@ public class ParsedArticleText {
      * If no h2's then promote any h3's to h2.
      * Anything before first h2 is the introduction and should have already been dealt with
      * and removed from tree.
-     * TODO Verify h2/h3 are always immediate children.
+     * TODO Verify h2/h3 are always immediate children.  Expect them to be.
+     *
      * @param body The parent of the __DEFAULT span.
      * @return A list of Sections.
      */
@@ -164,6 +186,12 @@ public class ParsedArticleText {
         return sections;
     }
 
+    /**
+     * Returns a populated Section object from the span '__DEFAULT' node and removes the setion from it.
+     * Call multiple times to get all Sections.
+     * @param defaultNode The <textbody id="__DEFAULT"> node from Goss ARTICLETEXT
+     * @return The populated Section object.
+     */
     private static Section extractSection(Element defaultNode) {
         boolean haveSection = false;
         String title = null;
@@ -189,6 +217,7 @@ public class ParsedArticleText {
 
     /**
      * If there are no h2 nodes then change any h3s into h2s.
+     *
      * @param body Element to parse.
      */
     private void promoteH3s(Element body) {

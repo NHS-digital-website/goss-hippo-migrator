@@ -177,5 +177,42 @@
         "nodes" : [ ]
       }<#sep>, </#sep> </#list>]
     } ]<#-- Closing array section rich text content -->
-  }<#-- End list service.sections --><#sep>, </#sep></#list><#-- End if service.sections?? --></#if> ]<#-- Closing array complex nodes -->
+  }<#-- End list service.sections --><#sep>, </#sep></#list><#-- End if service.sections?? --></#if><#if service.contactDetails??><#if service.topTasks?? || service.introduction?? || service.sections??>, </#if>{
+     "name" : "publicationsystem:contactdetails",
+     "primaryType" : "hippostd:html",
+     "mixinTypes" : [ ],
+     "properties" : [ {
+       "name" : "hippostd:content",
+       "type" : "STRING",
+       "multiple" : false,
+       "values" : [ "${service.contactDetails.content}" ]
+     } ],
+     "nodes" : [ <#list service.contactDetails.docReferences as refs> {
+       "name" : "${refs.nodeName}",
+       "primaryType" : "hippo:facetselect",
+       "mixinTypes" : [ ],
+       "properties" : [ {
+         "name" : "hippo:facets",
+         "type" : "STRING",
+         "multiple" : true,
+         "values" : [ ]
+       }, {
+         "name" : "hippo:values",
+         "type" : "STRING",
+         "multiple" : true,
+         "values" : [ ]
+       }, {
+         "name" : "hippo:docbase",
+         "type" : "STRING",
+         "multiple" : false,
+         "values" : [ "${refs.jcrPath}" ]
+       }, {
+         "name" : "hippo:modes",
+         "type" : "STRING",
+         "multiple" : true,
+         "values" : [ ]
+       } ],
+       "nodes" : [ ]
+     }<#sep>, </#sep> </#list>]
+   }<#-- End if service.contactDetails --></#if>]<#-- Closing array complex nodes -->
 }
