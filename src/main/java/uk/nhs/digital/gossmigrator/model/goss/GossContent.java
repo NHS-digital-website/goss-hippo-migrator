@@ -1,15 +1,18 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
 
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 
+import java.nio.file.Paths;
 import java.util.Date;
 
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.*;
@@ -46,6 +49,38 @@ public class GossContent implements Comparable<GossContent> {
     private long gossExportFileLine;
     private int childrenCount;
 
+    // TODO lose the constructors and put in factory methods for each content type.
+    // TODO e.g. Series, General and Publications (which need special node name/parent).
+    /**
+     * Constructor that populates based upon series csv line.
+     *
+     * @param seriesCsv CSV
+     */
+    public GossContent(CSVRecord seriesCsv) {
+        if(seriesCsv.size() != 3){
+            LOGGER.error("Line in series csv had unexpected number of columns. Expected 3, got {}. Data:{}", seriesCsv.size(), seriesCsv);
+        }
+        this.id = Long.parseLong(seriesCsv.get(0)) * (-1L);
+        this.heading = seriesCsv.get(1);
+        this.summary = seriesCsv.get(2);
+
+        // Currently the jcr node containing the series content has to be called content.
+        // This is the convention used by RPS project.
+        jcrNodeName = "content";
+        jcrParentPath =
+                Paths.get(Config.JCR_PUBLICATION_ROOT
+                        , TextHelper.toLowerCaseDashedValue(this.heading)).toString();
+        depth = 1;
+        parentId = this.id;  // No parent doc for series.
+        setContentType(ContentType.SERIES);
+    }
+
+    /**
+     * Constructor that populates from an article node in Goss export.
+     *
+     * @param gossJson           Goss article
+     * @param gossExportFileLine Source line in export for logging.
+     */
     public GossContent(JSONObject gossJson, long gossExportFileLine) {
         this.gossExportFileLine = gossExportFileLine;
         JSONObject extraJson = (JSONObject) gossJson.get(GossExportFieldNames.EXTRA.getName());
@@ -68,9 +103,9 @@ public class GossContent implements Comparable<GossContent> {
         extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
         extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
 
-        if(StringUtils.isEmpty(friendlyUrl)) {
+        if (StringUtils.isEmpty(friendlyUrl)) {
             jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
-        }else{
+        } else {
             jcrNodeName = friendlyUrl;
         }
         // TODO logic for content type replaces this.
@@ -201,7 +236,7 @@ public class GossContent implements Comparable<GossContent> {
     }
 
     public String getJcrPath() {
-        return jcrParentPath + jcrNodeName;
+        return Paths.get(jcrParentPath, jcrNodeName).toString();
     }
 
     public void setContentType(ContentType contentType) {
