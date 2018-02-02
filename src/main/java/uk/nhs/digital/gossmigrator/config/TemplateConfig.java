@@ -1,0 +1,51 @@
+package uk.nhs.digital.gossmigrator.config;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
+
+import static uk.nhs.digital.gossmigrator.config.TemplateConfig.TemplateEnum.PUBLICATION_TEMPLATE;
+
+public class TemplateConfig {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(Config.class);
+
+    enum TemplateEnum {
+        PUBLICATION_TEMPLATE("publication.id");
+
+        private String key;
+
+        TemplateEnum(String key) {
+            this.key = key;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+    }
+
+    public static int PUBLICATION_ID;
+
+    public static void parsePropertiesFile(Properties propertiesMap){
+        PUBLICATION_ID = getConfig(PUBLICATION_TEMPLATE, propertiesMap);
+    }
+
+    private static int getConfig(TemplateEnum templateEnum, Properties propertiesMap) {
+        int id;
+        String propertyValue = propertiesMap.getProperty(templateEnum.key);
+        if(StringUtils.isEmpty(propertyValue)){
+            throw new RuntimeException("Properties file must contain:" + templateEnum.key);
+        }
+        try{
+            id = Integer.parseInt(propertyValue);
+        }catch(NumberFormatException e){
+            throw new RuntimeException("Invalid format. Property must contain an integer:" + templateEnum.key);
+        }
+        LOGGER.info("{}: {}", templateEnum.key, id);
+        return id;
+    }
+
+}

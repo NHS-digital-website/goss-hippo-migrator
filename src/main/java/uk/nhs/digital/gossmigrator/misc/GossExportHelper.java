@@ -5,9 +5,12 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class GossExportHelper {
@@ -58,8 +61,6 @@ public class GossExportHelper {
         return null;
     }
 
-    public static final String DF = "MMM, dd yyyy HH:mm:ss Z";
-
     /**
      * Parses a date String in Goss export format into java Date.
      *
@@ -68,22 +69,32 @@ public class GossExportHelper {
      * @param gossId    Goss Article Id of row. For logging.
      * @return The parsed date.
      */
-    public static Date getDate(JSONObject gossJson, GossExportFieldNames fieldName, long gossId) {
+    public static Date getDate(JSONObject gossJson, GossExportFieldNames fieldName, long gossId, DateFormatEnum dateFormatEnum) {
         // May, 23 2016 16:03:33 +0100 (Goss date example)
         String date = (String) gossJson.get(fieldName.getName());
         Date d = null;
         try {
-            if(fieldName.isMandatory() && StringUtils.isEmpty(date)){
-                LOGGER.error("Goss Id:{}, Field:{}. Was Empty. Expected a value.", gossId, fieldName);
-                return null;
+            if(StringUtils.isNotEmpty(date)){
+                d = DateUtils.parseDate(date, dateFormatEnum.getFormat());
             }
-            d = DateUtils.parseDate(date, DF);
         } catch (ParseException e) {
             LOGGER.error("Goss Id:{}, Field:{}, Value:{}. Could not parse date.", gossId, fieldName, date);
         }
-
         return d;
     }
+
+    public static String getDateString(Date date, DateFormatEnum dateFormatEnum){
+        String dateString = "";
+
+        if(date != null){
+            DateFormat df = new SimpleDateFormat(dateFormatEnum.getFormat());
+            dateString = df.format(date);
+        }
+
+        return dateString;
+    }
+
+
 
     @SuppressWarnings("SimplifiableIfStatement")
     public static boolean getBoolean(JSONObject gossJson, GossExportFieldNames fieldName, boolean defaultValue) {
@@ -94,6 +105,5 @@ public class GossExportHelper {
             return false;
         return defaultValue;
     }
-
 
 }

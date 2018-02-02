@@ -15,9 +15,14 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 import java.nio.file.Paths;
 import java.util.Date;
 
+import static uk.nhs.digital.gossmigrator.config.TemplateConfig.PUBLICATION_ID;
+
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.*;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.PUBLICATION;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.SERVICE;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.GOSS_LONG_FORMAT;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;
+
 
 public class GossContent implements Comparable<GossContent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossContent.class);
@@ -26,6 +31,7 @@ public class GossContent implements Comparable<GossContent> {
     private String heading;
     private long id;
     private GossContentExtra extra;
+    private GossMetadata metadata;
     private Long templateId;
     private String summary;
     private String friendlyUrl;
@@ -86,7 +92,8 @@ public class GossContent implements Comparable<GossContent> {
         JSONObject extraJson = (JSONObject) gossJson.get(GossExportFieldNames.EXTRA.getName());
         id = getIdOrError(gossJson, ID);
         LOGGER.debug("Populating GossContentId:{}, File Line:{}", id, gossExportFileLine);
-        extra = new GossContentExtra();
+        extra = new GossContentExtra(gossJson, EXTRA, id);
+        metadata = new GossMetadata(gossJson, METADATA, id);
         heading = getString(gossJson, HEADING, id);
         templateId = getLong(gossJson, TEMPLATE_ID, id);
         summary = getString(gossJson, SUMMARY, id);
@@ -94,12 +101,12 @@ public class GossContent implements Comparable<GossContent> {
         linkText = getString(gossJson, LINK_TEXT, id);
         parentId = getLong(gossJson, PARENTID, id);
         introduction = getString(gossJson, INTRO, id);
-        date = GossExportHelper.getDate(gossJson, DATE, id);
+        date = GossExportHelper.getDate(gossJson, DATE, id, GOSS_LONG_FORMAT);
         text = getString(gossJson, TEXT, id);
         display = getString(gossJson, DISPLAY, id);
-        archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id);
-        displayDate = GossExportHelper.getDate(gossJson, DISPLAY_DATE, id);
-        displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id);
+        archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id, GOSS_LONG_FORMAT);
+        displayDate = GossExportHelper.getDate(gossJson, DISPLAY_DATE, id, GOSS_LONG_FORMAT);
+        displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
         extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
         extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
 
@@ -109,7 +116,11 @@ public class GossContent implements Comparable<GossContent> {
             jcrNodeName = friendlyUrl;
         }
         // TODO logic for content type replaces this.
-        setContentType(SERVICE);
+        if(templateId == PUBLICATION_ID){
+            setContentType(PUBLICATION);
+        }else {
+            setContentType(SERVICE);
+        }
     }
 
     public Integer getDepth() {
@@ -261,5 +272,9 @@ public class GossContent implements Comparable<GossContent> {
 
     public void setChildrenCount(int childrenCount) {
         this.childrenCount = childrenCount;
+    }
+
+    public GossMetadata getMetadata() {
+        return metadata;
     }
 }

@@ -4,7 +4,8 @@ public enum ArticleTextSection {
     TOPTASKS("UPPERBODY"),
     CONTACT_INFO("CTA"),
     INTRO_AND_SECTIONS("__DEFAULT"),
-    COMPONENT("COMPONENT");
+    COMPONENT("COMPONENT"),
+    FACTS("FACTS");
 
     private String id;
 

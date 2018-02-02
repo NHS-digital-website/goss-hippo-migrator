@@ -17,7 +17,12 @@ public enum GossExportFieldNames {
     ,DISPLAY_DATE("ARTICLEDISPLAYDATE", false)
     ,DISPLAY_END_DATE("ARTICLEDISPLAYEDATE", false)
     ,DISPLAY("ARTICLEDISPLAY", false)
-    ,ARCHIVE_DATE("ARCHIVEDATE", false)
+    ,ARCHIVE_DATE("ARCHIVEDATE", false),
+    COVSTARTDATE("COVSTARTDATE", false),
+    PUBDATE("PUBDATE",false),
+    COVENDDATE("COVENDDATE",false),
+    METADATA("Metadata",false),
+    METADATA_GROUP("GROUP",false)
     ;
 
     private String name;

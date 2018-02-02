@@ -13,10 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.config.Constants;
+import uk.nhs.digital.gossmigrator.config.TemplateConfig;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 import uk.nhs.digital.gossmigrator.model.hippo.Asset;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
+import uk.nhs.digital.gossmigrator.model.hippo.Publication;
 import uk.nhs.digital.gossmigrator.model.hippo.Series;
 import uk.nhs.digital.gossmigrator.model.hippo.Service;
 
@@ -46,8 +48,11 @@ public class GossImporter {
 
         Options options = new Options();
         Option propertiesFileOption = new Option("p", "properties", true, "Properties file path.");
+        Option templateFileOption = new Option("t", "templateProperties", true, "Template properties file path.");
         propertiesFileOption.setRequired(true);
+        templateFileOption.setRequired(true);
         options.addOption(propertiesFileOption);
+        options.addOption(templateFileOption);
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
 
@@ -57,10 +62,16 @@ public class GossImporter {
 
             File propertiesFile = Paths.get(cmd.getOptionValue("properties")).toFile();
             LOGGER.info("Properties file:{}", propertiesFile);
-
             Properties properties = new Properties();
             properties.load(new FileReader(propertiesFile));
             Config.parsePropertiesFile(properties);
+
+            File templateFile = Paths.get(cmd.getOptionValue("templateProperties")).toFile();
+            LOGGER.info("Properties file:{}", templateFile);
+            Properties templateProperties = new Properties();
+            templateProperties.load(new FileReader(templateFile));
+            TemplateConfig.parsePropertiesFile(templateProperties);
+
         } catch (MissingOptionException e) {
             formatter.printHelp("GossImporter", options);
             LOGGER.error(e.getMessage(), e);
@@ -166,7 +177,7 @@ public class GossImporter {
 
     private void populateGossContent(JSONObject rootJsonObject, Long limit) {
         LOGGER.debug("Begin populating GossContent objects.");
-        JSONArray jsonArray = (JSONArray) rootJsonObject.get("docs");
+        JSONArray jsonArray = (JSONArray) rootJsonObject.get("articles");
 
         long count = 0;
         for (Object childJsonObject : jsonArray) {
@@ -200,6 +211,9 @@ public class GossImporter {
             switch (gossContent.getContentType()) {
                 case SERVICE:
                     hippoContent = new Service(gossContent);
+                    break;
+                case PUBLICATION:
+                    hippoContent = new Publication(gossContent);
                     break;
                 case SERIES:
                     hippoContent = new Series(gossContent);
@@ -235,8 +249,8 @@ public class GossImporter {
         // Goss export comes as a JSON array with element per content.
         // To read all in One go wrap array in a single outer document.
         // Possible a bad idea and will need to do line by line later.
-        String content = Constants.GOSS_EXTRACT_PREFIX;
 
+        String content = "";
         try {
             for (String line : Files.readAllLines(Paths.get(Config.GOSS_CONTENT_SOURCE_FILE))) {
                 content = content + line;
@@ -246,9 +260,11 @@ public class GossImporter {
             throw new RuntimeException(e.getMessage(), e);
         }
 
-        content = content + Constants.GOSS_EXTRACT_SUFFIX;
+
         try {
-            return (JSONObject) jsonParser.parse(content);
+
+            return (JSONObject)jsonParser.parse(content);
+
         } catch (ParseException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException("Failed Goss JSON parsing", e);

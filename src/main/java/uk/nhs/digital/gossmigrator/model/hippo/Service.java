@@ -12,7 +12,7 @@ public class Service extends HippoImportable {
     private String summary;
     private String shortSummary;
 
-    // Do not initialise HippoRichText objects.  Template needs nulls to decide on commas in list seperators
+    // Do not initialise HippoRichText objects.  Template needs nulls to decide on commas in list separators
     private List<HippoRichText> topTasks;
     private HippoRichText introduction;
     private List<Section> sections;

@@ -76,6 +76,7 @@ public class GossContentList extends ArrayList<GossContent> {
         p.setDepth(p1.getDepth() + 1);
         p1.setChildrenCount(p1.getChildrenCount() + 1);
         p.setJcrParentPath(p1.getJcrPath() + "/");
+
     }
 
 }

@@ -27,6 +27,7 @@ public class ParsedArticleText {
     private HippoRichText contactDetails;
     private List<HippoRichText> topTasks;
     private long gossId;
+    private HippoRichText keyFacts;
 
     /**
      * Parses ARTICLETEXT node from Goss export.
@@ -50,6 +51,7 @@ public class ParsedArticleText {
         topTasks = extractTopTasks(body);
         extractComponent(body);
         contactDetails = extractContactDetails(body);
+        keyFacts = extractKeyFacts(body);
         LOGGER.debug(toString());
     }
 
@@ -61,6 +63,15 @@ public class ParsedArticleText {
      */
     private HippoRichText extractContactDetails(Element body) {
         Element gossContactDetails = body.selectFirst("#" + CONTACT_INFO.getId());
+        HippoRichText result = null;
+        if (gossContactDetails != null) {
+            result = new HippoRichText(gossContactDetails.html());
+        }
+        return result;
+    }
+
+    private HippoRichText extractKeyFacts(Element body) {
+        Element gossContactDetails = body.selectFirst("#" + FACTS.getId());
         HippoRichText result = null;
         if (gossContactDetails != null) {
             result = new HippoRichText(gossContactDetails.html());
@@ -187,7 +198,7 @@ public class ParsedArticleText {
     }
 
     /**
-     * Returns a populated Section object from the span '__DEFAULT' node and removes the setion from it.
+     * Returns a populated Section object from the span '__DEFAULT' node and removes the section from it.
      * Call multiple times to get all Sections.
      * @param defaultNode The <textbody id="__DEFAULT"> node from Goss ARTICLETEXT
      * @return The populated Section object.
@@ -244,6 +255,10 @@ public class ParsedArticleText {
 
     public List<HippoRichText> getTopTasks() {
         return topTasks;
+    }
+
+    public HippoRichText getKeyFacts() {
+        return keyFacts;
     }
 
     @Override
