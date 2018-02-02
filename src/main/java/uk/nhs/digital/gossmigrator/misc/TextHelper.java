@@ -17,6 +17,9 @@ public class TextHelper {
                 ;
     }
 
+    public static String trimAndStripLeadingTrailingQuotes(final String input){
+        return StringUtils.trim(input).replaceAll("^\"", "").replaceAll("\"$", "");
+    }
     /* TODO delete if not required.  Got some very long names though......
     public static String toLowerCaseDashedShortValue(final String input) {
         return Arrays.stream(toLowerCaseDashedValue(input).split("-"))

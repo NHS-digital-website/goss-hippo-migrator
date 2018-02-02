@@ -1,6 +1,10 @@
 package uk.nhs.digital.gossmigrator;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,6 +17,7 @@ import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 import uk.nhs.digital.gossmigrator.model.hippo.Asset;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
+import uk.nhs.digital.gossmigrator.model.hippo.Series;
 import uk.nhs.digital.gossmigrator.model.hippo.Service;
 
 import java.io.File;
@@ -23,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static java.nio.charset.Charset.defaultCharset;
 import static uk.nhs.digital.gossmigrator.config.Config.*;
 import static uk.nhs.digital.gossmigrator.config.Constants.OUTPUT_FILE_TYPE_SUFFIX;
 
@@ -30,10 +36,11 @@ public class GossImporter {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossImporter.class);
 
     // TODO add a target path to HippoImportable and combine next 2
-    List<HippoImportable> importableContentItems = new ArrayList<>();
+    private List<HippoImportable> importableContentItems = new ArrayList<>();
     List<HippoImportable> importableAssetItems = new ArrayList<>();
     GossContentList gossContentList = new GossContentList();
     Map<Long, String> gossContentUrlMap = new HashMap<>();
+    Map<Long, Long> publicationSeriesMap = new HashMap<>();
 
     public static void main(String[] args) throws Exception {
 
@@ -68,8 +75,63 @@ public class GossImporter {
     public void run() {
         createAssetHippoImportables();
         writeHippoAssetImportables();
+        createPublicationSeries();
+        readPublicationSeriesMappings();
         createContentHippoImportables();
         writeHippoContentImportables();
+    }
+
+    /**
+     * Store mappings between Publications and Series in a Map.
+     * Use publication Goss Id as key.  Map will be used by
+     * publications to get their parent.
+     */
+    private void readPublicationSeriesMappings() {
+        File csvData = new File(Config.SERIES_PUBLICATION_MAPPING_FILE);
+        CSVParser parser;
+        try {
+            // TODO utf-8 charset?  Probably does not matter as expecting only ASCII chars.
+            parser = CSVParser.parse(csvData, defaultCharset(), CSVFormat.RFC4180);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+        parser.forEach(this::processPublicationSeriesMapping);
+    }
+
+    private void processPublicationSeriesMapping(CSVRecord record) {
+        if(record.getRecordNumber() > Config.SERIES_PUBLICATION_MAPPING_FILE_HEADER_COUNT) {
+            if (record.size() != 2) {
+                LOGGER.error("Invalid PublicationSeries mapping. Expected 2 columns, got {}. Data:{}", record.size(), record);
+            }
+
+            publicationSeriesMap.put(Long.parseLong(StringUtils.trim(record.get(1)))
+                    , -1L * Long.parseLong(StringUtils.trim(record.get(0))));
+        }
+    }
+
+    /**
+     * Publication Series is not a concept covered in the Goss export.
+     * So Will be provided with an input csv file for the migration.
+     * Need to create a Series for each unique series and then a/some publication(s) as children.
+     * Will need to fill in the parent ids in the publications, so store a map.
+     */
+    private void createPublicationSeries() {
+        File csvData = new File(Config.SERIES_FILE);
+        CSVParser parser;
+        try {
+            parser = CSVParser.parse(csvData, defaultCharset(), CSVFormat.RFC4180);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+        parser.forEach(this::processSeriesLine);
+    }
+
+    private void processSeriesLine(CSVRecord strings) {
+        if (strings.getRecordNumber() > Config.SERIES_FILE_HEADER_COUNT) {
+            gossContentList.add(new GossContent(strings));
+        }
     }
 
     private void createAssetHippoImportables() {
@@ -139,8 +201,11 @@ public class GossImporter {
                 case SERVICE:
                     hippoContent = new Service(gossContent);
                     break;
+                case SERIES:
+                    hippoContent = new Series(gossContent);
+                    break;
                 default:
-                    LOGGER.warn("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());
+                    LOGGER.error("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());
             }
             importableContentItems.add(hippoContent);
         }

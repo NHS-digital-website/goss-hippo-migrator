@@ -1,7 +1,7 @@
 <#-- @ftlvariable name="service" type="uk.nhs.digital.gossmigrator.model.hippo.Service" -->
 {
   "name" : "${service.jcrNodeName}",
-  "primaryType" : "publicationsystem:service",
+  "primaryType" : "website:service",
   "mixinTypes" : [ "mix:referenceable" ],
   "properties" : [ {
     "name" : "hippotranslation:locale",
@@ -9,17 +9,17 @@
     "multiple" : false,
     "values" : [ "en" ]
   }, {
-    "name" : "publicationsystem:seosummary",
+    "name" : "website:seosummary",
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "${service.seoSummary}" ]
   }, {
-    "name" : "publicationsystem:title",
+    "name" : "website:title",
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "${service.title}" ]
   }, {
-    "name" : "publicationsystem:summary",
+    "name" : "website:summary",
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "${service.summary}" ]
@@ -29,7 +29,7 @@
     "multiple" : false,
     "values" : [ "true" ]
   }, {
-    "name" : "publicationsystem:shortsummary",
+    "name" : "website:shortsummary",
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "${service.shortSummary}" ]
@@ -51,7 +51,7 @@
    bean objects being null.
    -->
   "nodes" : [ <#if service.topTasks??><#list service.topTasks as tasks>{
-    "name" : "publicationsystem:toptasks",
+    "name" : "website:toptasks",
     "primaryType" : "hippostd:html",
     "mixinTypes" : [ ],
     "properties" : [ {
@@ -88,7 +88,7 @@
       "nodes" : [ ]
     } <#sep>, </#sep> </#list>]
   }<#sep>, </#sep></#list></#if><#if service.introduction??><#if service.topTasks??>, </#if>{
-    "name" : "publicationsystem:introduction",
+    "name" : "website:introduction",
     "primaryType" : "hippostd:html",
     "mixinTypes" : [ ],
     "properties" : [ {
@@ -125,22 +125,22 @@
       "nodes" : [ ]
     }<#sep>, </#sep> </#list>]
   }<#-- End if service.introduction --></#if><#if service.sections??><#if service.introduction?? || service.topTasks??>, </#if><#list service.sections as section>{
-    "name" : "publicationsystem:sections",
-    "primaryType" : "publicationsystem:section",
+    "name" : "website:sections",
+    "primaryType" : "website:section",
     "mixinTypes" : [ ],
     "properties" : [ {
-      "name" : "publicationsystem:title",
+      "name" : "website:title",
       "type" : "STRING",
       "multiple" : false,
       "values" : [ "${section.title}" ]
     }, {
-      "name" : "publicationsystem:type",
+      "name" : "website:type",
       "type" : "STRING",
       "multiple" : false,
       "values" : [ "${section.type}" ]
     } ],
     "nodes" : [ {
-      "name" : "publicationsystem:html",
+      "name" : "website:html",
       "primaryType" : "hippostd:html",
       "mixinTypes" : [ ],
       "properties" : [ {
@@ -178,7 +178,7 @@
       }<#sep>, </#sep> </#list>]
     } ]<#-- Closing array section rich text content -->
   }<#-- End list service.sections --><#sep>, </#sep></#list><#-- End if service.sections?? --></#if><#if service.contactDetails??><#if service.topTasks?? || service.introduction?? || service.sections??>, </#if>{
-     "name" : "publicationsystem:contactdetails",
+     "name" : "website:contactdetails",
      "primaryType" : "hippostd:html",
      "mixinTypes" : [ ],
      "properties" : [ {
