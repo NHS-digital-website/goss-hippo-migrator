@@ -15,6 +15,8 @@ public class Publication extends HippoImportable {
         private final String coverageStart;
         private final String coverageEnd;
         private final String publicationDate;
+        private final Long id;
+        private Series series;
         //  private final String GeographicCoverage;
         //  private final String Taxonomy;
 
@@ -30,6 +32,7 @@ public class Publication extends HippoImportable {
             this.coverageStart = GossExportHelper.getDateString(startDate, TEMPLATE_FORMAT);
             Date publicationDate = gossContent.getExtra().getPublicationDate();
             this.publicationDate = GossExportHelper.getDateString(publicationDate, TEMPLATE_FORMAT);
+            this.id = gossContent.getId();
         }
 
         @SuppressWarnings("unused") // used in template
@@ -60,4 +63,16 @@ public class Publication extends HippoImportable {
         public String getPublicationDate() {
             return publicationDate;
         }
+
+        public Series getSeries() { return series;  }
+
+        public void setSeries(Series series) {
+            this.series = series;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+
 }

@@ -29,9 +29,8 @@ public class GossContent implements Comparable<GossContent> {
 
     // Fields read from Goss export.
     private String heading;
-    private long id;
-    private GossContentExtra extra;
-    private GossMetadata metadata;
+    protected long id;
+
     private Long templateId;
     private String summary;
     private String friendlyUrl;
@@ -42,6 +41,11 @@ public class GossContent implements Comparable<GossContent> {
     private String text;
     private String display;
     private Date archiveDate;
+
+    //Publications
+    private GossContentExtra extra;
+    private GossMetadata metadata;
+
     // Looks like we don't need the media json array at the moment.
     private Date displayDate;
     private Date displayEndDate;
@@ -89,11 +93,8 @@ public class GossContent implements Comparable<GossContent> {
      */
     public GossContent(JSONObject gossJson, long gossExportFileLine) {
         this.gossExportFileLine = gossExportFileLine;
-        JSONObject extraJson = (JSONObject) gossJson.get(GossExportFieldNames.EXTRA.getName());
         id = getIdOrError(gossJson, ID);
         LOGGER.debug("Populating GossContentId:{}, File Line:{}", id, gossExportFileLine);
-        extra = new GossContentExtra(gossJson, EXTRA, id);
-        metadata = new GossMetadata(gossJson, METADATA, id);
         heading = getString(gossJson, HEADING, id);
         templateId = getLong(gossJson, TEMPLATE_ID, id);
         summary = getString(gossJson, SUMMARY, id);
@@ -107,8 +108,12 @@ public class GossContent implements Comparable<GossContent> {
         archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id, GOSS_LONG_FORMAT);
         displayDate = GossExportHelper.getDate(gossJson, DISPLAY_DATE, id, GOSS_LONG_FORMAT);
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
+        JSONObject extraJson = (JSONObject) gossJson.get(GossExportFieldNames.EXTRA.getName());
+        extra = new GossContentExtra(gossJson, EXTRA, id);
+        metadata = new GossMetadata(gossJson, METADATA, id);
         extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
         extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
+
 
         if (StringUtils.isEmpty(friendlyUrl)) {
             jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
@@ -150,10 +155,7 @@ public class GossContent implements Comparable<GossContent> {
         return heading;
     }
 
-    @SuppressWarnings("unused")
-    public GossContentExtra getExtra() {
-        return extra;
-    }
+
 
     @SuppressWarnings("unused")
     public Long getTemplateId() {
@@ -250,6 +252,10 @@ public class GossContent implements Comparable<GossContent> {
         return Paths.get(jcrParentPath, jcrNodeName).toString();
     }
 
+    public String getJcrParentPath() {
+        return jcrParentPath;
+    }
+
     public void setContentType(ContentType contentType) {
         this.contentType = contentType;
     }
@@ -274,7 +280,13 @@ public class GossContent implements Comparable<GossContent> {
         this.childrenCount = childrenCount;
     }
 
+    @SuppressWarnings("unused")
+    public GossContentExtra getExtra() {
+        return extra;
+    }
+
     public GossMetadata getMetadata() {
         return metadata;
     }
+
 }

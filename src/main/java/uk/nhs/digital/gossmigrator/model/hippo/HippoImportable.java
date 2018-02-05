@@ -40,4 +40,12 @@ public abstract class HippoImportable {
     public String toString() {
         return ReflectionToStringBuilder.toString(this, SHORT_PREFIX_STYLE);
     }
+
+    public void setJcrNodeName(String jcrNodeName) {
+        this.jcrNodeName = jcrNodeName;
+    }
+
+    public void setJcrPath(String jcrPath) {
+        this.jcrPath = jcrPath;
+    }
 }

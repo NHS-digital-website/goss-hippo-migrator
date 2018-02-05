@@ -16,6 +16,7 @@ import uk.nhs.digital.gossmigrator.config.Constants;
 import uk.nhs.digital.gossmigrator.config.TemplateConfig;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
+import uk.nhs.digital.gossmigrator.model.goss.GossContentPublication;
 import uk.nhs.digital.gossmigrator.model.hippo.Asset;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 import uk.nhs.digital.gossmigrator.model.hippo.Publication;
@@ -214,6 +215,18 @@ public class GossImporter {
                     break;
                 case PUBLICATION:
                     hippoContent = new Publication(gossContent);
+                    Long publicationId = ((Publication)hippoContent).getId();
+                    Long seriesId = publicationSeriesMap.get(publicationId);
+                    if(seriesId != null) {
+                        Optional<GossContent> matchingSeries = gossContentList.stream().
+                                filter(s -> s.getId() == seriesId).findFirst();
+                        GossContent matchingSeriesGoss = matchingSeries.orElse(null);
+
+                        if(matchingSeriesGoss != null){
+                            hippoContent.setJcrPath(Paths.get(matchingSeriesGoss.getJcrParentPath(),hippoContent.getJcrNodeName(),"content").toString());
+                            hippoContent.setJcrNodeName("content");
+                        }
+                    }
                     break;
                 case SERIES:
                     hippoContent = new Series(gossContent);

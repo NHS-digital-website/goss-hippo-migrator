@@ -21,8 +21,10 @@ public enum GossExportFieldNames {
     COVSTARTDATE("COVSTARTDATE", false),
     PUBDATE("PUBDATE",false),
     COVENDDATE("COVENDDATE",false),
-    METADATA("Metadata",false),
-    METADATA_GROUP("GROUP",false)
+    METADATA("METADATA",false),
+    METADATA_GROUP("GROUP",false),
+    METADATA_VALUE("VALUE", false),
+    METADATA_NAME("NAME", false)
     ;
 
     private String name;

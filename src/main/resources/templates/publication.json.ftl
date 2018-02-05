@@ -67,7 +67,7 @@
   bean objects being null.
   -->
   "nodes" : [ <#if publication.keyFacts??>{
-    "name" : "publicationsystem:keyFacts",
+    "name" : "publicationsystem:KeyFacts",
     "primaryType" : "hippostd:html",
     "mixinTypes" : [ ],
     "properties" : [ {
