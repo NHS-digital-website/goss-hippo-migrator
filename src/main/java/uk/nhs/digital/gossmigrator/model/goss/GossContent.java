@@ -3,6 +3,7 @@ package uk.nhs.digital.gossmigrator.model.goss;
 
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +12,13 @@ import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
+import uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType;
+import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static uk.nhs.digital.gossmigrator.config.TemplateConfig.PUBLICATION_ID;
 
@@ -49,7 +54,10 @@ public class GossContent implements Comparable<GossContent> {
     // Looks like we don't need the media json array at the moment.
     private Date displayDate;
     private Date displayEndDate;
-
+    private List<GossContentMeta> geographicalData = new ArrayList<>();
+    private List<GossContentMeta> taxonomyData = new ArrayList<>();
+    private List<GossContentMeta> informationTypes = new ArrayList<>();
+    private List<GossContentMeta> granularity = new ArrayList<>();
 
     // Non Goss sourced variables
     private Integer depth;
@@ -61,13 +69,14 @@ public class GossContent implements Comparable<GossContent> {
 
     // TODO lose the constructors and put in factory methods for each content type.
     // TODO e.g. Series, General and Publications (which need special node name/parent).
+
     /**
      * Constructor that populates based upon series csv line.
      *
      * @param seriesCsv CSV
      */
     public GossContent(CSVRecord seriesCsv) {
-        if(seriesCsv.size() != 3){
+        if (seriesCsv.size() != 3) {
             LOGGER.error("Line in series csv had unexpected number of columns. Expected 3, got {}. Data:{}", seriesCsv.size(), seriesCsv);
         }
         this.id = Long.parseLong(seriesCsv.get(0)) * (-1L);
@@ -95,6 +104,11 @@ public class GossContent implements Comparable<GossContent> {
         this.gossExportFileLine = gossExportFileLine;
         id = getIdOrError(gossJson, ID);
         LOGGER.debug("Populating GossContentId:{}, File Line:{}", id, gossExportFileLine);
+        JSONArray metaJson = (JSONArray) gossJson.get(GossExportFieldNames.META_DATA.getName());
+        if(null != metaJson) {
+            processMetaNode(metaJson);
+        }
+
         heading = getString(gossJson, HEADING, id);
         templateId = getLong(gossJson, TEMPLATE_ID, id);
         summary = getString(gossJson, SUMMARY, id);
@@ -125,6 +139,39 @@ public class GossContent implements Comparable<GossContent> {
             setContentType(PUBLICATION);
         }else {
             setContentType(SERVICE);
+        }
+    }
+
+    private void processMetaNode(JSONArray metaJson){
+        for (Object metaObject : metaJson) {
+            JSONObject meta = (JSONObject) metaObject;
+            String metaGroup = GossExportHelper.getString(meta, GossExportFieldNames.META_DATA_GROUP, id);
+            GossMetaType gossMetaType = GossMetaType.getByGroup(metaGroup);
+            if (null == gossMetaType) {
+                LOGGER.warn("Unexpected goss meta group:{}, in export line {}. Article id:{}."
+                        , metaGroup, gossExportFileLine, id);
+            } else {
+                String gossMetaValue = getString(meta, GossExportFieldNames.META_DATA_VALUE, gossExportFileLine);
+                String gossMetaName = getString(meta, GossExportFieldNames.META_DATA_VALUE, gossExportFileLine);
+
+                switch (gossMetaType) {
+                    case TAXONOMY:
+                        taxonomyData.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
+                        break;
+                    case GEOGRAPHICAL:
+                        geographicalData.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
+                        break;
+                    case INFORMATION_TYPE:
+                        informationTypes.add(new GossContentMeta(gossMetaName,gossMetaValue,metaGroup));
+                        break;
+                    case GRANULARITY:
+                        granularity.add(new GossContentMeta(gossMetaName,gossMetaValue,metaGroup));
+                        break;
+                    default:
+                        LOGGER.warn("Meta group ignored:{}, article id:{}", metaGroup, id);
+
+                }
+            }
         }
     }
 

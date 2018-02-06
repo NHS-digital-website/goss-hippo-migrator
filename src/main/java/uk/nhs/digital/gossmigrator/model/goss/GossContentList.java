@@ -69,7 +69,13 @@ public class GossContentList extends ArrayList<GossContent> {
         // Not yet calculated and has parent.
         GossContent p1 = contentMetaMap.get(p.getParentId());
 
-        if (null == p1.getDepth()) {
+        if (null == p1) {
+            // p1 should never be null with real data.
+            LOGGER.error("Invalid article parent id:{} for article:{}", p.getParentId(), p.getId());
+            p.setDepth(1);
+            p.setJcrParentPath(Config.JCR_SERVICE_DOC_ROOT);
+            return;
+        } else if (null == p1.getDepth()) {
             calculateDepth(p1);
         }
 
