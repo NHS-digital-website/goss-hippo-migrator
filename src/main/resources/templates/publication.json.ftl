@@ -22,7 +22,17 @@
     "name" : "publicationsystem:InformationType",
     "type" : "STRING",
     "multiple" : true,
-    "values" : [ "${publication.informationType}" ]
+    "values" : [ ${publication.informationType} ]
+  }, {
+    "name" : "publicationsystem:Granularity",
+    "type" : "STRING",
+    "multiple" : true,
+    "values" : [ ${publication.granuality} ]
+  }, {
+    "name" : "publicationsystem:GeographicCoverage",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ ${publication.geographicCoverage} ]
   }, {
     "name" : "publicationsystem:Summary",
     "type" : "STRING",
@@ -53,6 +63,11 @@
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "" ]
+  }, {<#-- This should change to rich text soon -->
+    "name" : "publicationsystem:KeyFacts",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ "${publication.keyFactsString}" ]
   }, {
     "name" : "hippotranslation:locale",
     "type" : "STRING",
@@ -66,7 +81,7 @@
   if the preceding nodes did not exist.  This relies on the preceding nodes
   bean objects being null.
   -->
-  "nodes" : [ <#if publication.keyFacts??>{
+  "nodes" : [<#--  Key facts should be rich text.  Currently String in doc type in hippo. <#if publication.keyFacts??>{
     "name" : "publicationsystem:KeyFacts",
     "primaryType" : "hippostd:html",
     "mixinTypes" : [ ],
@@ -76,5 +91,6 @@
     "multiple" : false,
     "values" : [ "${publication.keyFacts.content}" ]
     } ]
-  }</#if>]
+  }</#if>
+  End commenting out key facts-->]
 }

@@ -7,13 +7,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType;
-import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.PUBLICATI
 import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.SERVICE;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.GOSS_LONG_FORMAT;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType.GEOGRAPHICAL;
 
 
 public class GossContent implements Comparable<GossContent> {
@@ -49,7 +50,6 @@ public class GossContent implements Comparable<GossContent> {
 
     //Publications
     private GossContentExtra extra;
-    private GossMetadata metadata;
 
     // Looks like we don't need the media json array at the moment.
     private Date displayDate;
@@ -105,7 +105,7 @@ public class GossContent implements Comparable<GossContent> {
         id = getIdOrError(gossJson, ID);
         LOGGER.debug("Populating GossContentId:{}, File Line:{}", id, gossExportFileLine);
         JSONArray metaJson = (JSONArray) gossJson.get(GossExportFieldNames.META_DATA.getName());
-        if(null != metaJson) {
+        if (null != metaJson) {
             processMetaNode(metaJson);
         }
 
@@ -124,10 +124,8 @@ public class GossContent implements Comparable<GossContent> {
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
         JSONObject extraJson = (JSONObject) gossJson.get(GossExportFieldNames.EXTRA.getName());
         extra = new GossContentExtra(gossJson, EXTRA, id);
-        metadata = new GossMetadata(gossJson, METADATA, id);
         extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
         extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
-
 
         if (StringUtils.isEmpty(friendlyUrl)) {
             jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
@@ -135,14 +133,14 @@ public class GossContent implements Comparable<GossContent> {
             jcrNodeName = friendlyUrl;
         }
         // TODO logic for content type replaces this.
-        if(templateId == PUBLICATION_ID){
+        if (templateId == PUBLICATION_ID) {
             setContentType(PUBLICATION);
-        }else {
+        } else {
             setContentType(SERVICE);
         }
     }
 
-    private void processMetaNode(JSONArray metaJson){
+    private void processMetaNode(JSONArray metaJson) {
         for (Object metaObject : metaJson) {
             JSONObject meta = (JSONObject) metaObject;
             String metaGroup = GossExportHelper.getString(meta, GossExportFieldNames.META_DATA_GROUP, id);
@@ -162,10 +160,10 @@ public class GossContent implements Comparable<GossContent> {
                         geographicalData.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
                         break;
                     case INFORMATION_TYPE:
-                        informationTypes.add(new GossContentMeta(gossMetaName,gossMetaValue,metaGroup));
+                        informationTypes.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
                         break;
                     case GRANULARITY:
-                        granularity.add(new GossContentMeta(gossMetaName,gossMetaValue,metaGroup));
+                        granularity.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
                         break;
                     default:
                         LOGGER.warn("Meta group ignored:{}, article id:{}", metaGroup, id);
@@ -201,7 +199,6 @@ public class GossContent implements Comparable<GossContent> {
     public String getHeading() {
         return heading;
     }
-
 
 
     @SuppressWarnings("unused")
@@ -332,8 +329,50 @@ public class GossContent implements Comparable<GossContent> {
         return extra;
     }
 
-    public GossMetadata getMetadata() {
-        return metadata;
+    public String getGeographicalData() {
+        return getValuesAsCsvList(geographicalData, 1, GEOGRAPHICAL.toString());
     }
 
+    public String getInformationTypes() {
+        return getValuesAsCsvList(informationTypes);
+    }
+
+    public String getGranularity() {
+        return getValuesAsCsvList(granularity);
+    }
+
+    private String getValuesAsCsvList(List<GossContentMeta> sourceList) {
+        return getValuesAsCsvList(sourceList, -1);
+    }
+
+    private String getValuesAsCsvList(List<GossContentMeta> sourceList, int maxExpectedValues) {
+        StringBuilder csvList = new StringBuilder();
+        boolean isFirstRow = true;
+        int count = 0;
+        for (GossContentMeta item : sourceList) {
+            if (maxExpectedValues < count && maxExpectedValues > 0) {
+                break;
+            }
+            if (!isFirstRow) {
+                csvList.append(", ");
+            }
+            csvList.append("\"").append(GossImporter.metadataMapping.getHippoValue(item)).append("\"");
+            isFirstRow = false;
+            count++;
+        }
+
+        if (count == 0) {
+            return "\"\"";
+        }
+
+        return csvList.toString();
+    }
+
+    private String getValuesAsCsvList(List<GossContentMeta> sourceList, int maxExpectedValues, String context) {
+        if (sourceList.size() > maxExpectedValues) {
+            LOGGER.warn("More than expected number of meta items.  ArticleId:{}. Expected max:{}, got:{}, context:{}"
+                    , id, maxExpectedValues, sourceList.size(), context);
+        }
+        return getValuesAsCsvList(sourceList, maxExpectedValues);
+    }
 }

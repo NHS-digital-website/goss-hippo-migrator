@@ -22,4 +22,9 @@ public enum GossMetaType {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return group;
+    }
 }

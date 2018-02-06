@@ -8,6 +8,7 @@ import uk.nhs.digital.gossmigrator.config.TemplateConfig;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
+import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,8 +17,7 @@ import java.util.*;
 
 public class GossImporter {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossImporter.class);
-
-    // TODO add a target path to HippoImportable and combine next 2
+    public static MetadataMappingItems metadataMapping = new MetadataMappingItems();
 
     private GossProcessedData gossData = new GossProcessedData();
 
