@@ -69,6 +69,9 @@ public class GossImporter {
         gossData.setSeriesContentList(seriesImporter.createPublicationSeries());
         gossData.setPublicationSeriesMap(seriesImporter.readPublicationSeriesMappings());
 
+        TaxonomyMapper mapper = new TaxonomyMapper();
+        gossData.setTaxonomyMap(mapper.generateTaxonomyMap());
+
         ContentImporter contentImporter = new ContentImporter();
         gossData.setArticlesContentList(contentImporter.createContentHippoImportables());
         gossData.setGossContentUrlMap(contentImporter.populateGossContentJcrStructure(gossData.getArticlesContentList()));

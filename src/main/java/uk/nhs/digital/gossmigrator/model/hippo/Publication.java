@@ -1,10 +1,24 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.GossImporter;
+import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
+import uk.nhs.digital.gossmigrator.model.goss.GossContentMeta;
+import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 
-import java.util.Date;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.*;
 
+import static java.nio.charset.Charset.defaultCharset;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLATE_FORMAT;
 
 public class Publication extends HippoImportable {
@@ -16,12 +30,11 @@ public class Publication extends HippoImportable {
         private final String coverageEnd;
         private final String publicationDate;
         private final Long id;
-        private Series series;
-        //  private final String GeographicCoverage;
-        //  private final String Taxonomy;
+        private List<String> taxonomyKeys = new ArrayList<String>();
+        private List<String> fullTaxonomy = new ArrayList<String>();
 
-        public Publication(GossContent gossContent) {
-            super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
+        private Publication(GossContent gossContent) {
+            super(gossContent.getHeading(),gossContent.getJcrPath(), gossContent.getJcrNodeName());
             this.title = gossContent.getHeading();
             this.informationType = gossContent.getContentType().name();
             ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText());
@@ -34,6 +47,47 @@ public class Publication extends HippoImportable {
             this.publicationDate = GossExportHelper.getDateString(publicationDate, TEMPLATE_FORMAT);
             this.id = gossContent.getId();
         }
+
+
+        public static Publication getInstance(GossProcessedData gossData, GossContent gossContent){
+
+            Publication publication = new Publication(gossContent);
+            publication.generateHippoTaxonomy(gossData,gossContent);
+
+            Long publicationId = publication.getId();
+            Long seriesId = gossData.getPublicationSeriesMap().get(publicationId);
+            if(seriesId != null) {
+                Optional<GossContent> matchingSeries = gossData.getSeriesContentList().stream().
+                        filter(s -> s.getId() == seriesId).findFirst();
+                GossContent matchingSeriesGoss = matchingSeries.orElse(null);
+
+                if(matchingSeriesGoss != null){
+                    publication.setJcrPath(Paths.get(matchingSeriesGoss.getJcrParentPath(),publication.getJcrNodeName(),"content").toString());
+                    publication.setJcrNodeName("content");
+                }
+            }
+
+            return publication;
+        }
+
+
+        private void generateHippoTaxonomy(GossProcessedData gossData, GossContent gossContent){
+
+            List<GossContentMeta> metadataList = gossContent.getTaxonomyData();
+
+            for(GossContentMeta metaData: metadataList){
+                if ("Topics".equals(metaData.getGroup())){
+                    String gossValue = metaData.getValue();
+                    String hippoValue = gossData.getTaxonomyMap().get(gossValue);
+
+                    String[] values = hippoValue.split("-");
+                    List<String> valueList = Arrays.asList(values);
+                    fullTaxonomy.addAll(valueList);
+                    taxonomyKeys.add(valueList.get(valueList.size() - 1));
+                }
+            }
+        }
+
 
         @SuppressWarnings("unused") // used in template
         public String getTitle() {
@@ -64,15 +118,15 @@ public class Publication extends HippoImportable {
             return publicationDate;
         }
 
-        public Series getSeries() { return series;  }
-
-        public void setSeries(Series series) {
-            this.series = series;
-        }
-
         public Long getId() {
             return id;
         }
 
+        public List<String> getTaxonomyKeys() {
+            return taxonomyKeys;
+        }
 
+        public List<String> getFullTaxonomy() {
+            return fullTaxonomy;
+        }
 }

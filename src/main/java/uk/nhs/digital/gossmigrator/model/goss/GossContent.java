@@ -336,4 +336,7 @@ public class GossContent implements Comparable<GossContent> {
         return metadata;
     }
 
+    public List<GossContentMeta> getTaxonomyData() {
+        return taxonomyData;
+    }
 }

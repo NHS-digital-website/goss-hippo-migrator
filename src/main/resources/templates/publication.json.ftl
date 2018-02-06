@@ -58,7 +58,18 @@
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "en" ]
-  } ],
+  }, {
+  "name" : "hippotaxonomy:keys",
+  "type" : "STRING",
+  "multiple" : true,
+  "values" : [ <#list publication.taxonomyKeys as key>"${key}"<#sep>, </#sep></#list> ]
+  }, {
+  "name" : "common:FullTaxonomy",
+  "type" : "STRING",
+  "multiple" : true,
+  "values" : [ <#list publication.fullTaxonomy as key>"${key}"<#sep>, </#sep></#list> ]
+  }
+],
   <#--
   The nodes array will hold rich text components and complex components.
   If will contain one node for each top task, one or no node for introduction
