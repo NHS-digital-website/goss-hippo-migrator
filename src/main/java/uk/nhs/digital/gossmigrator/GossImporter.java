@@ -5,9 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.config.TemplateConfig;
-import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
-import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
 import java.io.File;
@@ -67,7 +65,9 @@ public class GossImporter {
 
         SeriesImporter seriesImporter = new SeriesImporter();
         gossData.setSeriesContentList(seriesImporter.createPublicationSeries());
-        gossData.setPublicationSeriesMap(seriesImporter.readPublicationSeriesMappings());
+
+        PublicationSeriesMapper seriesMapper = new PublicationSeriesMapper();
+        gossData.setPublicationSeriesMap(seriesMapper.readPublicationSeriesMappings());
 
         TaxonomyMapper mapper = new TaxonomyMapper();
         gossData.setTaxonomyMap(mapper.generateTaxonomyMap());

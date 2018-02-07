@@ -5,16 +5,6 @@ public class MetadataMappingItem {
     private String gossValue;
     private String hippoValue;
 
-    public MetadataMappingItem(String gossGroup, String gossValue, String hippoValue) {
-        this.gossGroup = gossGroup;
-        this.gossValue = gossValue;
-        this.hippoValue = hippoValue;
-    }
-
-    public String getKey(){
-        return gossGroup + gossValue;
-    }
-
     public String getGossGroup() {
         return gossGroup;
     }
@@ -25,5 +15,17 @@ public class MetadataMappingItem {
 
     public String getHippoValue() {
         return hippoValue;
+    }
+
+    public void setGossGroup(String gossGroup) {
+        this.gossGroup = gossGroup;
+    }
+
+    public void setGossValue(String gossValue) {
+        this.gossValue = gossValue;
+    }
+
+    public void setHippoValue(String hippoValue) {
+        this.hippoValue = hippoValue;
     }
 }

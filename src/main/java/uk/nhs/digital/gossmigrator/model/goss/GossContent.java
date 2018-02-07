@@ -73,15 +73,12 @@ public class GossContent implements Comparable<GossContent> {
     /**
      * Constructor that populates based upon series csv line.
      *
-     * @param seriesCsv CSV
      */
-    public GossContent(CSVRecord seriesCsv) {
-        if (seriesCsv.size() != 3) {
-            LOGGER.error("Line in series csv had unexpected number of columns. Expected 3, got {}. Data:{}", seriesCsv.size(), seriesCsv);
-        }
-        this.id = Long.parseLong(seriesCsv.get(0)) * (-1L);
-        this.heading = seriesCsv.get(1);
-        this.summary = seriesCsv.get(2);
+    public GossContent(Long id, String heading, String summary) {
+
+        this.id = id;
+        this.heading = heading;
+        this.summary = summary;
 
         // Currently the jcr node containing the series content has to be called content.
         // This is the convention used by RPS project.
@@ -300,7 +297,7 @@ public class GossContent implements Comparable<GossContent> {
         return jcrParentPath;
     }
 
-    public void setContentType(ContentType contentType) {
+    private void setContentType(ContentType contentType) {
         this.contentType = contentType;
     }
 
@@ -368,14 +365,14 @@ public class GossContent implements Comparable<GossContent> {
         return csvList.toString();
     }
 
+    public List<GossContentMeta> getTaxonomyData() {
+        return taxonomyData;
+    }
     private String getValuesAsCsvList(List<GossContentMeta> sourceList, int maxExpectedValues, String context) {
         if (sourceList.size() > maxExpectedValues) {
             LOGGER.warn("More than expected number of meta items.  ArticleId:{}. Expected max:{}, got:{}, context:{}"
                     , id, maxExpectedValues, sourceList.size(), context);
         }
         return getValuesAsCsvList(sourceList, maxExpectedValues);
-    }
-    public List<GossContentMeta> getTaxonomyData() {
-        return taxonomyData;
     }
 }
