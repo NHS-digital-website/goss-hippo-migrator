@@ -135,13 +135,7 @@ public class Publication extends HippoImportable {
         return publicationDate;
     }
 
-        public Series getSeries() { return series;  }
-
-        public void setSeries(Series series) {
-            this.series = series;
-        }
-
-        public Long getId() {
+    public Long getId() {
             return id;
         }
 
