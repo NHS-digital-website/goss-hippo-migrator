@@ -18,7 +18,7 @@ public class Service extends HippoImportable {
     private List<Section> sections;
     private HippoRichText contactDetails;
 
-    public Service(GossContent gossContent) {
+    private Service(GossContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
 
         seoSummary = gossContent.getSummary();
@@ -31,6 +31,10 @@ public class Service extends HippoImportable {
         sections = parsedArticleText.getSections();
         topTasks = parsedArticleText.getTopTasks();
         contactDetails = parsedArticleText.getContactDetails();
+    }
+
+    public static Service getInstance(GossContent gossContent){
+        return new Service(gossContent);
     }
 
     @SuppressWarnings("unused")

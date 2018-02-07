@@ -12,7 +12,8 @@ public class GossProcessedData {
     private GossContentList articlesContentList;
     private Map<Long, Long> publicationSeriesMap;
     private List<HippoImportable> importableContentItems;
-    private Map<Long, String> gossContentUrlMap = new HashMap<Long, String>();
+    private Map<Long, String> gossContentUrlMap;
+    private Map<String, String> taxonomyMap;
 
     public GossContentList getSeriesContentList() {
         return seriesContentList;
@@ -52,5 +53,13 @@ public class GossProcessedData {
 
     public void setGossContentUrlMap(Map<Long, String> gossContentUrlMap) {
         this.gossContentUrlMap = gossContentUrlMap;
+    }
+
+    public Map<String, String> getTaxonomyMap() {
+        return taxonomyMap;
+    }
+
+    public void setTaxonomyMap(Map<String, String> taxonomyMap) {
+        this.taxonomyMap = taxonomyMap;
     }
 }

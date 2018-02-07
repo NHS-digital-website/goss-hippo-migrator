@@ -34,25 +34,13 @@ public class HippoImportableFactory {
         HippoImportable hippoContent = null;
         switch (gossContent.getContentType()) {
             case SERVICE:
-                hippoContent = new Service(gossContent);
+                hippoContent = Service.getInstance(gossContent);
                 break;
             case PUBLICATION:
-                hippoContent = new Publication(gossContent);
-                Long publicationId = ((Publication)hippoContent).getId();
-                Long seriesId = gossData.getPublicationSeriesMap().get(publicationId);
-                if(seriesId != null) {
-                    Optional<GossContent> matchingSeries = gossData.getSeriesContentList().stream().
-                            filter(s -> s.getId() == seriesId).findFirst();
-                    GossContent matchingSeriesGoss = matchingSeries.orElse(null);
-
-                    if(matchingSeriesGoss != null){
-                        hippoContent.setJcrPath(Paths.get(matchingSeriesGoss.getJcrParentPath(),hippoContent.getJcrNodeName(),"content").toString());
-                        hippoContent.setJcrNodeName("content");
-                    }
-                }
+                hippoContent = Publication.getInstance(gossData, gossContent);
                 break;
             case SERIES:
-                hippoContent = new Series(gossContent);
+                hippoContent = Series.getInstance(gossContent);
                 break;
             default:
                 LOGGER.error("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());

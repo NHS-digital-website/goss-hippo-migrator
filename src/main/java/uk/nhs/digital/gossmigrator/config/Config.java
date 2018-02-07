@@ -26,7 +26,8 @@ public class Config {
         ,SERIES_PUBLICATION_MAPPING_FILE_HEADER_COUNT_PROP("goss.series.publication.mapping.file.header.count", "Count of header lines to ignore in Series Publication mapping csv file.", false, "1")
         ,SERIES_FILE_PROP("goss.series.file", "Location of Series defilition file.", true, "")
         ,SERIES_FILE_HEADER_COUNT_PROP("goss.series.file.header.count", "Number of header lines to skip in series file.", false, "1")
-        ,METADATA_MAPPING_FILE_PROP("meta.data.mapping.file", "File holding metadata mappings.", true, "")
+        ,METADATA_MAPPING_FILE_PROP("meta.data.mapping.file", "File holding metadata mappings.", true, ""),
+        TAXONOMY_MAPPING_FILE_PROP("goss.taxonomy.mapping.file", "File system path to Taxonomy mapping csv.", true, "")
         ;
 
         final String key;
@@ -64,6 +65,7 @@ public class Config {
     public static String SERIES_FILE;
     public static Long SERIES_FILE_HEADER_COUNT;
     public static String METADATA_MAPPING_FILE;
+    public static String TAXONOMY_MAPPING_FILE;
 
     public static void parsePropertiesFile(Properties propertiesMap){
         LOGGER.info("Properties used:");
@@ -79,6 +81,7 @@ public class Config {
         SERIES_FILE = getConfig(SERIES_FILE_PROP, propertiesMap);
         SERIES_FILE_HEADER_COUNT = Long.valueOf(getConfig(SERIES_FILE_HEADER_COUNT_PROP, propertiesMap));
         METADATA_MAPPING_FILE = getConfig(METADATA_MAPPING_FILE_PROP,propertiesMap);
+        TAXONOMY_MAPPING_FILE = getConfig(TAXONOMY_MAPPING_FILE_PROP,propertiesMap);
     }
 
     private static String getConfig(PropertiesEnum propertiesEnum, Properties propertiesMap) {

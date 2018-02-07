@@ -375,4 +375,7 @@ public class GossContent implements Comparable<GossContent> {
         }
         return getValuesAsCsvList(sourceList, maxExpectedValues);
     }
+    public List<GossContentMeta> getTaxonomyData() {
+        return taxonomyData;
+    }
 }

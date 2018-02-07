@@ -10,10 +10,14 @@ public class Series extends HippoImportable {
     private final String title;
     private final String summary;
 
-    public Series(GossContent gossContent) {
+    private Series(GossContent gossContent) {
         super(trimAndStripLeadingTrailingQuotes(gossContent.getHeading()), gossContent.getJcrPath(), gossContent.getJcrNodeName());
         this.title = trimAndStripLeadingTrailingQuotes(gossContent.getHeading());
         this.summary = trimAndStripLeadingTrailingQuotes(gossContent.getSummary());
+    }
+
+    public static Series getInstance(GossContent gossContent){
+        return new Series(gossContent);
     }
 
     public String getTitle() {
