@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
+import uk.nhs.digital.gossmigrator.model.goss.GossContentFactory;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItem;
 import uk.nhs.digital.gossmigrator.model.mapping.enums.MappingType;
@@ -66,7 +67,7 @@ public class CSVReader<T> {
                                 , -1L * Long.parseLong(StringUtils.trim(record.get(0))));
                         break;
                     case SERIES_ITEM:
-                        ((GossContentList)target).add(new GossContent(Long.parseLong(record.get(0)) * (-1L),
+                        ((GossContentList)target).add(GossContentFactory.generateSeriesContent(Long.parseLong(record.get(0)) * (-1L),
                                 StringUtils.trim(record.get(1)), StringUtils.trim(record.get(2))));
                         break;
                     case METADATA_MAPPING:

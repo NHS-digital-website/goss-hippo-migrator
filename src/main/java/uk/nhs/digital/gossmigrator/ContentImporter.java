@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
+import uk.nhs.digital.gossmigrator.model.goss.GossContentFactory;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
@@ -83,7 +84,7 @@ public class ContentImporter {
             if (null != limit && limit <= count) {
                 break;
             }
-            gossContentList.add(new GossContent((JSONObject) childJsonObject, ++count));
+            gossContentList.add(GossContentFactory.generateGossContent((JSONObject) childJsonObject, ++count));
         }
         return gossContentList;
     }

@@ -1,308 +1,74 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
 
-import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
-import uk.nhs.digital.gossmigrator.config.Config;
-import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
-import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
-import uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import static uk.nhs.digital.gossmigrator.config.TemplateConfig.PUBLICATION_ID;
-
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.*;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.PUBLICATION;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.SERVICE;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.GOSS_LONG_FORMAT;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType.GEOGRAPHICAL;
 
 
 public class GossContent implements Comparable<GossContent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossContent.class);
 
     // Fields read from Goss export.
-    private String heading;
+    String heading;
     protected long id;
-
-    private Long templateId;
-    private String summary;
+    protected String summary;
+    Long parentId;
+    protected String text;
+    ContentType contentType;
     private String friendlyUrl;
-    private String linkText;
-    private Long parentId;
-    private String introduction;
-    private Date date;
-    private String text;
-    private String display;
-    private Date archiveDate;
 
-    //Publications
-    private GossContentExtra extra;
-
-    // Looks like we don't need the media json array at the moment.
-    private Date displayDate;
-    private Date displayEndDate;
-    private List<GossContentMeta> geographicalData = new ArrayList<>();
-    private List<GossContentMeta> taxonomyData = new ArrayList<>();
-    private List<GossContentMeta> informationTypes = new ArrayList<>();
-    private List<GossContentMeta> granularity = new ArrayList<>();
 
     // Non Goss sourced variables
-    private Integer depth;
-    private String jcrParentPath;
-    private String jcrNodeName;
-    private ContentType contentType;
-    private long gossExportFileLine;
+    Integer depth;
+    String jcrParentPath;
+    String jcrNodeName;
     private int childrenCount;
 
     // TODO lose the constructors and put in factory methods for each content type.
     // TODO e.g. Series, General and Publications (which need special node name/parent).
 
-    /**
-     * Constructor that populates based upon series csv line.
-     *
-     */
-    public GossContent(Long id, String heading, String summary) {
-
-        this.id = id;
-        this.heading = heading;
-        this.summary = summary;
-
-        // Currently the jcr node containing the series content has to be called content.
-        // This is the convention used by RPS project.
-        jcrNodeName = "content";
-        jcrParentPath =
-                Paths.get(Config.JCR_PUBLICATION_ROOT
-                        , TextHelper.toLowerCaseDashedValue(this.heading)).toString();
-        depth = 1;
-        parentId = this.id;  // No parent doc for series.
-        setContentType(ContentType.SERIES);
-    }
-
-    /**
+    /*
      * Constructor that populates from an article node in Goss export.
      *
      * @param gossJson           Goss article
      * @param gossExportFileLine Source line in export for logging.
      */
     public GossContent(JSONObject gossJson, long gossExportFileLine) {
-        this.gossExportFileLine = gossExportFileLine;
         id = getIdOrError(gossJson, ID);
         LOGGER.debug("Populating GossContentId:{}, File Line:{}", id, gossExportFileLine);
-        JSONArray metaJson = (JSONArray) gossJson.get(GossExportFieldNames.META_DATA.getName());
-        if (null != metaJson) {
-            processMetaNode(metaJson);
-        }
-
         heading = getString(gossJson, HEADING, id);
-        templateId = getLong(gossJson, TEMPLATE_ID, id);
         summary = getString(gossJson, SUMMARY, id);
-        friendlyUrl = getString(gossJson, FRIENDLY_URL, id);
-        linkText = getString(gossJson, LINK_TEXT, id);
         parentId = getLong(gossJson, PARENTID, id);
-        introduction = getString(gossJson, INTRO, id);
-        date = GossExportHelper.getDate(gossJson, DATE, id, GOSS_LONG_FORMAT);
         text = getString(gossJson, TEXT, id);
-        display = getString(gossJson, DISPLAY, id);
-        archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id, GOSS_LONG_FORMAT);
-        displayDate = GossExportHelper.getDate(gossJson, DISPLAY_DATE, id, GOSS_LONG_FORMAT);
-        displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
-        JSONObject extraJson = (JSONObject) gossJson.get(GossExportFieldNames.EXTRA.getName());
-        extra = new GossContentExtra(gossJson, EXTRA, id);
-        extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
-        extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
-
+        friendlyUrl = getString(gossJson, FRIENDLY_URL, id);
         if (StringUtils.isEmpty(friendlyUrl)) {
             jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
         } else {
             jcrNodeName = friendlyUrl;
         }
-        // TODO logic for content type replaces this.
-        if (templateId == PUBLICATION_ID) {
-            setContentType(PUBLICATION);
-        } else {
-            setContentType(SERVICE);
-        }
     }
 
-    private void processMetaNode(JSONArray metaJson) {
-        for (Object metaObject : metaJson) {
-            JSONObject meta = (JSONObject) metaObject;
-            String metaGroup = GossExportHelper.getString(meta, GossExportFieldNames.META_DATA_GROUP, id);
-            GossMetaType gossMetaType = GossMetaType.getByGroup(metaGroup);
-            if (null == gossMetaType) {
-                LOGGER.warn("Unexpected goss meta group:{}, in export line {}. Article id:{}."
-                        , metaGroup, gossExportFileLine, id);
-            } else {
-                String gossMetaValue = getString(meta, GossExportFieldNames.META_DATA_VALUE, gossExportFileLine);
-                String gossMetaName = getString(meta, GossExportFieldNames.META_DATA_VALUE, gossExportFileLine);
-
-                switch (gossMetaType) {
-                    case TAXONOMY:
-                        taxonomyData.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
-                        break;
-                    case GEOGRAPHICAL:
-                        geographicalData.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
-                        break;
-                    case INFORMATION_TYPE:
-                        informationTypes.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
-                        break;
-                    case GRANULARITY:
-                        granularity.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
-                        break;
-                    default:
-                        LOGGER.warn("Meta group ignored:{}, article id:{}", metaGroup, id);
-
-                }
-            }
-        }
-    }
-
-    public Integer getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
+    /*
+     * No-Arg Constructor to populate Series.
+     */
+    public GossContent(){}
 
     @Override
     public int compareTo(GossContent o) {
         if (o.getDepth() > depth) return -1;
         if (depth > o.getDepth()) return 1;
         return 0;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public String getHeading() {
-        return heading;
-    }
-
-
-    @SuppressWarnings("unused")
-    public Long getTemplateId() {
-        return templateId;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    @SuppressWarnings("unused")
-    public String getFriendlyUrl() {
-        return friendlyUrl;
-    }
-
-    /**
-     * Text seen on links to the article.
-     *
-     * @return Link text.
-     */
-    @SuppressWarnings("unused")
-    public String getLinkText() {
-        return linkText;
-    }
-
-    public String getIntroduction() {
-        return introduction;
-    }
-
-    /**
-     * Article creation date.
-     *
-     * @return Creation date.
-     */
-    @SuppressWarnings("unused")
-    public Date getDate() {
-        return date;
-    }
-
-    /**
-     * Either set as on or off if displayed or hidden.
-     *
-     * @return on, off or hidden.
-     */
-    @SuppressWarnings("unused")
-    public String getDisplay() {
-        return display;
-    }
-
-    @SuppressWarnings("unused")
-    public Date getArchiveDate() {
-        return archiveDate;
-    }
-
-    /**
-     * Display start date. i.e. When published.
-     *
-     * @return date.
-     */
-    @SuppressWarnings("unused")
-    public Date getDisplayDate() {
-        return displayDate;
-    }
-
-    public void setJcrParentPath(String jcrParentPath) {
-        this.jcrParentPath = jcrParentPath;
-    }
-
-    public String getJcrNodeName() {
-        return jcrNodeName;
-    }
-
-    /**
-     * This is the raw string from the database containing each text area.
-     * Each text area is separated into textbody tags with the ID property referencing its name.
-     *
-     * @return Html text.
-     */
-    public String getText() {
-        return text;
-    }
-
-    /**
-     * Date representing when this article will stop displaying
-     *
-     * @return Date
-     */
-    @SuppressWarnings("unused")
-    public Date getDisplayEndDate() {
-        return displayEndDate;
-    }
-
-    public String getJcrPath() {
-        return Paths.get(jcrParentPath, jcrNodeName).toString();
-    }
-
-    public String getJcrParentPath() {
-        return jcrParentPath;
-    }
-
-    private void setContentType(ContentType contentType) {
-        this.contentType = contentType;
-    }
-
-    public ContentType getContentType() {
-        return contentType;
     }
 
     @Override
@@ -313,32 +79,7 @@ public class GossContent implements Comparable<GossContent> {
                 '}';
     }
 
-    public int getChildrenCount() {
-        return childrenCount;
-    }
-
-    public void setChildrenCount(int childrenCount) {
-        this.childrenCount = childrenCount;
-    }
-
-    @SuppressWarnings("unused")
-    public GossContentExtra getExtra() {
-        return extra;
-    }
-
-    public String getGeographicalData() {
-        return getValuesAsCsvList(geographicalData, 1, GEOGRAPHICAL.toString());
-    }
-
-    public String getInformationTypes() {
-        return getValuesAsCsvList(informationTypes);
-    }
-
-    public String getGranularity() {
-        return getValuesAsCsvList(granularity);
-    }
-
-    private String getValuesAsCsvList(List<GossContentMeta> sourceList) {
+    String getValuesAsCsvList(List<GossContentMeta> sourceList) {
         return getValuesAsCsvList(sourceList, -1);
     }
 
@@ -365,14 +106,78 @@ public class GossContent implements Comparable<GossContent> {
         return csvList.toString();
     }
 
-    public List<GossContentMeta> getTaxonomyData() {
-        return taxonomyData;
-    }
-    private String getValuesAsCsvList(List<GossContentMeta> sourceList, int maxExpectedValues, String context) {
+    String getValuesAsCsvList(List<GossContentMeta> sourceList, int maxExpectedValues, String context) {
         if (sourceList.size() > maxExpectedValues) {
             LOGGER.warn("More than expected number of meta items.  ArticleId:{}. Expected max:{}, got:{}, context:{}"
                     , id, maxExpectedValues, sourceList.size(), context);
         }
         return getValuesAsCsvList(sourceList, maxExpectedValues);
+    }
+
+    /**
+     * This is the raw string from the database containing each text area.
+     * Each text area is separated into textbody tags with the ID property referencing its name.
+     *
+     * @return Html text.
+     */
+    public String getText() {
+        return text;
+    }
+
+    public int getChildrenCount() {
+        return childrenCount;
+    }
+
+    public void setChildrenCount(int childrenCount) {
+        this.childrenCount = childrenCount;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public String getHeading() {
+        return heading;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setJcrParentPath(String jcrParentPath) {
+        this.jcrParentPath = jcrParentPath;
+    }
+
+    public String getJcrNodeName() {
+        return jcrNodeName;
+    }
+
+    public String getJcrPath() {
+        return Paths.get(jcrParentPath, jcrNodeName).toString();
+    }
+
+    public String getJcrParentPath() {
+        return jcrParentPath;
+    }
+
+    public Integer getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    @SuppressWarnings("unused")
+    public String getFriendlyUrl() {
+        return friendlyUrl;
     }
 }

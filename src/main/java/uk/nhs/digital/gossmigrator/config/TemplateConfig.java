@@ -27,20 +27,20 @@ public class TemplateConfig {
 
     }
 
-    public static int PUBLICATION_ID;
+    public static Long PUBLICATION_ID;
 
     public static void parsePropertiesFile(Properties propertiesMap){
         PUBLICATION_ID = getConfig(PUBLICATION_TEMPLATE, propertiesMap);
     }
 
-    private static int getConfig(TemplateEnum templateEnum, Properties propertiesMap) {
-        int id;
+    private static Long getConfig(TemplateEnum templateEnum, Properties propertiesMap) {
+        Long id;
         String propertyValue = propertiesMap.getProperty(templateEnum.key);
         if(StringUtils.isEmpty(propertyValue)){
             throw new RuntimeException("Properties file must contain:" + templateEnum.key);
         }
         try{
-            id = Integer.parseInt(propertyValue);
+            id = Long.parseLong(propertyValue);
         }catch(NumberFormatException e){
             throw new RuntimeException("Invalid format. Property must contain an integer:" + templateEnum.key);
         }

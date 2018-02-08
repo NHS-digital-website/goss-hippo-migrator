@@ -4,6 +4,7 @@ import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentMeta;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
+import uk.nhs.digital.gossmigrator.model.goss.GossPublicationContent;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Publication extends HippoImportable {
     private final String granuality;
 
 
-    public Publication(GossContent gossContent) {
+    public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
         this.title = gossContent.getHeading();
 
@@ -54,7 +55,7 @@ public class Publication extends HippoImportable {
      * @param gossContent, the goss extract with the publication to be processed
      * Returns a Publication instance with the provided goss information
      */
-    public static Publication getInstance(GossProcessedData gossData, GossContent gossContent) {
+    public static Publication getInstance(GossProcessedData gossData, GossPublicationContent gossContent) {
 
         Publication publication = new Publication(gossContent);
         publication.generateHippoTaxonomy(gossData, gossContent);
@@ -81,7 +82,7 @@ public class Publication extends HippoImportable {
      * @param gossData, full goss extract containing the taxonomy map
      * @param gossContent, the goss extract with the publication to be processed
      */
-    private void generateHippoTaxonomy(GossProcessedData gossData, GossContent gossContent) {
+    private void generateHippoTaxonomy(GossProcessedData gossData, GossPublicationContent gossContent) {
 
         List<GossContentMeta> metadataList = gossContent.getTaxonomyData();
 
