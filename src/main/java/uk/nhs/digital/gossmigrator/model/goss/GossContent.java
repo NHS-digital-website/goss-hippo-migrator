@@ -180,4 +180,5 @@ public class GossContent implements Comparable<GossContent> {
     public String getFriendlyUrl() {
         return friendlyUrl;
     }
+
 }

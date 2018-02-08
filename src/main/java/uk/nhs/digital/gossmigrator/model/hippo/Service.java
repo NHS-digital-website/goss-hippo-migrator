@@ -10,6 +10,7 @@ public class Service extends HippoImportable {
     private String title;
     private String summary;
     private String shortSummary;
+    private String servicePath;
 
     // Do not initialise HippoRichText objects.  Template needs nulls to decide on commas in list separators
     private List<HippoRichText> topTasks;
@@ -24,6 +25,7 @@ public class Service extends HippoImportable {
         title = gossContent.getHeading();
         summary = gossContent.getIntroduction();
         shortSummary = gossContent.getSummary();
+        servicePath = gossContent.getServicePath();
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText());
         introduction = parsedArticleText.getIntroduction();
@@ -35,7 +37,7 @@ public class Service extends HippoImportable {
     /*
      * Factory method to generate a Service instance
      */
-    public static Service getInstance(GossServiceContent gossContent){
+    public static Service getInstance(GossServiceContent gossContent) {
         return new Service(gossContent);
     }
 
@@ -77,5 +79,10 @@ public class Service extends HippoImportable {
     @SuppressWarnings("unused")
     public HippoRichText getContactDetails() {
         return contactDetails;
+    }
+
+    @SuppressWarnings("unused")
+    public String getServicePath() {
+        return servicePath;
     }
 }

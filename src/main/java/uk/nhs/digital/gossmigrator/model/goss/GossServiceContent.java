@@ -3,6 +3,7 @@ package uk.nhs.digital.gossmigrator.model.goss;
 import org.json.simple.JSONObject;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 
+import java.nio.file.Paths;
 import java.util.Date;
 
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.getString;
@@ -18,17 +19,14 @@ public class GossServiceContent extends GossContent{
     private String display;
     private Date archiveDate;
 
-
     private GossServiceContent(JSONObject gossJson, long gossExportFileLine){
         super(gossJson, gossExportFileLine);
         contentType = SERVICE;
-
         linkText = getString(gossJson, LINK_TEXT, id);
         introduction = getString(gossJson, INTRO, id);
         date = GossExportHelper.getDate(gossJson, DATE, id, GOSS_LONG_FORMAT);
         display = getString(gossJson, DISPLAY, id);
         archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id, GOSS_LONG_FORMAT);
-
     }
 
     /*
@@ -38,6 +36,12 @@ public class GossServiceContent extends GossContent{
         return new GossServiceContent(gossJson, gossExportFileLine);
     }
 
+    /*
+     * Adds one additional level for Services folder structure
+     */
+    public String getServicePath() {
+        return Paths.get(jcrParentPath, jcrNodeName, jcrNodeName).toString();
+    }
 
     /**
      * Either set as on or off if displayed or hidden.
