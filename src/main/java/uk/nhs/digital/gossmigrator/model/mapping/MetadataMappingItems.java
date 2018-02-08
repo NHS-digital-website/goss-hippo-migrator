@@ -1,6 +1,8 @@
 package uk.nhs.digital.gossmigrator.model.mapping;
 
 import org.apache.commons.csv.CSVParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.CSVReader;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentMeta;
@@ -11,7 +13,7 @@ import java.util.HashMap;
 import static uk.nhs.digital.gossmigrator.model.mapping.enums.MappingType.METADATA_MAPPING;
 
 public class MetadataMappingItems extends HashMap<String, MetadataMappingItem> {
-
+    private final static Logger LOGGER = LoggerFactory.getLogger(MetadataMappingItems.class);
     private boolean isRead = false;
 
     private void readMetadataMapping() {
@@ -40,6 +42,11 @@ public class MetadataMappingItems extends HashMap<String, MetadataMappingItem> {
     }
 
     public String getHippoValue(GossContentMeta gossContentMeta) {
+        if (null == get(getKey(gossContentMeta.getGroup(), gossContentMeta.getValue()))) {
+            LOGGER.error("No hippo static data mapping for goss values:{}",
+                    getKey(gossContentMeta.getGroup(), gossContentMeta.getValue()));
+            return "";
+        }
         return get(getKey(gossContentMeta.getGroup(), gossContentMeta.getValue())).getHippoValue();
     }
 }

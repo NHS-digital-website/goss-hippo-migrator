@@ -6,7 +6,7 @@ public class HippoLinkRef {
 
     public HippoLinkRef(String jcrPath, String nodeName) {
         this.nodeName = nodeName;
-        this.jcrPath = jcrPath;
+        this.jcrPath = jcrPath.toLowerCase();
     }
 
     @SuppressWarnings("unused") // Used by template

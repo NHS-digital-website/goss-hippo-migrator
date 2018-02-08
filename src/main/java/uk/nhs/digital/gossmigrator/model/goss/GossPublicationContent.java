@@ -33,23 +33,30 @@ public class GossPublicationContent extends GossContent {
     private List<GossContentMeta> informationTypes = new ArrayList<>();
     private List<GossContentMeta> granularity = new ArrayList<>();
 
-    private GossPublicationContent(JSONObject gossJson, long gossExportFileLine){
+    private GossPublicationContent(JSONObject gossJson, long gossExportFileLine) {
         super(gossJson, gossExportFileLine);
         this.gossExportFileLine = gossExportFileLine;
         contentType = PUBLICATION;
         displayDate = GossExportHelper.getDate(gossJson, DISPLAY_DATE, id, GOSS_LONG_FORMAT);
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
-        JSONObject extraJson = (JSONObject) gossJson.get(GossExportFieldNames.EXTRA.getName());
-        extra = new GossContentExtra(gossJson, EXTRA, id);
-        extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
-        extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
 
+        Object etcid = gossJson.get(EXTRA_OBJECT_ID.getName());
+
+        // Not all documents have an extra section.
+        if (etcid instanceof Long) {
+            JSONObject extraJson = (JSONObject) gossJson.get(GossExportFieldNames.EXTRA.getName());
+            extra = new GossContentExtra(gossJson, EXTRA, id);
+            extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
+            extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
+        } else {
+            extra = new GossContentExtra();
+        }
     }
 
     /*
      * Factory method to generate a GossPublicationContent and assign the Metadata information
      */
-    public static GossPublicationContent getInstance(JSONObject gossJson, long gossExportFileLine){
+    public static GossPublicationContent getInstance(JSONObject gossJson, long gossExportFileLine) {
         GossPublicationContent content = new GossPublicationContent(gossJson, gossExportFileLine);
         JSONArray metaJson = (JSONArray) gossJson.get(GossExportFieldNames.META_DATA.getName());
         if (null != metaJson) {

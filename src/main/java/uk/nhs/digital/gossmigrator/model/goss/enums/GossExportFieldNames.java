@@ -25,10 +25,11 @@ public enum GossExportFieldNames {
     ,COVSTARTDATE("COVSTARTDATE", false)
     ,PUBDATE("PUBDATE",false)
     ,COVENDDATE("COVENDDATE",false)
-    ,METADATA("METADATA",false)
-    ,METADATA_GROUP("GROUP",false)
-    ,METADATA_VALUE("VALUE", false)
-    ,METADATA_NAME("NAME", false)
+    ,LINK_ID("ID", false)
+    ,LINK_ADDRESS("ADDRESS", true)
+    ,FILE_ID("MEDIAID", true)
+    ,FILE_TITLE("TITLE", false)
+    ,EXTRA_OBJECT_ID("ETCOBJECTID", false)
     ;
 
     private String name;

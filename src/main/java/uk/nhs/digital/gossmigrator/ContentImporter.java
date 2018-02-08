@@ -1,4 +1,5 @@
 package uk.nhs.digital.gossmigrator;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
+import uk.nhs.digital.gossmigrator.model.goss.*;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentFactory;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
@@ -27,12 +29,43 @@ public class ContentImporter {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ContentImporter.class);
 
-    public GossContentList createContentHippoImportables() {
+    public void populateGossData(GossProcessedData gossData){
         FolderHelper.cleanFolder(Paths.get(CONTENT_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
         JSONObject rootJsonObject = readGossExport();
-        GossContentList gossContentList = populateGossContent(rootJsonObject, null);
+        gossData.setArticlesContentList(populateGossContent(rootJsonObject));
+        gossData.setGossLinkMap(populateGossLinks(rootJsonObject));
+        gossData.setGossContentUrlMap(populateGossContentJcrStructure(gossData.getArticlesContentList()));
+        gossData.setGossFileMap(populateGossFiles(rootJsonObject));
+    }
 
-        return gossContentList;
+    private Map<Long, GossFile> populateGossFiles(JSONObject rootJsonObject) {
+        Map<Long, GossFile> gossFileMap = new HashMap<>();
+        LOGGER.debug("Begin populating GossLink objects.");
+        JSONArray jsonArray = (JSONArray) rootJsonObject.get("media");
+        if(null != jsonArray) {
+            for (Object childJsonObject : jsonArray) {
+                GossFile file = new GossFile((JSONObject) childJsonObject);
+                gossFileMap.put(file.getId(), file);
+            }
+        }else{
+            LOGGER.error("Could not read 'media' node.");
+        }
+        return gossFileMap;
+    }
+
+    private Map<Long, GossLink> populateGossLinks(JSONObject rootJsonObject) {
+        Map<Long, GossLink> gossLinkMap = new HashMap<>();
+        LOGGER.debug("Begin populating GossLink objects.");
+        JSONArray jsonArray = (JSONArray) rootJsonObject.get("links");
+        if(null != jsonArray) {
+            for (Object childJsonObject : jsonArray) {
+                GossLink link = new GossLink((JSONObject) childJsonObject);
+                gossLinkMap.put(link.getId(), link);
+            }
+        }else{
+            LOGGER.error("Could not read 'links' node.");
+        }
+        return gossLinkMap;
     }
 
     private JSONObject readGossExport() {
@@ -54,10 +87,10 @@ public class ContentImporter {
         // To read all in One go wrap array in a single outer document.
         // Possible a bad idea and will need to do line by line later.
 
-        String content = "";
+        StringBuilder content = new StringBuilder();
         try {
             for (String line : Files.readAllLines(Paths.get(Config.GOSS_CONTENT_SOURCE_FILE))) {
-                content = content + line;
+                content.append(line);
             }
         } catch (IOException e) {
             LOGGER.error("Failed reading Goss Content JSON File.", e);
@@ -67,7 +100,7 @@ public class ContentImporter {
 
         try {
 
-            return (JSONObject)jsonParser.parse(content);
+            return (JSONObject) jsonParser.parse(content.toString());
 
         } catch (ParseException e) {
             LOGGER.error(e.getMessage(), e);
@@ -75,15 +108,12 @@ public class ContentImporter {
         }
     }
 
-    private GossContentList populateGossContent(JSONObject rootJsonObject, Long limit) {
+    private GossContentList populateGossContent(JSONObject rootJsonObject) {
         LOGGER.debug("Begin populating GossContent objects.");
         JSONArray jsonArray = (JSONArray) rootJsonObject.get("articles");
         GossContentList gossContentList = new GossContentList();
         long count = 0;
         for (Object childJsonObject : jsonArray) {
-            if (null != limit && limit <= count) {
-                break;
-            }
             gossContentList.add(GossContentFactory.generateGossContent((JSONObject) childJsonObject, ++count));
         }
         return gossContentList;
@@ -93,7 +123,7 @@ public class ContentImporter {
         gossContentList.generateJcrStructure();
         Map<Long, String> gossContentUrlMap = new HashMap<Long, String>();
         for (GossContent content : gossContentList) {
-            gossContentUrlMap.put(content.getId(), content.getJcrPath() + content.getJcrNodeName());
+            gossContentUrlMap.put(content.getId(), Paths.get(content.getJcrParentPath(),content.getJcrNodeName()).toString());
         }
         return gossContentUrlMap;
     }

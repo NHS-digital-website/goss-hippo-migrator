@@ -14,6 +14,13 @@ public class GossProcessedData {
     private List<HippoImportable> importableContentItems;
     private Map<Long, String> gossContentUrlMap;
     private Map<String, String> taxonomyMap;
+    private Map<Long,GossLink> gossLinkMap;
+
+    public Map<Long, GossFile> getGossFileMap() {
+        return gossFileMap;
+    }
+
+    private Map<Long, GossFile> gossFileMap;
 
     public GossContentList getSeriesContentList() {
         return seriesContentList;
@@ -53,6 +60,18 @@ public class GossProcessedData {
 
     public void setGossContentUrlMap(Map<Long, String> gossContentUrlMap) {
         this.gossContentUrlMap = gossContentUrlMap;
+    }
+
+    public Map<Long, GossLink> getGossLinkMap() {
+        return gossLinkMap;
+    }
+
+    public void setGossLinkMap(Map<Long, GossLink> gossLinkMap) {
+        this.gossLinkMap = gossLinkMap;
+    }
+
+    public void setGossFileMap(Map<Long, GossFile> gossFileMap) {
+        this.gossFileMap = gossFileMap;
     }
 
     public Map<String, String> getTaxonomyMap() {

@@ -17,7 +17,7 @@ public class GossImporter {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossImporter.class);
     public static MetadataMappingItems metadataMapping = new MetadataMappingItems();
 
-    private GossProcessedData gossData = new GossProcessedData();
+    public static GossProcessedData gossData = new GossProcessedData();
 
     public static void main(String[] args) throws Exception {
 
@@ -73,8 +73,7 @@ public class GossImporter {
         gossData.setTaxonomyMap(mapper.generateTaxonomyMap());
 
         ContentImporter contentImporter = new ContentImporter();
-        gossData.setArticlesContentList(contentImporter.createContentHippoImportables());
-        gossData.setGossContentUrlMap(contentImporter.populateGossContentJcrStructure(gossData.getArticlesContentList()));
+        contentImporter.populateGossData(gossData);
 
         HippoImportableFactory factory = new HippoImportableFactory();
         gossData.setImportableContentItems(factory.populateHippoContent(gossData));

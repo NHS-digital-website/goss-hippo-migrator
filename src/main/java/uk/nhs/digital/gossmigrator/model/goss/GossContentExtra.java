@@ -13,15 +13,19 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.
 
 public class GossContentExtra {
 
-    private final Date coverageStart;
-    private final Date coverageEnd;
-    private final Date publicationDate;
+    private Date coverageStart;
+    private Date coverageEnd;
+    private Date publicationDate;
 
     public GossContentExtra(JSONObject gossJson, GossExportFieldNames fieldName, long gossId){
         JSONObject extra = (JSONObject)gossJson.get(fieldName.getName());
         this.coverageStart = GossExportHelper.getDate(extra, COVSTARTDATE, gossId, GOSS_SHOR_FORMAT);
         this.coverageEnd = GossExportHelper.getDate(extra, COVENDDATE, gossId, GOSS_SHOR_FORMAT);
         this.publicationDate = GossExportHelper.getDate(extra, PUBDATE, gossId, GOSS_SHOR_FORMAT);
+    }
+
+    public GossContentExtra() {
+
     }
 
     public Date getCoverageStart() {

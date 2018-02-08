@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
+import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -51,7 +52,8 @@ public class GossContent implements Comparable<GossContent> {
         summary = getString(gossJson, SUMMARY, id);
         parentId = getLong(gossJson, PARENTID, id);
         text = getString(gossJson, TEXT, id);
-        friendlyUrl = getString(gossJson, FRIENDLY_URL, id);
+        friendlyUrl = getString(gossJson, FRIENDLY_URL,id);
+
         if (StringUtils.isEmpty(friendlyUrl)) {
             jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
         } else {

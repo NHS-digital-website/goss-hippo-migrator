@@ -65,7 +65,7 @@ public class ParsedArticleText {
         Element gossContactDetails = body.selectFirst("#" + CONTACT_INFO.getId());
         HippoRichText result = null;
         if (gossContactDetails != null) {
-            result = new HippoRichText(gossContactDetails.html());
+            result = new HippoRichText(gossContactDetails.html(), gossId);
         }
         return result;
     }
@@ -74,7 +74,7 @@ public class ParsedArticleText {
         Element gossContactDetails = body.selectFirst("#" + FACTS.getId());
         HippoRichText result = null;
         if (gossContactDetails != null) {
-            result = new HippoRichText(gossContactDetails.html());
+            result = new HippoRichText(gossContactDetails.html(), gossId);
         }
         return result;
     }
@@ -98,7 +98,7 @@ public class ParsedArticleText {
         // Going to assume any h2 or h3 is an immediate child of this for now.
         Elements h2h3Elements = body.select("h2, h3");
         for (Element h2h3Element : h2h3Elements) {
-            if (!h2h3Element.parent().equals(gossIntroNode)) {
+            if (!h2h3Element.parent().tagName().equals("textbody")) {
                 LOGGER.warn("Goss Article Id:{}, Found h2 or h3 in article text nested deeper than expected.", gossId);
             }
         }
@@ -110,13 +110,13 @@ public class ParsedArticleText {
                 break;
             }
             haveIntro = true;
-            result.append(child.html());
+            result.append(child.outerHtml());
             // Remove the node so does not get processed as part of sections.
             child.remove();
         }
 
         if (haveIntro) {
-            return new HippoRichText(result.toString());
+            return new HippoRichText(result.toString(), gossId);
         }
         return null;
     }
@@ -153,7 +153,7 @@ public class ParsedArticleText {
                 if (!"p".equals(topTask.tagName())) {
                     LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p'. This is not expected.", gossId);
                 }
-                topTasks.add(new HippoRichText(topTask.outerHtml()));
+                topTasks.add(new HippoRichText(topTask.outerHtml(),gossId));
             }
         }
 
@@ -203,7 +203,7 @@ public class ParsedArticleText {
      * @param defaultNode The <textbody id="__DEFAULT"> node from Goss ARTICLETEXT
      * @return The populated Section object.
      */
-    private static Section extractSection(Element defaultNode) {
+    private Section extractSection(Element defaultNode) {
         boolean haveSection = false;
         String title = null;
         StringBuilder content = new StringBuilder();
@@ -223,7 +223,8 @@ public class ParsedArticleText {
             }
         }
 
-        return haveSection ? new Section(title, SectionTypes.DEFAULT.getTypeName(), new HippoRichText(content.toString())) : null;
+        return haveSection ? new Section(title, SectionTypes.DEFAULT.getTypeName()
+                , new HippoRichText(content.toString(), gossId)) : null;
     }
 
     /**
