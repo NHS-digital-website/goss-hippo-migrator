@@ -38,22 +38,22 @@
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "${publication.summary}" ]
-  }, {
+  },<#if publication.coverageEnd?has_content> {
     "name" : "publicationsystem:CoverageEnd",
     "type" : "DATE",
     "multiple" : false,
     "values" : [ "${publication.coverageEnd}" ]
-  }, {
+  }</#if>, {
     "name" : "publicationsystem:NominalDate",
     "type" : "DATE",
     "multiple" : false,
     "values" : [ "${publication.publicationDate}" ]
-  }, {
+  }<#if publication.coverageStart?has_content>, {
     "name" : "publicationsystem:CoverageStart",
     "type" : "DATE",
     "multiple" : false,
     "values" : [ "${publication.coverageStart}" ]
-  }, {
+  }</#if>, {
     "name" : "publicationsystem:PubliclyAccessible",
     "type" : "BOOLEAN",
     "multiple" : false,
@@ -73,7 +73,7 @@
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "en" ]
-  }, {
+  }<#if publication.taxonomyKeys?has_content>, {
   "name" : "hippotaxonomy:keys",
   "type" : "STRING",
   "multiple" : true,
@@ -83,7 +83,7 @@
   "type" : "STRING",
   "multiple" : true,
   "values" : [ <#list publication.fullTaxonomy as key>"${key}"<#sep>, </#sep></#list> ]
-  }
+  }</#if>
 ],
   <#--
   The nodes array will hold rich text components and complex components.

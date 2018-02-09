@@ -1,5 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentMeta;
@@ -16,12 +18,14 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLA
 
 public class Publication extends HippoImportable {
 
-    private final String title;
+    private final static Logger LOGGER = LoggerFactory.getLogger(Publication.class);
+
+    private String title;
     private final String informationType;
     private final HippoRichText keyFacts;
     private final String coverageStart;
     private final String coverageEnd;
-    private final String publicationDate;
+    private String publicationDate;
     private final Long id;
     private List<String> taxonomyKeys = new ArrayList<>();
     private List<String> fullTaxonomy = new ArrayList<>();
@@ -31,21 +35,31 @@ public class Publication extends HippoImportable {
 
     public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
-        this.title = gossContent.getHeading();
+        this.id = gossContent.getId();
 
-        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText());
-        this.keyFacts = parsedArticleText.getKeyFacts();
+        if(gossContent.getHeading() != null){
+            this.title = gossContent.getHeading();
+        }else{
+            LOGGER.warn("Title field is empty. ArticleId:{}.", id);
+        }
+
+        Date publicationDate = gossContent.getExtra().getPublicationDate();
+        if(publicationDate != null){
+            this.publicationDate = GossExportHelper.getDateString(publicationDate, TEMPLATE_FORMAT);
+        }else{
+            LOGGER.warn("Publication Date field is empty. ArticleId:{}.", id);
+        }
         Date endDate = gossContent.getExtra().getCoverageEnd();
         this.coverageEnd = GossExportHelper.getDateString(endDate, TEMPLATE_FORMAT);
         Date startDate = gossContent.getExtra().getCoverageStart();
         this.coverageStart = GossExportHelper.getDateString(startDate, TEMPLATE_FORMAT);
-        Date publicationDate = gossContent.getExtra().getPublicationDate();
-        this.publicationDate = GossExportHelper.getDateString(publicationDate, TEMPLATE_FORMAT);
-        this.id = gossContent.getId();
+
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText());
+        this.keyFacts = parsedArticleText.getKeyFacts();
+
         this.geographicCoverage = gossContent.getGeographicalData();
         this.granuality = gossContent.getGranularity();
         this.informationType = gossContent.getInformationTypes();
-
     }
 
     /**
@@ -71,6 +85,9 @@ public class Publication extends HippoImportable {
                 publication.setJcrPath(Paths.get(matchingSeriesGoss.getJcrParentPath(),
                         publication.getJcrNodeName(), "content").toString());
                 publication.setJcrNodeName("content");
+            }else{
+                LOGGER.warn("No matching series found.  ArticleId:{}. SeriesId:{}."
+                        , publication.getId(), seriesId);
             }
         }
 
@@ -91,14 +108,20 @@ public class Publication extends HippoImportable {
                 String gossValue = metaData.getValue();
                 String hippoValue = gossData.getTaxonomyMap().get(gossValue);
 
-                List<String> valueList = new ArrayList<>();
-                String[] values = hippoValue.split("-");
-                for(String s : values){
-                    valueList.add(s.toLowerCase().replace(' ','-'));
+                if(hippoValue != null){
+                    List<String> valueList = new ArrayList<>();
+                    String[] values = hippoValue.split("-");
+                    for(String s : values){
+                        valueList.add(s.toLowerCase().replace(' ','-'));
+                    }
+
+                    fullTaxonomy.addAll(valueList);
+                    taxonomyKeys.add(valueList.get(valueList.size() - 1));
+                }else{
+                    LOGGER.warn("No matching taxonomy found.  ArticleId:{}. GossCategory:{}."
+                            , id, gossValue);
                 }
 
-                fullTaxonomy.addAll(valueList);
-                taxonomyKeys.add(valueList.get(valueList.size() - 1));
             }
         }
     }
