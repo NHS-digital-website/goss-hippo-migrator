@@ -1,6 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.apache.tika.Tika;
+import uk.nhs.digital.gossmigrator.misc.TextHelper;
 
 import java.io.IOException;
 import java.nio.file.Path;

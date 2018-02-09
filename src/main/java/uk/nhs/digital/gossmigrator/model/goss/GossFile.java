@@ -4,7 +4,9 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
+import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
+import uk.nhs.digital.gossmigrator.misc.TextHelper;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,13 +17,15 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.
 
 public class GossFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(GossFile.class);
-    Long id;
-    String title;
-    String pathInGossExport;
-    String pathOnDisk;
-    String jcrPath;
-    Set<Long> references = new HashSet<>();
-    boolean existsOnDisk = false;
+    private Long id;
+    private String pathInGossExport;
+    private String jcrPath;
+    // Expecting to use next in reporting.
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private Set<Long> references = new HashSet<>();
+    // Expecting to use next in reporting.
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
+    private boolean existsOnDisk = false;
 
     public GossFile(JSONObject fileJson) {
         id = GossExportHelper.getIdOrError(fileJson, FILE_ID);
@@ -41,19 +45,13 @@ public class GossFile {
     private void setPathOnDiskAndJcrPath() {
         String fileSourceFolder = Config.ASSET_SOURCE_FOLDER;
         String rootFolder = Config.ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT;
+        String pathOnDisk = FolderHelper.dosToUnixPath(pathInGossExport);
 
-        // Remove windows drive.
-        String[] windowsPathParts = pathInGossExport.split(":");
-        if (windowsPathParts.length == 2) {
-            pathOnDisk = windowsPathParts[1];
-        } else {
-            pathOnDisk = windowsPathParts[0];
-        }
-
-        // Turn windows slashes into unix.
-        pathOnDisk = pathOnDisk.replaceAll("\\\\", "/");
-
-        // Find where path begins to match files on disk
+        // Split goss path on node that starts to match what is stored on local distk.
+        // e.g. goss might be /inetpub/export/content/media/folder1/folder2/a.pdf
+        // but we store the pdf in /home/bob/gossfiles/media/folder1/folder2/a.pdf
+        // Need to remove the goss prefix part of path and replace with the local prefix.
+        // Similarly need the part with neither prefix to build the jcr path.
         int rootPartId = 0;
         Path p = Paths.get(pathOnDisk);
         boolean foundRootPath = false;
@@ -71,16 +69,20 @@ public class GossFile {
         }
 
         p = p.subpath(rootPartId, p.getNameCount());
-        jcrPath = Paths.get(Config.JCR_ASSET_ROOT, p.toString()).toString();
+        // Format node name.
+        String fileName = p.getFileName().toString();
+        p = p.subpath(0, p.getNameCount() - 1);
 
-        p = Paths.get(fileSourceFolder, p.toString());
+        jcrPath = Paths.get(Config.JCR_ASSET_ROOT, p.toString().toLowerCase()
+                , fileName.toLowerCase()).toString();
+
+        // Check source file exists
+        p = Paths.get(fileSourceFolder, p.toString(), fileName);
         if (!p.toFile().exists()) {
             LOGGER.error("Could not find file:{} when processing goss MediaId:{}", p, id);
         } else {
             existsOnDisk = true;
         }
-        pathOnDisk = p.toString();
-
     }
 
     public Long getId() {
