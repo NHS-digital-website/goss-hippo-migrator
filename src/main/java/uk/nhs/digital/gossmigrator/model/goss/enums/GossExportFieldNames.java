@@ -29,7 +29,10 @@ public enum GossExportFieldNames {
     ,LINK_ADDRESS("ADDRESS", true)
     ,FILE_ID("MEDIAID", true)
     ,FILE_TITLE("TITLE", false)
-    ,EXTRA_OBJECT_ID("ETCOBJECTID", false)
+    ,EXTRA_OBJECT_ID("ETCOBJECTID", false),
+    LINK_DISPLAY_TEXT("TEXT", false),
+    LINKS("Links", false),
+    MEDIA("Media", false)
     ;
 
     private String name;

@@ -3,10 +3,8 @@ package uk.nhs.digital.gossmigrator.model.hippo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
-import uk.nhs.digital.gossmigrator.model.goss.GossContent;
-import uk.nhs.digital.gossmigrator.model.goss.GossContentMeta;
-import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
-import uk.nhs.digital.gossmigrator.model.goss.GossPublicationContent;
+import uk.nhs.digital.gossmigrator.model.goss.*;
+import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,7 +29,9 @@ public class Publication extends HippoImportable {
     private List<String> fullTaxonomy = new ArrayList<>();
     private final String geographicCoverage;
     private final String granuality;
-
+    private List<HippoLink> relatedLinks = new ArrayList<>();
+    private List<HippoLink> resourceLinks = new ArrayList<>();
+    private List<HippoFile> files = new ArrayList<>();
 
     public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
@@ -60,6 +60,7 @@ public class Publication extends HippoImportable {
         this.geographicCoverage = gossContent.getGeographicalData();
         this.granuality = gossContent.getGranularity();
         this.informationType = gossContent.getInformationTypes();
+        setResourcesAndLinks(gossContent);
     }
 
     /**
@@ -126,6 +127,39 @@ public class Publication extends HippoImportable {
         }
     }
 
+    /**
+     * Sets the Resource Links, Related links and Files in the Publication
+     * @param gossContent, the goss extract with the publication to be processed
+     */
+    private void setResourcesAndLinks(GossPublicationContent gossContent){
+        List<GossLink> gossLinks = gossContent.getLinks();
+        List<GossFile> gossFiles = gossContent.getFiles();
+
+
+        for(GossLink gossLink: gossLinks){
+            HippoLink hippoLink = new HippoLink(gossLink);
+            //TODO verify link type matching
+            if (gossLink.getId() != null){
+                String id = gossLink.getId().toString();
+                GossInternalLinkType linkType = GossInternalLinkType.getById(id);
+                if(linkType != null) {
+                    switch (linkType) {
+                        case ARTICLE_LINK:
+                            resourceLinks.add(hippoLink);
+                            break;
+                        case EXTERNAL_LINK:
+                            relatedLinks.add(hippoLink);
+                            break;
+                    }
+                }
+            }
+        }
+        for(GossFile gossFile: gossFiles){
+            HippoFile hippoFile = new HippoFile(gossContent,gossFile);
+            files.add(hippoFile);
+        }
+    }
+
 
     @SuppressWarnings("unused") // used in template
     public String getTitle() {
@@ -187,5 +221,19 @@ public class Publication extends HippoImportable {
     @SuppressWarnings("unused") // Used in template
     public List<String> getFullTaxonomy() {
         return fullTaxonomy;
+    }
+
+    @SuppressWarnings("unused")
+    public List<HippoLink> getRelatedLinks() {
+        return relatedLinks;
+    }
+
+    @SuppressWarnings("unused")
+    public List<HippoLink> getResourceLinks() {
+        return resourceLinks;
+    }
+
+    public List<HippoFile> getFiles() {
+        return files;
     }
 }

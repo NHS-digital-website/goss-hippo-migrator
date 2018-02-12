@@ -38,7 +38,7 @@
     "type" : "STRING",
     "multiple" : false,
     "values" : [ "${publication.summary}" ]
-  },<#if publication.coverageEnd?has_content> {
+  }<#if publication.coverageEnd?has_content>, {
     "name" : "publicationsystem:CoverageEnd",
     "type" : "DATE",
     "multiple" : false,
@@ -85,14 +85,88 @@
   "values" : [ <#list publication.fullTaxonomy as key>"${key}"<#sep>, </#sep></#list> ]
   }</#if>
 ],
-  <#--
-  The nodes array will hold rich text components and complex components.
-  If will contain one node for each top task, one or no node for introduction
-  and a node per each section.  Nodes separated by commas that are suppressed
-  if the preceding nodes did not exist.  This relies on the preceding nodes
-  bean objects being null.
-  -->
-  "nodes" : [<#--  Key facts should be rich text.  Currently String in doc type in hippo. <#if publication.keyFacts??>{
+  "nodes" : [<#if publication.relatedLinks?has_content><#list publication.relatedLinks as relatedLink>
+  {
+    "name" : "publicationsystem:RelatedLinks",
+    "primaryType" : "publicationsystem:relatedlink",
+    "mixinTypes" : [ ],
+    "properties" : [ {
+    "name" : "publicationsystem:linkText",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ "${relatedLink.displayText}" ]
+    }, {
+    "name" : "publicationsystem:linkUrl",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ "${relatedLink.address}" ]
+    } ],
+    "nodes" : [ ]
+  },</#list></#if>
+  <#if publication.resourceLinks?has_content><#list publication.resourceLinks as resourceLink>
+  {
+    "name" : "publicationsystem:ResourceLinks",
+    "primaryType" : "publicationsystem:relatedlink",
+    "mixinTypes" : [ ],
+    "properties" : [ {
+    "name" : "publicationsystem:linkText",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ "${resourceLink.displayText}" ]
+    }, {
+    "name" : "publicationsystem:linkUrl",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ "${resourceLink.address}" ]
+    } ],
+    "nodes" : [ ]
+  },</#list></#if>
+<#if publication.files?has_content><#list publication.files as file>
+{
+  "name" : "publicationsystem:Attachments-v3",
+  "primaryType" : "publicationsystem:attachment",
+  "mixinTypes" : [ ],
+  "properties" : [ {
+  "name" : "publicationsystem:displayName",
+  "type" : "STRING",
+  "multiple" : false,
+  "values" : [ "${file.displayName}" ]
+  } ],
+  "nodes" : [ {
+    "name" : "publicationsystem:attachmentResource",
+    "primaryType" : "publicationsystem:resource",
+    "mixinTypes" : [ ],
+    "properties" : [ {
+    "name" : "jcr:encoding",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ "${file.jrcEncoding}" ]
+    }, {
+    "name" : "jcr:lastModified",
+    "type" : "DATE",
+    "multiple" : false,
+    "values" : [ "${file.lastModified}" ]
+    }, {
+    "name" : "jcr:data",
+    "type" : "BINARY",
+    "multiple" : false,
+    "values" : [ "${file.data}" ]
+    }, {
+    "name" : "jcr:mimeType",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ "text/csv" ]
+    }, {
+    "name" : "hippo:filename",
+    "type" : "STRING",
+    "multiple" : false,
+    "values" : [ "${file.fileName}" ]
+    } ],
+    "nodes" : [ ]
+  } ]
+}<#sep>, </#sep></#list></#if>
+
+<#--  Key facts should be rich text.  Currently String in doc type in hippo. <#if publication.keyFacts??>{
     "name" : "publicationsystem:KeyFacts",
     "primaryType" : "hippostd:html",
     "mixinTypes" : [ ],
@@ -103,5 +177,6 @@
     "values" : [ "${publication.keyFacts.content}" ]
     } ]
   }</#if>
-  End commenting out key facts-->]
+  End commenting out key facts-->
+  ]
 }

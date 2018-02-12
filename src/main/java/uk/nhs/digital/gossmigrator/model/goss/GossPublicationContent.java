@@ -25,13 +25,14 @@ public class GossPublicationContent extends GossContent {
 
     private GossContentExtra extra;
     private long gossExportFileLine;
-    // Looks like we don't need the media json array at the moment.
     private Date displayDate;
     private Date displayEndDate;
     private List<GossContentMeta> geographicalData = new ArrayList<>();
     private List<GossContentMeta> taxonomyData = new ArrayList<>();
     private List<GossContentMeta> informationTypes = new ArrayList<>();
     private List<GossContentMeta> granularity = new ArrayList<>();
+    private List<GossLink> links = new ArrayList<>();
+    private List<GossFile> files = new ArrayList<>();
 
     private GossPublicationContent(JSONObject gossJson, long gossExportFileLine) {
         super(gossJson, gossExportFileLine);
@@ -51,6 +52,25 @@ public class GossPublicationContent extends GossContent {
         } else {
             extra = new GossContentExtra();
         }
+
+        // Process Links node
+        JSONArray linksJson = (JSONArray) gossJson.get(GossExportFieldNames.LINKS.getName());
+        if (null != linksJson) {
+            for (Object linkObject : linksJson){
+                GossLink link = new GossLink((JSONObject) linkObject);
+                links.add(link);
+            }
+        }
+
+        // Process Media node
+        JSONArray filesJson = (JSONArray) gossJson.get(GossExportFieldNames.MEDIA.getName());
+        if (null != filesJson) {
+            for (Object fileObject : filesJson){
+                GossFile file = new GossFile((JSONObject) fileObject);
+                files.add(file);
+            }
+        }
+
     }
 
     /*
@@ -140,5 +160,11 @@ public class GossPublicationContent extends GossContent {
         return displayDate;
     }
 
+    public List<GossLink> getLinks() {
+        return links;
+    }
 
+    public List<GossFile> getFiles() {
+        return files;
+    }
 }

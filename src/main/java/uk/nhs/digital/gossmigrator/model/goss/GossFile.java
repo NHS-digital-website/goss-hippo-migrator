@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
-import uk.nhs.digital.gossmigrator.misc.TextHelper;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.FILE_ID;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.FILE_TITLE;
 
 public class GossFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(GossFile.class);
@@ -26,6 +26,9 @@ public class GossFile {
     // Expecting to use next in reporting.
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private boolean existsOnDisk = false;
+    private String displayText;
+    private String fileName;
+    private String mimeType;
 
     public GossFile(JSONObject fileJson) {
         id = GossExportHelper.getIdOrError(fileJson, FILE_ID);
@@ -39,7 +42,10 @@ public class GossFile {
                 pathInGossExport = v.toString();
             }
             setPathOnDiskAndJcrPath();
+            setFileName();
+            setMimeType();
         }
+        displayText = GossExportHelper.getString(fileJson, FILE_TITLE, id);
     }
 
     private void setPathOnDiskAndJcrPath() {
@@ -85,6 +91,22 @@ public class GossFile {
         }
     }
 
+    /*
+     * Sets the last section of the file path as filename
+     */
+    private void setFileName() {
+        String[] pathSection = pathInGossExport.split("\\\\");
+        fileName = pathSection[pathSection.length - 1];
+    }
+
+    /*
+     * Sets the file extension as mimeType
+     */
+    private void setMimeType() {
+        String[] pathSection = fileName.split("\\.");
+        mimeType = pathSection[pathSection.length - 1];
+    }
+
     public Long getId() {
         return id;
     }
@@ -92,5 +114,17 @@ public class GossFile {
     public String getJcrPath(Long articleId) {
         references.add(articleId);
         return jcrPath;
+    }
+
+    public String getDisplayText() {
+        return displayText;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getMimeType() {
+        return mimeType;
     }
 }
