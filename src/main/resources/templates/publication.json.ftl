@@ -155,7 +155,7 @@
     "name" : "jcr:mimeType",
     "type" : "STRING",
     "multiple" : false,
-    "values" : [ "text/csv" ]
+    "values" : [ "${file.mimeType}" ]
     }, {
     "name" : "hippo:filename",
     "type" : "STRING",

@@ -2,8 +2,11 @@ package uk.nhs.digital.gossmigrator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.Report.AssetReportWriter;
+import uk.nhs.digital.gossmigrator.Report.ServicesReportWriter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
+import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.model.hippo.Asset;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
@@ -14,17 +17,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static uk.nhs.digital.gossmigrator.config.Config.ASSET_SOURCE_FOLDER;
-import static uk.nhs.digital.gossmigrator.config.Config.ASSET_TARGET_FOLDER;
-import static uk.nhs.digital.gossmigrator.config.Config.JCR_ASSET_ROOT;
+import static uk.nhs.digital.gossmigrator.config.Config.*;
 import static uk.nhs.digital.gossmigrator.config.Constants.OUTPUT_FILE_TYPE_SUFFIX;
 
 public class AssetImporter {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AssetImporter.class);
 
-    List<HippoImportable> importableAssetItems = new ArrayList<>();
-
+    private List<HippoImportable> importableAssetItems = new ArrayList<>();
 
     public void createAssetHippoImportables() {
         FolderHelper.cleanFolder(Paths.get(ASSET_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
@@ -49,6 +49,7 @@ public class AssetImporter {
         // Create the Asset model object and add to importables.
         Asset a = new Asset(file.getFileName().toString(), JCR_ASSET_ROOT + subPart, file);
         importableAssetItems.add(a);
+        AssetReportWriter.addAssetRow(a);
     }
 
     public void writeHippoAssetImportables() {

@@ -1,10 +1,12 @@
 package uk.nhs.digital.gossmigrator;
 
 import org.apache.commons.cli.*;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.config.TemplateConfig;
+import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
@@ -18,6 +20,7 @@ public class GossImporter {
     public static MetadataMappingItems metadataMapping = new MetadataMappingItems();
 
     public static GossProcessedData gossData = new GossProcessedData();
+    public static HSSFWorkbook report = new HSSFWorkbook();
 
     public static void main(String[] args) throws Exception {
 
@@ -59,6 +62,9 @@ public class GossImporter {
     }
 
     public void run() {
+
+        ReportWriter.generateReport();
+
         AssetImporter assetImporter = new AssetImporter();
         assetImporter.createAssetHippoImportables();
         assetImporter.writeHippoAssetImportables();
@@ -78,6 +84,8 @@ public class GossImporter {
         HippoImportableFactory factory = new HippoImportableFactory();
         gossData.setImportableContentItems(factory.populateHippoContent(gossData));
         contentImporter.writeHippoContentImportables(gossData.getImportableContentItems());
+
+        ReportWriter.writeFile();
     }
 
 }

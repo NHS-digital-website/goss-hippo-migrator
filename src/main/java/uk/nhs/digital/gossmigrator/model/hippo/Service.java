@@ -1,5 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.model.goss.GossServiceContent;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class Service extends HippoImportable {
 
     private Service(GossServiceContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
+        id = gossContent.getId();
 
         seoSummary = gossContent.getSummary();
         title = gossContent.getHeading();
@@ -38,7 +40,8 @@ public class Service extends HippoImportable {
      * Factory method to generate a Service instance
      */
     public static Service getInstance(GossServiceContent gossContent) {
-        return new Service(gossContent);
+        Service service = new Service(gossContent);
+        return service;
     }
 
     @SuppressWarnings("unused")

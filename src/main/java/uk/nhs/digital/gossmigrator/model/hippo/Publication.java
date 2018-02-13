@@ -2,6 +2,7 @@ package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.*;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
@@ -24,7 +25,6 @@ public class Publication extends HippoImportable {
     private final String coverageStart;
     private final String coverageEnd;
     private String publicationDate;
-    private final Long id;
     private List<String> taxonomyKeys = new ArrayList<>();
     private List<String> fullTaxonomy = new ArrayList<>();
     private final String geographicCoverage;
@@ -32,15 +32,18 @@ public class Publication extends HippoImportable {
     private List<HippoLink> relatedLinks = new ArrayList<>();
     private List<HippoLink> resourceLinks = new ArrayList<>();
     private List<HippoFile> files = new ArrayList<>();
+    private List<String> warnings = new ArrayList<>();
 
     public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
-        this.id = gossContent.getId();
+        warnings.addAll(gossContent.getWarnings());
+        id = gossContent.getId();
 
         if(gossContent.getHeading() != null){
             this.title = gossContent.getHeading();
         }else{
             LOGGER.warn("Title field is empty. ArticleId:{}.", id);
+            warnings.add("Title field is empty.");
         }
 
         Date publicationDate = gossContent.getExtra().getPublicationDate();
@@ -48,6 +51,7 @@ public class Publication extends HippoImportable {
             this.publicationDate = GossExportHelper.getDateString(publicationDate, TEMPLATE_FORMAT);
         }else{
             LOGGER.warn("Publication Date field is empty. ArticleId:{}.", id);
+            warnings.add("Publication Date field is empty.");
         }
         Date endDate = gossContent.getExtra().getCoverageEnd();
         this.coverageEnd = GossExportHelper.getDateString(endDate, TEMPLATE_FORMAT);
@@ -89,9 +93,9 @@ public class Publication extends HippoImportable {
             }else{
                 LOGGER.warn("No matching series found.  ArticleId:{}. SeriesId:{}."
                         , publication.getId(), seriesId);
+                publication.getWarnings().add("No matching series found. SeriesId: " + seriesId);
             }
         }
-
         return publication;
     }
 
@@ -121,6 +125,7 @@ public class Publication extends HippoImportable {
                 }else{
                     LOGGER.warn("No matching taxonomy found.  ArticleId:{}. GossCategory:{}."
                             , id, gossValue);
+                    warnings.add("No matching taxonomy found. Goss Category: " + gossValue);
                 }
 
             }
@@ -146,9 +151,11 @@ public class Publication extends HippoImportable {
                     switch (linkType) {
                         case ARTICLE_LINK:
                             resourceLinks.add(hippoLink);
+                            PublicationReportWriter.addPublicationLinkRow(this.getId(), "Resource Link", hippoLink);
                             break;
                         case EXTERNAL_LINK:
                             relatedLinks.add(hippoLink);
+                            PublicationReportWriter.addPublicationLinkRow(this.getId(), "Related Link", hippoLink);
                             break;
                     }
                 }
@@ -157,6 +164,7 @@ public class Publication extends HippoImportable {
         for(GossFile gossFile: gossFiles){
             HippoFile hippoFile = new HippoFile(gossContent,gossFile);
             files.add(hippoFile);
+            PublicationReportWriter.addPublicationFileRow(this.getId(), hippoFile);
         }
     }
 
@@ -235,5 +243,9 @@ public class Publication extends HippoImportable {
 
     public List<HippoFile> getFiles() {
         return files;
+    }
+
+    public List<String> getWarnings() {
+        return warnings;
     }
 }

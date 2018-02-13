@@ -6,9 +6,12 @@ import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.Report.CSVMappingReportWriter;
+import uk.nhs.digital.gossmigrator.Report.WarningsReportWriter;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentFactory;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
+import uk.nhs.digital.gossmigrator.model.goss.GossSeriesContent;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItem;
 import uk.nhs.digital.gossmigrator.model.mapping.enums.MappingType;
 
@@ -57,28 +60,45 @@ public class CSVReader<T> {
             if (record.size() != mappingType.getExpectedColumns()) {
                 LOGGER.error("Invalid {} mapping. Expected {} columns, got {}. Data:{}",
                         mappingType.getDescription(), mappingType.getExpectedColumns(), record.size(), record);
+                WarningsReportWriter.addWarningRow(mappingType.getDescription(), null, record.toString(), "Invalid number of columns");
             }else{
                 switch (mappingType) {
                     case TAXONOMY_MAPPING:
-                        ((Map<String, String>) target).put(StringUtils.trim(record.get(0)), StringUtils.trim(record.get(1)));
+                        String gossTaxonomy = StringUtils.trim(record.get(0));
+                        String hippoTaxonomy = StringUtils.trim(record.get(1));
+                        ((Map<String, String>) target).put(gossTaxonomy, hippoTaxonomy);
+                        CSVMappingReportWriter.addTaxonomyRow(gossTaxonomy, hippoTaxonomy);
                         break;
                     case PUBLICATION_SERIES_MAPPING:
-                        ((Map<Long, Long>) target).put(Long.parseLong(StringUtils.trim(record.get(1)))
-                                , -1L * Long.parseLong(StringUtils.trim(record.get(0))));
+                        Long seriesID = -1L * Long.parseLong(StringUtils.trim(record.get(0)));
+                        Long publicationID = Long.parseLong(StringUtils.trim(record.get(1)));
+                        ((Map<Long, Long>) target).put(seriesID, publicationID);
+                        CSVMappingReportWriter.addPublicationSeriesRow(seriesID, publicationID);
                         break;
                     case SERIES_ITEM:
-                        ((GossContentList)target).add(GossContentFactory.generateSeriesContent(Long.parseLong(record.get(0)) * (-1L),
-                                StringUtils.trim(record.get(1)), StringUtils.trim(record.get(2))));
+                        GossContent series = GossContentFactory.generateSeriesContent(Long.parseLong(record.get(0)) * (-1L),
+                                StringUtils.trim(record.get(1)), StringUtils.trim(record.get(2)));
+                        ((GossContentList)target).add(series);
+                        CSVMappingReportWriter.addSeriesRow((GossSeriesContent)series);
                         break;
                     case METADATA_MAPPING:
-                        ((MetadataMappingItem)target).setGossGroup(record.get(0));
-                        ((MetadataMappingItem)target).setGossValue(record.get(1));
-                        ((MetadataMappingItem)target).setHippoValue(record.get(2));
+                        String gossGroup = record.get(0);
+                        String gossValue = record.get(1);
+                        String hippoValue = record.get(2);
+                        ((MetadataMappingItem)target).setGossGroup(gossGroup);
+                        ((MetadataMappingItem)target).setGossValue(gossValue);
+                        ((MetadataMappingItem)target).setHippoValue(hippoValue);
+                        CSVMappingReportWriter.addMetadataRow(gossGroup, gossValue, hippoValue);
                         break;
                 }
             }
         }
         return target;
+    }
+
+    private void addSeriesReportRow(CSVRecord record){
+
+
     }
 
 }

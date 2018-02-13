@@ -10,6 +10,7 @@ public abstract class HippoImportable {
     private final String localizedName;
     private String jcrNodeName;
     private String jcrPath;
+    protected Long id;
 
     protected HippoImportable(final String localizedName, final String jcrPath, final String jcrNodeName) {
         this.localizedName = localizedName;
@@ -47,5 +48,9 @@ public abstract class HippoImportable {
 
     public void setJcrPath(String jcrPath) {
         this.jcrPath = jcrPath;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

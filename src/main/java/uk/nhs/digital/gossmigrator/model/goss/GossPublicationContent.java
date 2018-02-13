@@ -33,6 +33,7 @@ public class GossPublicationContent extends GossContent {
     private List<GossContentMeta> granularity = new ArrayList<>();
     private List<GossLink> links = new ArrayList<>();
     private List<GossFile> files = new ArrayList<>();
+    private List<String> warnings = new ArrayList<>();
 
     private GossPublicationContent(JSONObject gossJson, long gossExportFileLine) {
         super(gossJson, gossExportFileLine);
@@ -93,6 +94,7 @@ public class GossPublicationContent extends GossContent {
             if (null == gossMetaType) {
                 LOGGER.warn("Unexpected goss meta group:{}, in export line {}. Article id:{}."
                         , metaGroup, gossExportFileLine, id);
+                warnings.add("Unexpected goss meta group: " + metaGroup);
             } else {
                 String gossMetaValue = getString(meta, GossExportFieldNames.META_DATA_VALUE, gossExportFileLine);
                 String gossMetaName = getString(meta, GossExportFieldNames.META_DATA_VALUE, gossExportFileLine);
@@ -112,7 +114,7 @@ public class GossPublicationContent extends GossContent {
                         break;
                     default:
                         LOGGER.warn("Meta group ignored:{}, article id:{}", metaGroup, id);
-
+                        warnings.add("Meta group ignored: " + metaGroup);
                 }
             }
         }
@@ -166,5 +168,9 @@ public class GossPublicationContent extends GossContent {
 
     public List<GossFile> getFiles() {
         return files;
+    }
+
+    public List<String> getWarnings() {
+        return warnings;
     }
 }

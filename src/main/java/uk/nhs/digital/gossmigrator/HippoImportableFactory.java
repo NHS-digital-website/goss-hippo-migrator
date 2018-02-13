@@ -2,13 +2,15 @@ package uk.nhs.digital.gossmigrator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
+import uk.nhs.digital.gossmigrator.Report.ReportWriter;
+import uk.nhs.digital.gossmigrator.Report.ServicesReportWriter;
 import uk.nhs.digital.gossmigrator.model.goss.*;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 import uk.nhs.digital.gossmigrator.model.hippo.Publication;
 import uk.nhs.digital.gossmigrator.model.hippo.Series;
 import uk.nhs.digital.gossmigrator.model.hippo.Service;
 
-import java.nio.file.Paths;
 import java.util.*;
 
 public class HippoImportableFactory {
@@ -33,9 +35,11 @@ public class HippoImportableFactory {
         switch (gossContent.getContentType()) {
             case SERVICE:
                 hippoContent = Service.getInstance((GossServiceContent) gossContent);
+                ServicesReportWriter.addServiceRow((Service)hippoContent);
                 break;
             case PUBLICATION:
                 hippoContent = Publication.getInstance(gossData, (GossPublicationContent) gossContent);
+                PublicationReportWriter.addPublicationRow((Publication)hippoContent);
                 break;
             case SERIES:
                 hippoContent = Series.getInstance((GossSeriesContent) gossContent);

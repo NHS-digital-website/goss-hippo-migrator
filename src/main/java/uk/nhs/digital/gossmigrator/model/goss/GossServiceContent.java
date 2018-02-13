@@ -1,6 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
 import org.json.simple.JSONObject;
+import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 
 import java.nio.file.Paths;
@@ -33,7 +34,8 @@ public class GossServiceContent extends GossContent{
      * Factory method to generate a GossServiceContent
      */
     public static GossServiceContent getInstance(JSONObject gossJson, long gossExportFileLine){
-        return new GossServiceContent(gossJson, gossExportFileLine);
+        GossServiceContent serviceContent = new GossServiceContent(gossJson, gossExportFileLine);
+        return serviceContent;
     }
 
     /*

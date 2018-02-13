@@ -1,6 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
 import org.json.simple.JSONObject;
+import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;

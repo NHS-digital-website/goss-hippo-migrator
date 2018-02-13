@@ -3,13 +3,16 @@ package uk.nhs.digital.gossmigrator.model.goss;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.FILE_ID;
@@ -28,22 +31,23 @@ public class GossFile {
     private boolean existsOnDisk = false;
     private String displayText;
     private String fileName;
-    private String mimeType;
+    private List<String> warnings = new ArrayList<>();
 
     public GossFile(JSONObject fileJson) {
         id = GossExportHelper.getIdOrError(fileJson, FILE_ID);
         JSONObject fileObject = (JSONObject) fileJson.get("Files");
         if (fileObject.size() > 1) {
             LOGGER.error("Goss File MediaId:{} has more than one file node.  Don't know what to do with this.", id);
+            warnings.add("Goss File has more than one file node.");
         } else if (!fileObject.containsKey("Any")) {
             LOGGER.warn("Don't know how to deal with file yet (Only coded the 'Any' type) MediaId:{}.", id);
+            warnings.add("Don't know how to deal with file yet (Only coded the 'Any' type");
         } else {
             for (Object v : fileObject.values()) {
                 pathInGossExport = v.toString();
             }
             setPathOnDiskAndJcrPath();
             setFileName();
-            setMimeType();
         }
         displayText = GossExportHelper.getString(fileJson, FILE_TITLE, id);
     }
@@ -72,6 +76,7 @@ public class GossFile {
         if (!foundRootPath) {
             LOGGER.warn("Expected Media (id:{}) node in export to have a path part '{}' to map to disk."
                     , id, rootFolder);
+            warnings.add("Expected Media node in export to have a path part: " + rootFolder);
         }
 
         p = p.subpath(rootPartId, p.getNameCount());
@@ -86,6 +91,7 @@ public class GossFile {
         p = Paths.get(fileSourceFolder, p.toString(), fileName);
         if (!p.toFile().exists()) {
             LOGGER.error("Could not find file:{} when processing goss MediaId:{}", p, id);
+            warnings.add("Could not find file " + p);
         } else {
             existsOnDisk = true;
         }
@@ -99,13 +105,6 @@ public class GossFile {
         fileName = pathSection[pathSection.length - 1];
     }
 
-    /*
-     * Sets the file extension as mimeType
-     */
-    private void setMimeType() {
-        String[] pathSection = fileName.split("\\.");
-        mimeType = pathSection[pathSection.length - 1];
-    }
 
     public Long getId() {
         return id;
@@ -124,7 +123,7 @@ public class GossFile {
         return fileName;
     }
 
-    public String getMimeType() {
-        return mimeType;
+    public List<String> getWarnings() {
+        return warnings;
     }
 }
