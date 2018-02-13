@@ -47,7 +47,14 @@ public class AssetImporter {
         String subPart = file.subpath(sourcePathParts, file.getNameCount()).toString();
 
         // Create the Asset model object and add to importables.
-        Asset a = new Asset(file.getFileName().toString(), JCR_ASSET_ROOT + subPart, file);
+        String jcrDir;
+        if(Asset.isImage(subPart)){
+            jcrDir = JCR_GALLERY_ROOT;
+        }else {
+            jcrDir = JCR_ASSET_ROOT;
+        }
+        Asset a = new Asset(file.getFileName().toString()
+                , Paths.get(jcrDir, subPart).toString(), file);
         importableAssetItems.add(a);
         AssetReportWriter.addAssetRow(a);
     }

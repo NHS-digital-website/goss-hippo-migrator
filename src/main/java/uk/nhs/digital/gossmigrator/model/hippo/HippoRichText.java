@@ -104,10 +104,6 @@ public class HippoRichText {
                 case DOCUMENT_LINK: {
                     // <span data-icm-arg2=\"298\" data-icm-arg2name=\"Clinical Audits and Registries calendar\" data-icm-arg4=\"CARMS calendar\" data-icm-arg6=\"_self\" data-icm-inlinetypeid=\"2\">Type=media;MediaID=298;Title=CARMS calendar;Target=_self;<\/span>
                     // Links to an Asset
-                    // For now do same as media below.
-                }
-                case IMAGE: {
-                    //<span data-icm-arg2=\"160\" data-icm-arg2name=\"biomedicine\" data-icm-arg4=\"standard\" data-icm-inlinetypeid=\"4\">Type=image;imageid=160;constraint=standard;<\/span>
                     GossFile fileLink = GossImporter.gossData.getGossFileMap().get(referenceKey);
                     if (null == fileLink) {
                         LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
@@ -121,10 +117,33 @@ public class HippoRichText {
                     }
                     break;
                 }
+                case IMAGE: {
+                    //Goss:<span data-icm-arg2=\"666\" data-icm-arg2name=\"biomedicine\" data-icm-arg4=\"standard\" data-icm-inlinetypeid=\"4\">Type=image;imageid=666;constraint=standard;<\/span>
+                    //Hippo:<p><img data-type=“hippogallery:original” data-uuid=“3196cf43-76d7-4424-ba21-20ff24e53e0b” src=“binaries/content/gallery/publicationsystem/avatar.png/avatar.png/hippogallery:original” /></p>
+                    GossFile fileLink = GossImporter.gossData.getGossFileMap().get(referenceKey);
+                    if (null == fileLink) {
+                        LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
+                                , referenceKey, gossArticleId);
+                    } else {
+                        // TODO file link article references?
+                        String docName = Paths.get(fileLink.getJcrPath(gossArticleId)).getFileName().toString();
+                        Element newLink = new Element("img")
+                                .attr("data-type","hippogallery:original")
+                                .attr("src", docName)
+                                .attr("align", "top");
+                        //link.replaceWith(newLink);
+                        link.remove();
+                        //docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
+                        //docReferences.add(new HippoLinkRef("/content/gallery/imageroot/logo.png/", docName));
+                    }
+                    break;
+                }
                 case SCRIPTS: {
                     // The reference Id contains the script.  Replace the node with it.
-                    Element newLink = new Element("span").text(referenceId);
-                    link.replaceWith(newLink);
+                    // Goss example:<p><span data-icm-arg2=\"&lt;iframe title=&quot;HSCIC Graduate Scheme Video&quot; width=&quot;560&quot; height=&quot;315&quot; src=&quot;https:\/\/www.youtube.com\/embed\/jD1_grFN_Fs&quot; allowfullscreen&gt;&lt;\/iframe&gt;\" data-icm-inlinetypeid=\"6\">Type=scripts;&lt;iframe title=&quot;HSCIC Graduate Scheme Video&quot; width=&quot;560&quot; height=&quot;315&quot; src=&quot;https:\/\/www.youtube.com\/embed\/jD1_grFN_Fs&quot; allowfullscreen&gt;&lt;\/iframe&gt;<\/span><\/p>
+                    link.before(referenceId);
+                    link.remove();;
+
                     break;
                 }
                 case ARTICLE_LINK: {

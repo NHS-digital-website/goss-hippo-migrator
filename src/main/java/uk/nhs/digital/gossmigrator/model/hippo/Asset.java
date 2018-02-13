@@ -38,4 +38,8 @@ public class Asset extends HippoImportable {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean isImage(String file){
+        return (file.endsWith(".gif") || file.endsWith(".ico") || file.endsWith(".jpg") || file.endsWith(".png"));
+    }
 }

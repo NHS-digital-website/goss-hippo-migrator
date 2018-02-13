@@ -25,12 +25,13 @@ public class Config {
         ,JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/statpubs/", true, "")
         ,SERIES_PUBLICATION_MAPPING_FILE_PROP("goss.series.publication.mapping.file", "File system path to Series Publication mapping csv.", true, "")
         ,SERIES_PUBLICATION_MAPPING_FILE_HEADER_COUNT_PROP("goss.series.publication.mapping.file.header.count", "Count of header lines to ignore in Series Publication mapping csv file.", false, "1")
-        ,SERIES_FILE_PROP("goss.series.file", "Location of Series defilition file.", true, "")
+        ,SERIES_FILE_PROP("goss.series.file", "Location of Series definition file.", true, "")
         ,SERIES_FILE_HEADER_COUNT_PROP("goss.series.file.header.count", "Number of header lines to skip in series file.", false, "1")
         ,METADATA_MAPPING_FILE_PROP("meta.data.mapping.file", "File holding metadata mappings.", true, "")
         ,ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT_PROP("asset.source.folder.in.goss.export", "For file nodes in goss export there is a path.  " +
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", true, "")
         ,TAXONOMY_MAPPING_FILE_PROP("goss.taxonomy.mapping.file", "File system path to Taxonomy mapping csv.", true, "")
+        ,JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/publicationsystem/")
         ;
 
         final String key;
@@ -58,6 +59,7 @@ public class Config {
 
     public static String JCR_ASSET_ROOT;
     public static String JCR_SERVICE_DOC_ROOT;
+    public static String JCR_GALLERY_ROOT;
     public static String ASSET_SOURCE_FOLDER;
     public static String ASSET_TARGET_FOLDER;
     public static String GOSS_CONTENT_SOURCE_FILE;
@@ -87,6 +89,7 @@ public class Config {
         METADATA_MAPPING_FILE = getConfig(METADATA_MAPPING_FILE_PROP,propertiesMap);
         ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT = getConfig(ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT_PROP, propertiesMap);
         TAXONOMY_MAPPING_FILE = getConfig(TAXONOMY_MAPPING_FILE_PROP,propertiesMap);
+        JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP,propertiesMap);
     }
 
     private static String getConfig(PropertiesEnum propertiesEnum, Properties propertiesMap) {

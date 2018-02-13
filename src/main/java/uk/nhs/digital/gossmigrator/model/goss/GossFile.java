@@ -7,6 +7,8 @@ import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
+import uk.nhs.digital.gossmigrator.misc.TextHelper;
+import uk.nhs.digital.gossmigrator.model.hippo.Asset;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -84,8 +86,13 @@ public class GossFile {
         String fileName = p.getFileName().toString();
         p = p.subpath(0, p.getNameCount() - 1);
 
-        jcrPath = Paths.get(Config.JCR_ASSET_ROOT, p.toString().toLowerCase()
-                , fileName.toLowerCase()).toString();
+        if (Asset.isImage(fileName)) {
+            jcrPath = Paths.get(Config.JCR_GALLERY_ROOT, p.toString().toLowerCase()
+                    , fileName.toLowerCase()).toString();
+        } else {
+            jcrPath = Paths.get(Config.JCR_ASSET_ROOT, p.toString().toLowerCase()
+                    , fileName.toLowerCase()).toString();
+        }
 
         // Check source file exists
         p = Paths.get(fileSourceFolder, p.toString(), fileName);
