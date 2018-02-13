@@ -18,7 +18,7 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLA
 public class Publication extends HippoImportable {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Publication.class);
-
+    private final HippoRichText summary;
     private String title;
     private final String informationType;
     private final HippoRichText keyFacts;
@@ -39,17 +39,17 @@ public class Publication extends HippoImportable {
         warnings.addAll(gossContent.getWarnings());
         id = gossContent.getId();
 
-        if(gossContent.getHeading() != null){
+        if (gossContent.getHeading() != null) {
             this.title = gossContent.getHeading();
-        }else{
+        } else {
             LOGGER.warn("Title field is empty. ArticleId:{}.", id);
             warnings.add("Title field is empty.");
         }
 
         Date publicationDate = gossContent.getExtra().getPublicationDate();
-        if(publicationDate != null){
+        if (publicationDate != null) {
             this.publicationDate = GossExportHelper.getDateString(publicationDate, TEMPLATE_FORMAT);
-        }else{
+        } else {
             LOGGER.warn("Publication Date field is empty. ArticleId:{}.", id);
             warnings.add("Publication Date field is empty.");
         }
@@ -60,6 +60,7 @@ public class Publication extends HippoImportable {
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText());
         this.keyFacts = parsedArticleText.getKeyFacts();
+        this.summary = parsedArticleText.getDefaultNode();
 
         this.geographicCoverage = gossContent.getGeographicalData();
         this.granuality = gossContent.getGranularity();
@@ -70,9 +71,10 @@ public class Publication extends HippoImportable {
     /**
      * Factory method. Creates a Publication instance, searches for the publication series
      * and assigns the series to the publication
-     * @param gossData, full goss extract containing the series
+     *
+     * @param gossData,    full goss extract containing the series
      * @param gossContent, the goss extract with the publication to be processed
-     * Returns a Publication instance with the provided goss information
+     *                     Returns a Publication instance with the provided goss information
      */
     public static Publication getInstance(GossProcessedData gossData, GossPublicationContent gossContent) {
 
@@ -90,7 +92,7 @@ public class Publication extends HippoImportable {
                 publication.setJcrPath(Paths.get(matchingSeriesGoss.getJcrParentPath(),
                         publication.getJcrNodeName(), "content").toString());
                 publication.setJcrNodeName("content");
-            }else{
+            } else {
                 LOGGER.warn("No matching series found.  ArticleId:{}. SeriesId:{}."
                         , publication.getId(), seriesId);
                 publication.getWarnings().add("No matching series found. SeriesId: " + seriesId);
@@ -101,7 +103,8 @@ public class Publication extends HippoImportable {
 
     /**
      * Sets the Publication taxonomy keys and full taxonomy in the Publication object
-     * @param gossData, full goss extract containing the taxonomy map
+     *
+     * @param gossData,    full goss extract containing the taxonomy map
      * @param gossContent, the goss extract with the publication to be processed
      */
     private void generateHippoTaxonomy(GossProcessedData gossData, GossPublicationContent gossContent) {
@@ -113,16 +116,16 @@ public class Publication extends HippoImportable {
                 String gossValue = metaData.getValue();
                 String hippoValue = gossData.getTaxonomyMap().get(gossValue);
 
-                if(hippoValue != null){
+                if (hippoValue != null) {
                     List<String> valueList = new ArrayList<>();
                     String[] values = hippoValue.split("-");
-                    for(String s : values){
-                        valueList.add(s.toLowerCase().replace(' ','-'));
+                    for (String s : values) {
+                        valueList.add(s.toLowerCase().replace(' ', '-'));
                     }
 
                     fullTaxonomy.addAll(valueList);
                     taxonomyKeys.add(valueList.get(valueList.size() - 1));
-                }else{
+                } else {
                     LOGGER.warn("No matching taxonomy found.  ArticleId:{}. GossCategory:{}."
                             , id, gossValue);
                     warnings.add("No matching taxonomy found. Goss Category: " + gossValue);
@@ -134,20 +137,21 @@ public class Publication extends HippoImportable {
 
     /**
      * Sets the Resource Links, Related links and Files in the Publication
+     *
      * @param gossContent, the goss extract with the publication to be processed
      */
-    private void setResourcesAndLinks(GossPublicationContent gossContent){
+    private void setResourcesAndLinks(GossPublicationContent gossContent) {
         List<GossLink> gossLinks = gossContent.getLinks();
         List<GossFile> gossFiles = gossContent.getFiles();
 
 
-        for(GossLink gossLink: gossLinks){
+        for (GossLink gossLink : gossLinks) {
             HippoLink hippoLink = new HippoLink(gossLink);
             //TODO verify link type matching
-            if (gossLink.getId() != null){
+            if (gossLink.getId() != null) {
                 String id = gossLink.getId().toString();
                 GossInternalLinkType linkType = GossInternalLinkType.getById(id);
-                if(linkType != null) {
+                if (linkType != null) {
                     switch (linkType) {
                         case ARTICLE_LINK:
                             resourceLinks.add(hippoLink);
@@ -161,8 +165,8 @@ public class Publication extends HippoImportable {
                 }
             }
         }
-        for(GossFile gossFile: gossFiles){
-            HippoFile hippoFile = new HippoFile(gossContent,gossFile);
+        for (GossFile gossFile : gossFiles) {
+            HippoFile hippoFile = new HippoFile(gossContent, gossFile);
             files.add(hippoFile);
             PublicationReportWriter.addPublicationFileRow(this.getId(), hippoFile);
         }
@@ -173,9 +177,15 @@ public class Publication extends HippoImportable {
     public String getTitle() {
         return title;
     }
+
+    // Summary is the content of the __DEFAULT node in the articletext from Goss
+    // TODO change when summary becomes rich text in template
     @SuppressWarnings("unused") // Used in template
     public String getSummary() {
-        return title + " Summary";
+        if(null != summary){
+            return summary.getContent();
+        }
+        return "";
     }
 
     @SuppressWarnings("unused") // Used in template
@@ -192,26 +202,32 @@ public class Publication extends HippoImportable {
     public String getGranuality() {
         return granuality;
     }
+
     @SuppressWarnings("unused") // Used in template
     public HippoRichText getKeyFacts() {
         return keyFacts;
     }
+
     @SuppressWarnings("unused") // Used in template
     public String getCoverageStart() {
         return coverageStart;
     }
+
     @SuppressWarnings("unused") // Used in template
     public String getCoverageEnd() {
         return coverageEnd;
     }
+
     @SuppressWarnings("unused") // Used in template
     public String getPublicationDate() {
         return publicationDate;
     }
+
     @SuppressWarnings("unused") // Used in template
     public Long getId() {
         return id;
     }
+
     @SuppressWarnings("unused") // Used in template
     public List<String> getTaxonomyKeys() {
         return taxonomyKeys;
@@ -226,6 +242,7 @@ public class Publication extends HippoImportable {
             return keyFacts.getContent();
         }
     }
+
     @SuppressWarnings("unused") // Used in template
     public List<String> getFullTaxonomy() {
         return fullTaxonomy;

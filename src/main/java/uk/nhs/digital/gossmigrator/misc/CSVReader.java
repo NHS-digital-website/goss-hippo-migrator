@@ -60,7 +60,7 @@ public class CSVReader<T> {
             if (record.size() != mappingType.getExpectedColumns()) {
                 LOGGER.error("Invalid {} mapping. Expected {} columns, got {}. Data:{}",
                         mappingType.getDescription(), mappingType.getExpectedColumns(), record.size(), record);
-                WarningsReportWriter.addWarningRow(mappingType.getDescription(), null, record.toString(), "Invalid number of columns");
+                WarningsReportWriter.addWarningRow(mappingType.getDescription(), 0L, record.toString(), "Invalid number of columns");
             }else{
                 switch (mappingType) {
                     case TAXONOMY_MAPPING:
@@ -72,7 +72,7 @@ public class CSVReader<T> {
                     case PUBLICATION_SERIES_MAPPING:
                         Long seriesID = -1L * Long.parseLong(StringUtils.trim(record.get(0)));
                         Long publicationID = Long.parseLong(StringUtils.trim(record.get(1)));
-                        ((Map<Long, Long>) target).put(seriesID, publicationID);
+                        ((Map<Long, Long>) target).put(publicationID, seriesID);
                         CSVMappingReportWriter.addPublicationSeriesRow(seriesID, publicationID);
                         break;
                     case SERIES_ITEM:

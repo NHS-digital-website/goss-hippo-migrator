@@ -26,6 +26,7 @@ public class ParsedArticleText {
     private List<Section> sections;
     private HippoRichText contactDetails;
     private List<HippoRichText> topTasks;
+    private HippoRichText defaultNode;
     private long gossId;
     private HippoRichText keyFacts;
 
@@ -46,6 +47,7 @@ public class ParsedArticleText {
         // JSoup library adds html + head + body tags.  Only care about body.
         Element body = doc.selectFirst("body");
 
+        defaultNode = extractDefaultNode(body);
         introduction = extractIntroduction(body);
         sections = extractSections(body);
         topTasks = extractTopTasks(body);
@@ -53,6 +55,21 @@ public class ParsedArticleText {
         contactDetails = extractContactDetails(body);
         keyFacts = extractKeyFacts(body);
         LOGGER.debug(toString());
+    }
+
+    /**
+     * ARTICLETEXT <textbody id="__DEFAULT">body lives here<textbody>
+     *
+     * @param body The Goss ARTICLETEXT.
+     * @return Introduction html.
+     */
+    private HippoRichText extractDefaultNode(Element body) {
+        Element gossDefaultNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
+        HippoRichText result = null;
+        if (gossDefaultNode != null) {
+            result = new HippoRichText(gossDefaultNode.html(), gossId);
+        }
+        return result;
     }
 
     /**
@@ -124,6 +141,7 @@ public class ParsedArticleText {
     /**
      * There is a component part of the Goss ARTICLETEXT.
      * Not used at the moment.  In to log a warning if we find it containing data in full export.
+     *
      * @param body The ARTICLETEXT as child of a body node.
      */
     private void extractComponent(Element body) {
@@ -153,7 +171,7 @@ public class ParsedArticleText {
                 if (!"p".equals(topTask.tagName())) {
                     LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p'. This is not expected.", gossId);
                 }
-                topTasks.add(new HippoRichText(topTask.outerHtml(),gossId));
+                topTasks.add(new HippoRichText(topTask.outerHtml(), gossId));
             }
         }
 
@@ -200,6 +218,7 @@ public class ParsedArticleText {
     /**
      * Returns a populated Section object from the span '__DEFAULT' node and removes the section from it.
      * Call multiple times to get all Sections.
+     *
      * @param defaultNode The <textbody id="__DEFAULT"> node from Goss ARTICLETEXT
      * @return The populated Section object.
      */
@@ -260,6 +279,10 @@ public class ParsedArticleText {
 
     public HippoRichText getKeyFacts() {
         return keyFacts;
+    }
+
+    public HippoRichText getDefaultNode() {
+        return defaultNode;
     }
 
     @Override
