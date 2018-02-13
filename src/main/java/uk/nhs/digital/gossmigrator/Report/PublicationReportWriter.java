@@ -24,10 +24,9 @@ public class PublicationReportWriter {
         HSSFRow pubLinksRowhead = pubLinks.createRow(0);
         pubLinksRowhead.createCell(0).setCellValue("Publication ID");
         pubLinksRowhead.createCell(1).setCellValue("Link Type");
-        pubLinksRowhead.createCell(2).setCellValue("Link ID");
-        pubLinksRowhead.createCell(3).setCellValue("Text");
-        pubLinksRowhead.createCell(4).setCellValue("Path");
-        pubLinksRowhead.createCell(5).setCellValue("Status");
+        pubLinksRowhead.createCell(2).setCellValue("Text");
+        pubLinksRowhead.createCell(3).setCellValue("Path");
+        pubLinksRowhead.createCell(4).setCellValue("Status");
 
         HSSFSheet pubFiles = report.createSheet("Publication Files");
         HSSFRow pubFilesRowhead = pubFiles.createRow(0);
@@ -62,10 +61,9 @@ public class PublicationReportWriter {
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
         row.createCell(0).setCellValue(publicationId);
         row.createCell(1).setCellValue(linkType);
-        row.createCell(2).setCellValue(link.getId());
-        row.createCell(3).setCellValue(link.getDisplayText());
-        row.createCell(4).setCellValue(link.getAddress());
-        row.createCell(5).setCellValue("Success");        ;
+        row.createCell(2).setCellValue(link.getDisplayText());
+        row.createCell(3).setCellValue(link.getAddress());
+        row.createCell(4).setCellValue("Success");
     }
 
     public static void addPublicationFileRow(Long publicationId, HippoFile file){

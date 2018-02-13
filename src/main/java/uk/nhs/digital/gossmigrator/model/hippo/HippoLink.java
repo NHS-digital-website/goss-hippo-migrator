@@ -14,6 +14,11 @@ public class HippoLink {
         this.displayText = gossLink.getDisplayText();
     }
 
+    public HippoLink(String address, String displayText){
+        this.address = address;
+        this.displayText = displayText;
+    }
+
     @SuppressWarnings("unused")
     public String getAddress() {
         return address;

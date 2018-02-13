@@ -31,8 +31,7 @@ public class GossPublicationContent extends GossContent {
     private List<GossContentMeta> taxonomyData = new ArrayList<>();
     private List<GossContentMeta> informationTypes = new ArrayList<>();
     private List<GossContentMeta> granularity = new ArrayList<>();
-    private List<GossLink> links = new ArrayList<>();
-    private List<GossFile> files = new ArrayList<>();
+     private List<GossFile> files = new ArrayList<>();
     private List<String> warnings = new ArrayList<>();
 
     private GossPublicationContent(JSONObject gossJson, long gossExportFileLine) {
@@ -52,15 +51,6 @@ public class GossPublicationContent extends GossContent {
             extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
         } else {
             extra = new GossContentExtra();
-        }
-
-        // Process Links node
-        JSONArray linksJson = (JSONArray) gossJson.get(GossExportFieldNames.LINKS.getName());
-        if (null != linksJson) {
-            for (Object linkObject : linksJson){
-                GossLink link = new GossLink((JSONObject) linkObject);
-                links.add(link);
-            }
         }
 
         // Process Media node
@@ -160,10 +150,6 @@ public class GossPublicationContent extends GossContent {
     @SuppressWarnings("unused")
     public Date getDisplayDate() {
         return displayDate;
-    }
-
-    public List<GossLink> getLinks() {
-        return links;
     }
 
     public List<GossFile> getFiles() {

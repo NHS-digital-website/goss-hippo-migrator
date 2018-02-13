@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.*;
-import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -65,7 +64,8 @@ public class Publication extends HippoImportable {
         this.geographicCoverage = gossContent.getGeographicalData();
         this.granuality = gossContent.getGranularity();
         this.informationType = gossContent.getInformationTypes();
-        setResourcesAndLinks(gossContent);
+
+        setFilesAndLinks(gossContent);
     }
 
     /**
@@ -140,33 +140,21 @@ public class Publication extends HippoImportable {
      *
      * @param gossContent, the goss extract with the publication to be processed
      */
-    private void setResourcesAndLinks(GossPublicationContent gossContent) {
-        List<GossLink> gossLinks = gossContent.getLinks();
-        List<GossFile> gossFiles = gossContent.getFiles();
+    private void setFilesAndLinks(GossPublicationContent gossContent){
+        ParsedArticleLinks parsedArticleLinks = new ParsedArticleLinks(gossContent.getText());
+        this.relatedLinks = parsedArticleLinks.getRelatedLinks();
+        this.resourceLinks = parsedArticleLinks.getResourceLinks();
 
-
-        for (GossLink gossLink : gossLinks) {
-            HippoLink hippoLink = new HippoLink(gossLink);
-            //TODO verify link type matching
-            if (gossLink.getId() != null) {
-                String id = gossLink.getId().toString();
-                GossInternalLinkType linkType = GossInternalLinkType.getById(id);
-                if (linkType != null) {
-                    switch (linkType) {
-                        case ARTICLE_LINK:
-                            resourceLinks.add(hippoLink);
-                            PublicationReportWriter.addPublicationLinkRow(this.getId(), "Resource Link", hippoLink);
-                            break;
-                        case EXTERNAL_LINK:
-                            relatedLinks.add(hippoLink);
-                            PublicationReportWriter.addPublicationLinkRow(this.getId(), "Related Link", hippoLink);
-                            break;
-                    }
-                }
-            }
+        for(HippoLink link : relatedLinks){
+            PublicationReportWriter.addPublicationLinkRow(this.getId(), "Related Link", link);
         }
-        for (GossFile gossFile : gossFiles) {
-            HippoFile hippoFile = new HippoFile(gossContent, gossFile);
+        for(HippoLink link : resourceLinks){
+            PublicationReportWriter.addPublicationLinkRow(this.getId(), "Resource Link", link);
+        }
+
+        List<GossFile> gossFiles = gossContent.getFiles();
+        for(GossFile gossFile: gossFiles){
+            HippoFile hippoFile = new HippoFile(gossContent,gossFile);
             files.add(hippoFile);
             PublicationReportWriter.addPublicationFileRow(this.getId(), hippoFile);
         }
@@ -265,4 +253,6 @@ public class Publication extends HippoImportable {
     public List<String> getWarnings() {
         return warnings;
     }
+
+
 }

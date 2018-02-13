@@ -3,7 +3,6 @@ package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +14,7 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-
-import static uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType.VIDEO_INLINE;
 
 /**
  * POJO to populate hippo rich text elements in hippo EXIM templates.
@@ -31,7 +27,7 @@ public class HippoRichText {
     private long gossArticleId;
     private List<HippoLinkRef> docReferences = new ArrayList<>();
 
-    public HippoRichText(String html, long gossArticleId) {
+    HippoRichText(String html, long gossArticleId) {
         this.gossArticleId = gossArticleId;
         this.content = parseContent(html);
     }
@@ -50,7 +46,7 @@ public class HippoRichText {
         Element contentNode = new Element("temp");
         contentNode.html(html);
 
-        parseLinks(contentNode);
+        contentNode = parseLinks(contentNode);
         parseButtons(contentNode);
 
         return escapeChars(contentNode.html());

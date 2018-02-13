@@ -5,7 +5,9 @@ public enum ArticleTextSection {
     CONTACT_INFO("CTA"),
     INTRO_AND_SECTIONS("__DEFAULT"),
     COMPONENT("COMPONENT"),
-    FACTS("FACTS");
+    FACTS("FACTS"),
+    RESOURCE_LINKS("RESOURCELINKS"),
+    RELATED_LINKS("LINKS");
 
     private String id;
 

@@ -61,7 +61,7 @@ public class GossImporter {
 
     }
 
-    public void run() {
+    private void run() {
 
         ReportWriter.generateReport();
 

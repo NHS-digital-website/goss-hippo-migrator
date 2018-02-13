@@ -30,6 +30,7 @@ public class ParsedArticleText {
     private long gossId;
     private HippoRichText keyFacts;
 
+
     /**
      * Parses ARTICLETEXT node from Goss export.
      * Results available from getters.
@@ -293,4 +294,6 @@ public class ParsedArticleText {
                 "\nTop Tasks:" + Boolean.toString(null == topTasks) +
                 "}";
     }
+
+
 }
