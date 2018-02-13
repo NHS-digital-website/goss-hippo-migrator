@@ -4,6 +4,7 @@ package uk.nhs.digital.gossmigrator.model.hippo;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
@@ -57,7 +58,7 @@ public class HippoRichText {
 
     private String escapeChars(String source) {
         String replaced = source.replaceAll("\"", "\\\\\"");
-       // String replaced = source;
+        // String replaced = source;
 
         // Looks like the chosen html/xml library adds carriage return line feeds.
         replaced = replaced.replaceAll("\n", "").replaceAll("\r", "");
@@ -125,14 +126,15 @@ public class HippoRichText {
                         LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
                                 , referenceKey, gossArticleId);
                     } else {
-                        // TODO file link article references?
+                        // TODO This is going to take more effort than expected.
+                        // Finish off scripts first.
                         String docName = Paths.get(fileLink.getJcrPath(gossArticleId)).getFileName().toString();
-                        Element newLink = new Element("img")
-                                .attr("data-type","hippogallery:original")
-                                .attr("src", docName)
-                                .attr("align", "top");
+                        //   Element newLink = new Element("img")
+                        //           .attr("data-type","hippogallery:original")
+                        //           .attr("src", docName)
+                        //           .attr("align", "top");
                         //link.replaceWith(newLink);
-                        link.remove();
+                        //   link.remove();
                         //docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
                         //docReferences.add(new HippoLinkRef("/content/gallery/imageroot/logo.png/", docName));
                     }
@@ -141,8 +143,17 @@ public class HippoRichText {
                 case SCRIPTS: {
                     // The reference Id contains the script.  Replace the node with it.
                     // Goss example:<p><span data-icm-arg2=\"&lt;iframe title=&quot;HSCIC Graduate Scheme Video&quot; width=&quot;560&quot; height=&quot;315&quot; src=&quot;https:\/\/www.youtube.com\/embed\/jD1_grFN_Fs&quot; allowfullscreen&gt;&lt;\/iframe&gt;\" data-icm-inlinetypeid=\"6\">Type=scripts;&lt;iframe title=&quot;HSCIC Graduate Scheme Video&quot; width=&quot;560&quot; height=&quot;315&quot; src=&quot;https:\/\/www.youtube.com\/embed\/jD1_grFN_Fs&quot; allowfullscreen&gt;&lt;\/iframe&gt;<\/span><\/p>
+
                     link.before(referenceId);
-                    link.remove();;
+
+                    Elements iframes = link.previousElementSibling().select("iframe");
+                    // Hippo expects iframes to have a frameborder.
+                    for (Element iframe : iframes) {
+                        if (iframe.attr("frameborder") != null) {
+                            iframe.attr("frameborder", "0");
+                        }
+                    }
+                    link.remove();
 
                     break;
                 }
@@ -183,14 +194,14 @@ public class HippoRichText {
                 }
             }
         }
-        // VIDEO_INLINE lives in a div.
+        // TODO
+        // VIDEO_INLINE lives in a div... Perhaps
         // div data-icm-arg1=\"92587\" data-icm-arg1name=\"video\" data-icm-inlinetypeid=\"7\">92587<\/div>
         // Not sure there will be any of these in the export.
+        // If so the below may be needed
+        /*
         links = source.select("div[data-icm-arg1]");
-        for (
-                Element link : links)
-
-        {
+        for (Element link : links) {
             String linkTypeId = link.attributes().get("data-icm-inlinetypeid");
             String referenceId = link.attributes().get("data-icm-arg1");
             String linkText = link.attributes().get("data-icm-arg1name");
@@ -213,23 +224,9 @@ public class HippoRichText {
                 LOGGER.error("ArticleId:{}. Unexpected inline link in div.  Link refers to:{}.", gossArticleId, referenceId);
             }
         }
+        */
 
 
         return source;
     }
-
-    // TODO delete.  Will find out shortly if needed.
-    private static void removeComments(Node node) {
-        for (int i = 0; i < node.childNodeSize(); ) {
-            Node child = node.childNode(i);
-            if (child.nodeName().equals("#comment"))
-                child.remove();
-            else {
-                removeComments(child);
-                i++;
-            }
-        }
-    }
-
-
 }
