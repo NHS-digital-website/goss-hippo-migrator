@@ -7,7 +7,8 @@ public enum ArticleTextSection {
     COMPONENT("COMPONENT"),
     FACTS("FACTS"),
     RESOURCE_LINKS("RESOURCELINKS"),
-    RELATED_LINKS("LINKS");
+    RELATED_LINKS("LINKS")
+    ;
 
     private String id;
 
@@ -22,5 +23,14 @@ public enum ArticleTextSection {
     @Override
     public String toString() {
         return id;
+    }
+
+    public static boolean idExists(String id){
+        for(ArticleTextSection a : ArticleTextSection.values()){
+            if(a.id.equals(id)){
+                return true;
+            }
+        }
+        return false;
     }
 }

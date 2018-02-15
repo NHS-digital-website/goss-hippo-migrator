@@ -19,6 +19,7 @@ import java.util.Set;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.FILE_ID;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.FILE_TITLE;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.MEDIA_DIRECTORY;
 
 public class GossFile {
     private static final Logger LOGGER = LoggerFactory.getLogger(GossFile.class);
@@ -33,24 +34,33 @@ public class GossFile {
     private boolean existsOnDisk = false;
     private String displayText;
     private String fileName;
+    private String mediaDirectory;
+    private boolean notLiveLink = false;
     private List<String> warnings = new ArrayList<>();
 
     public GossFile(JSONObject fileJson) {
         id = GossExportHelper.getIdOrError(fileJson, FILE_ID);
         JSONObject fileObject = (JSONObject) fileJson.get("Files");
         if (fileObject.size() > 1) {
-            LOGGER.error("Goss File MediaId:{} has more than one file node.  Don't know what to do with this.", id);
+            LOGGER.warn("Goss File MediaId:{} has more than one file node.  Using first file path.", id);
             warnings.add("Goss File has more than one file node.");
-        } else if (!fileObject.containsKey("Any")) {
-            LOGGER.warn("Don't know how to deal with file yet (Only coded the 'Any' type) MediaId:{}.", id);
-            warnings.add("Don't know how to deal with file yet (Only coded the 'Any' type");
-        } else {
-            for (Object v : fileObject.values()) {
-                pathInGossExport = v.toString();
-            }
-            setPathOnDiskAndJcrPath();
-            setFileName();
         }
+
+        // Take first path
+        for (Object v : fileObject.values()) {
+            pathInGossExport = v.toString();
+            break;
+        }
+
+        if(pathInGossExport.contains(Config.IGNORE_MEDIA_WITH_PATH_PART)){
+            LOGGER.info("Ignoring Goss Media Link:, {}", id, pathInGossExport);
+            notLiveLink = true;
+            return;
+        }
+
+        mediaDirectory = GossExportHelper.getString(fileJson,MEDIA_DIRECTORY, id);
+        setPathOnDiskAndJcrPath();
+
         displayText = GossExportHelper.getString(fileJson, FILE_TITLE, id);
     }
 
@@ -66,6 +76,7 @@ public class GossFile {
         // Similarly need the part with neither prefix to build the jcr path.
         int rootPartId = 0;
         Path p = Paths.get(pathOnDisk);
+        fileName = p.getFileName().toString();
         boolean foundRootPath = false;
         for (Path part : p) {
             if (part.toString().equals(rootFolder)) {
@@ -75,16 +86,12 @@ public class GossFile {
             rootPartId++;
         }
 
-        if (!foundRootPath) {
-            LOGGER.warn("Expected Media (id:{}) node in export to have a path part '{}' to map to disk."
-                    , id, rootFolder);
-            warnings.add("Expected Media node in export to have a path part: " + rootFolder);
+        if(foundRootPath) {
+            p = p.subpath(rootPartId + 1, p.getNameCount());
+            p = p.subpath(0, p.getNameCount() - 1);
+        }else {
+            p = Paths.get(mediaDirectory, p.toString());
         }
-
-        p = p.subpath(rootPartId, p.getNameCount());
-        // Format node name.
-        String fileName = p.getFileName().toString();
-        p = p.subpath(0, p.getNameCount() - 1);
 
         if (GossExportHelper.isImage(fileName)) {
             jcrPath = Paths.get(Config.JCR_GALLERY_ROOT, p.toString().toLowerCase()
@@ -102,14 +109,6 @@ public class GossFile {
         } else {
             existsOnDisk = true;
         }
-    }
-
-    /*
-     * Sets the last section of the file path as filename
-     */
-    private void setFileName() {
-        String[] pathSection = pathInGossExport.split("\\\\");
-        fileName = pathSection[pathSection.length - 1];
     }
 
 
@@ -132,5 +131,9 @@ public class GossFile {
 
     public List<String> getWarnings() {
         return warnings;
+    }
+
+    public boolean isNotLiveLink() {
+        return notLiveLink;
     }
 }

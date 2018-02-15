@@ -2,6 +2,7 @@ package uk.nhs.digital.gossmigrator.model.hippo;
 
 import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.model.goss.GossServiceContent;
+import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class Service extends HippoImportable {
         shortSummary = gossContent.getSummary();
         servicePath = gossContent.getServicePath();
 
-        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText());
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.SERVICE);
         introduction = parsedArticleText.getIntroduction();
         sections = parsedArticleText.getSections();
         topTasks = parsedArticleText.getTopTasks();

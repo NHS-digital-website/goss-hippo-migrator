@@ -45,7 +45,9 @@ public class ContentImporter {
         if(null != jsonArray) {
             for (Object childJsonObject : jsonArray) {
                 GossFile file = new GossFile((JSONObject) childJsonObject);
-                gossFileMap.put(file.getId(), file);
+                if(!file.isNotLiveLink()) {
+                    gossFileMap.put(file.getId(), file);
+                }
             }
         }else{
             LOGGER.error("Could not read 'media' node.");

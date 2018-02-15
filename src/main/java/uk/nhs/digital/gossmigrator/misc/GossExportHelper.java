@@ -127,6 +127,9 @@ public class GossExportHelper {
     }
 
     public static boolean isImage(String file) {
+        if(null == file){
+            LOGGER.info("");
+        }
         return (file.endsWith(".gif") || file.endsWith(".jpeg") || file.endsWith(".jpg")
                 || file.endsWith(".png") || file.endsWith(".svg"));
     }

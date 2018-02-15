@@ -1,11 +1,14 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection;
+import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.hippo.enums.SectionTypes;
 
 import java.util.ArrayList;
@@ -26,19 +29,27 @@ public class ParsedArticleText extends ParsedArticle {
     private HippoRichText contactDetails;
     private List<HippoRichText> topTasks;
     private HippoRichText defaultNode;
+    private ContentType contentType;
     private HippoRichText keyFacts;
     private HippoRichText component;
 
     /**
      * Parses ARTICLETEXT node from Goss export.
      * Results available from getters.
-     *
-     * @param gossId          ARTICLEID value for logging.
+     *  @param gossId          ARTICLEID value for logging.
      * @param gossArticleText ARTICLETEXT String.
+     * @param contentType
      */
-     ParsedArticleText(long gossId, String gossArticleText) {
+     ParsedArticleText(long gossId, String gossArticleText, ContentType contentType) {
         super(gossId, gossArticleText);
 
+        this.contentType = contentType;
+
+        // Turn the comments into elements (so can parse)
+        gossArticleText = gossArticleText.replace("<!--", "<").replace("-->", ">");
+        Document doc = Jsoup.parse(gossArticleText);
+
+         checkSections(body);
         defaultNode = extracRichTextElement(INTRO_AND_SECTIONS);
         introduction = extractIntroduction();
         sections = extractSections();
@@ -56,6 +67,20 @@ public class ParsedArticleText extends ParsedArticle {
             result = new HippoRichText(gossDefaultNode.html(), gossId);
         }
         return result;
+    }
+
+    private void checkSections(Element body) {
+        for (Element a : body.select("textbody")) {
+            String id = a.attr("id");
+            if (!ArticleTextSection.idExists(id)) {
+                if(id.equals("ALSOINTERESTED") && contentType != ContentType.PUBLICATION){
+                    // We have knowingly ignored these for publications.
+                    LOGGER.error("Article id:{}, (not a publication). section ALSOINTERESTED unexpected", gossId, id);
+                }else if(!id.equals("ALSOINTERESTED")){
+                    LOGGER.error("Article id:{}, ARTICLETEXT section {} unexpected.", gossId, id);
+                }
+            }
+        }
     }
 
 
@@ -116,7 +141,7 @@ public class ParsedArticleText extends ParsedArticle {
             for (Element topTask : gossTopTasksNode.children()) {
                 // Assume all child nodes are <p>'s
                 if (!"p".equals(topTask.tagName())) {
-                    LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p'. This is not expected.", gossId);
+                    LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p' (it is {}). This is not expected.", gossId, topTask.tagName());
                 }
                 topTasks.add(new HippoRichText(topTask.outerHtml(), gossId));
             }

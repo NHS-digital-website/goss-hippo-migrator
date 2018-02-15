@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.*;
+import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class Publication extends HippoImportable {
         Date startDate = gossContent.getExtra().getCoverageStart();
         this.coverageStart = GossExportHelper.getDateString(startDate, TEMPLATE_FORMAT);
 
-        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText());
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.PUBLICATION);
         this.keyFacts = parsedArticleText.getKeyFacts();
         this.summary = parsedArticleText.getDefaultNode();
 
