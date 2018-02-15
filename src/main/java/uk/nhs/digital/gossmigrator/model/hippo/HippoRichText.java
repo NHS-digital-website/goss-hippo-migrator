@@ -7,6 +7,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
+import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossFile;
 import uk.nhs.digital.gossmigrator.model.goss.GossLink;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
@@ -100,14 +101,15 @@ public class HippoRichText {
                 }
                 case DOCUMENT_LINK: {
                     // <span data-icm-arg2=\"298\" data-icm-arg2name=\"Clinical Audits and Registries calendar\" data-icm-arg4=\"CARMS calendar\" data-icm-arg6=\"_self\" data-icm-inlinetypeid=\"2\">Type=media;MediaID=298;Title=CARMS calendar;Target=_self;<\/span>
-                    // Links to an Asset
+                    // Links to an Asset (not images!)
                     GossFile fileLink = GossImporter.gossData.getGossFileMap().get(referenceKey);
                     if (null == fileLink) {
                         LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
                                 , referenceKey, gossArticleId);
+                    } else if (GossExportHelper.isImage(fileLink.getFileName())) {
+                        LOGGER.warn("Article:{}, Link{} is an asset link to an image.", gossArticleId, referenceKey);
                     } else {
                         String docName = Paths.get(fileLink.getJcrPath(gossArticleId)).getFileName().toString();
-                        // TODO probably want images in img element.  Need to check what hippo does.
                         Element newLink = new Element("a").text(linkText).attr("href", docName);
                         link.replaceWith(newLink);
                         docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
@@ -122,17 +124,14 @@ public class HippoRichText {
                         LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
                                 , referenceKey, gossArticleId);
                     } else {
-                        // TODO This is going to take more effort than expected.
-                        // Finish off scripts first.
                         String docName = Paths.get(fileLink.getJcrPath(gossArticleId)).getFileName().toString();
-                        //   Element newLink = new Element("img")
-                        //           .attr("data-type","hippogallery:original")
-                        //           .attr("src", docName)
-                        //           .attr("align", "top");
-                        //link.replaceWith(newLink);
-                        //   link.remove();
-                        //docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
-                        //docReferences.add(new HippoLinkRef("/content/gallery/imageroot/logo.png/", docName));
+                        Element newLink = new Element("img")
+                                .attr("alt", linkText)
+                                .attr("data-type", "hippogallery:original")
+                                .attr("src", docName + "/{_document}/hippogallery:original");
+                        link.replaceWith(newLink);
+
+                        docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
                     }
                     break;
                 }
@@ -189,7 +188,9 @@ public class HippoRichText {
                     break;
                 }
             }
+
         }
+        return source;
         // TODO
         // VIDEO_INLINE lives in a div... Perhaps
         // div data-icm-arg1=\"92587\" data-icm-arg1name=\"video\" data-icm-inlinetypeid=\"7\">92587<\/div>
@@ -221,8 +222,5 @@ public class HippoRichText {
             }
         }
         */
-
-
-        return source;
     }
 }

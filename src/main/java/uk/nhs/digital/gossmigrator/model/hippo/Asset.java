@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Asset extends HippoImportable {
+public class Asset extends HippoImportable implements AssetReportable {
 
     String filePath;
     Path sourceFilePath;
@@ -37,9 +37,5 @@ public class Asset extends HippoImportable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static boolean isImage(String file){
-        return (file.endsWith(".gif") || file.endsWith(".ico") || file.endsWith(".jpg") || file.endsWith(".png"));
     }
 }

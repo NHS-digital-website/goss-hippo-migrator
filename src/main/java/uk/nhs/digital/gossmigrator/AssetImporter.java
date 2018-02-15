@@ -7,8 +7,11 @@ import uk.nhs.digital.gossmigrator.Report.ServicesReportWriter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.Report.ReportWriter;
+import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.hippo.Asset;
+import uk.nhs.digital.gossmigrator.model.hippo.AssetReportable;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
+import uk.nhs.digital.gossmigrator.model.hippo.Image;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,15 +51,23 @@ public class AssetImporter {
 
         // Create the Asset model object and add to importables.
         String jcrDir;
-        if(Asset.isImage(subPart)){
+        HippoImportable a;
+        if (GossExportHelper.isImage(subPart)) {
             jcrDir = JCR_GALLERY_ROOT;
-        }else {
+            a = new Image(file.getFileName().toString()
+                    , Paths.get(jcrDir, subPart).toString(), file);
+        } else if (GossExportHelper.isSupportedAsset(subPart)) {
             jcrDir = JCR_ASSET_ROOT;
+            a = new Asset(file.getFileName().toString()
+                    , Paths.get(jcrDir, subPart).toString(), file);
+        } else {
+            LOGGER.warn("Unsupported file type {}", subPart);
+            jcrDir = JCR_ASSET_ROOT;
+            a = new Asset(file.getFileName().toString()
+                    , Paths.get(jcrDir, subPart).toString(), file);
         }
-        Asset a = new Asset(file.getFileName().toString()
-                , Paths.get(jcrDir, subPart).toString(), file);
         importableAssetItems.add(a);
-        AssetReportWriter.addAssetRow(a);
+        AssetReportWriter.addAssetRow((AssetReportable) a);
     }
 
     public void writeHippoAssetImportables() {

@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="publication" type="uk.nhs.digital.ps.migrator.model.hippo.Publication" -->
+<#-- @ftlvariable name="publication" type="uk.nhs.digital.gossmigrator.model.hippo.Publication" -->
 {
 "name" : "${publication.jcrNodeName}",
 "primaryType" : "publicationsystem:publication",

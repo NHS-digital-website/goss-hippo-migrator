@@ -86,7 +86,7 @@ public class GossFile {
         String fileName = p.getFileName().toString();
         p = p.subpath(0, p.getNameCount() - 1);
 
-        if (Asset.isImage(fileName)) {
+        if (GossExportHelper.isImage(fileName)) {
             jcrPath = Paths.get(Config.JCR_GALLERY_ROOT, p.toString().toLowerCase()
                     , fileName.toLowerCase()).toString();
         } else {

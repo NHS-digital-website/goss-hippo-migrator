@@ -1,4 +1,4 @@
-<#-- @ftlvariable name="folder" type="com.paul.prototype.model.Asset" -->
+<#-- @ftlvariable name="asset" type="uk.nhs.digital.gossmigrator.model.hippo.Asset" -->
 {
   "name" : "${asset.jcrNodeName}",
   "primaryType" : "hippogallery:exampleAssetSet",

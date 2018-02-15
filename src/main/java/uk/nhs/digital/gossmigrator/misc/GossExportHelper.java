@@ -106,4 +106,16 @@ public class GossExportHelper {
         return defaultValue;
     }
 
+    public static boolean isImage(String file) {
+        return (file.endsWith(".gif") || file.endsWith(".jpeg") || file.endsWith(".jpg")
+                || file.endsWith(".png") || file.endsWith(".svg"));
+    }
+
+    public static boolean isSupportedAsset(String file) {
+        return (file.endsWith(".doc") || file.endsWith(".docx") || file.endsWith(".xls")
+                || file.endsWith(".xlsx") || file.endsWith(".pdf") || file.endsWith(".csv")
+                || file.endsWith(".zip") || file.endsWith(".txt") || file.endsWith(".rar")
+                || file.endsWith(".ppt") || file.endsWith(".pptx"));
+    }
+
 }

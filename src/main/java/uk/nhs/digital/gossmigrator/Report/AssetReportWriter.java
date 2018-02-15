@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.model.hippo.Asset;
+import uk.nhs.digital.gossmigrator.model.hippo.AssetReportable;
 
 public class AssetReportWriter {
 
@@ -19,7 +20,7 @@ public class AssetReportWriter {
         assetsRowhead.createCell(2).setCellValue("Status");
     }
 
-    public static void addAssetRow(Asset asset) {
+    public static void addAssetRow(AssetReportable asset) {
         HSSFSheet sheet = report.getSheet("Assets");
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
         row.createCell(0).setCellValue(asset.getFilePath());
