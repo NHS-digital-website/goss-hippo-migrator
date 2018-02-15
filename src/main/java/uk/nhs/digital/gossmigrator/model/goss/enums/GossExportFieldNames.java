@@ -32,8 +32,8 @@ public enum GossExportFieldNames {
     ,EXTRA_OBJECT_ID("ETCOBJECTID", false),
     LINK_DISPLAY_TEXT("TEXT", false),
     LINKS("Links", false),
-    MEDIA("Media", false)
-    ;
+    MEDIA("Media", false),
+    COMPONENTS("COMPONENTS", false);
 
     private String name;
     private boolean isMandatory;

@@ -11,7 +11,9 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class GossExportHelper {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossExportHelper.class);
@@ -26,6 +28,22 @@ public class GossExportHelper {
                     , gossId, fieldName, value.toString());
             return null;
         }
+    }
+
+    public static List<Long> getLongList(JSONObject gossJson, GossExportFieldNames fieldName, long gossId) {
+        List<Long> ids = new ArrayList<>();
+        Object value = gossJson.get(fieldName.getName());
+        String[] idStrings = ((String)value).split(",");
+
+        for(int i = 0; i < idStrings.length; i++){
+            try{
+                ids.add(Long.parseLong(idStrings[i]));
+            }catch (NumberFormatException e){
+                LOGGER.warn("Goss Id:{}, Field:{}, Value present:{}. Expected Long value, but was not there. "
+                        , gossId, fieldName, value.toString());
+            }
+        }
+        return ids;
     }
 
     public static Long getIdOrError(JSONObject gossJson, GossExportFieldNames fieldName) {
@@ -93,6 +111,8 @@ public class GossExportHelper {
 
         return dateString;
     }
+
+
 
 
 

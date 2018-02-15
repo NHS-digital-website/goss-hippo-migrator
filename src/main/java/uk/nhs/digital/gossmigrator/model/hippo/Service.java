@@ -18,8 +18,9 @@ public class Service extends HippoImportable {
     private HippoRichText introduction;
     private List<Section> sections;
     private HippoRichText contactDetails;
+    private HippoRichText component;
 
-    private Service(GossServiceContent gossContent) {
+    protected Service(GossServiceContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
         id = gossContent.getId();
 
@@ -34,6 +35,7 @@ public class Service extends HippoImportable {
         sections = parsedArticleText.getSections();
         topTasks = parsedArticleText.getTopTasks();
         contactDetails = parsedArticleText.getContactDetails();
+        component = parsedArticleText.getComponent();
     }
 
     /*
@@ -87,5 +89,10 @@ public class Service extends HippoImportable {
     @SuppressWarnings("unused")
     public String getServicePath() {
         return servicePath;
+    }
+
+    @SuppressWarnings("unused")
+    public HippoRichText getComponent() {
+        return component;
     }
 }

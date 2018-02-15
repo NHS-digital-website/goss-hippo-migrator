@@ -1,8 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -20,16 +18,16 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection.*;
  * Splits the goss data into parts based upon Goss specific HTML comments.
  * Constructor runs the parsing code.
  */
-public class ParsedArticleText {
+public class ParsedArticleText extends ParsedArticle {
+
     private final static Logger LOGGER = LoggerFactory.getLogger(ParsedArticleText.class);
     private HippoRichText introduction;
     private List<Section> sections;
     private HippoRichText contactDetails;
     private List<HippoRichText> topTasks;
     private HippoRichText defaultNode;
-    private long gossId;
     private HippoRichText keyFacts;
-
+    private HippoRichText component;
 
     /**
      * Parses ARTICLETEXT node from Goss export.
@@ -38,34 +36,21 @@ public class ParsedArticleText {
      * @param gossId          ARTICLEID value for logging.
      * @param gossArticleText ARTICLETEXT String.
      */
-    public ParsedArticleText(long gossId, String gossArticleText) {
-        this.gossId = gossId;
+     ParsedArticleText(long gossId, String gossArticleText) {
+        super(gossId, gossArticleText);
 
-        // Turn the comments into elements (so can parse)
-        gossArticleText = gossArticleText.replace("<!--", "<").replace("-->", ">");
-        Document doc = Jsoup.parse(gossArticleText);
-
-        // JSoup library adds html + head + body tags.  Only care about body.
-        Element body = doc.selectFirst("body");
-
-        defaultNode = extractDefaultNode(body);
-        introduction = extractIntroduction(body);
-        sections = extractSections(body);
-        topTasks = extractTopTasks(body);
-        extractComponent(body);
-        contactDetails = extractContactDetails(body);
-        keyFacts = extractKeyFacts(body);
+        defaultNode = extracRichTextElement(INTRO_AND_SECTIONS);
+        introduction = extractIntroduction();
+        sections = extractSections();
+        topTasks = extractTopTasks();
+        component = extracRichTextElement(COMPONENT);
+        contactDetails = extracRichTextElement(CONTACT_INFO);
+        keyFacts = extracRichTextElement(FACTS);
         LOGGER.debug(toString());
     }
 
-    /**
-     * ARTICLETEXT <textbody id="__DEFAULT">body lives here<textbody>
-     *
-     * @param body The Goss ARTICLETEXT.
-     * @return Introduction html.
-     */
-    private HippoRichText extractDefaultNode(Element body) {
-        Element gossDefaultNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
+    private HippoRichText extracRichTextElement(ArticleTextSection section){
+        Element gossDefaultNode = body.selectFirst("#" + section.getId());
         HippoRichText result = null;
         if (gossDefaultNode != null) {
             result = new HippoRichText(gossDefaultNode.html(), gossId);
@@ -73,38 +58,14 @@ public class ParsedArticleText {
         return result;
     }
 
-    /**
-     * Get the contact details part of the Goss articletext node.
-     *
-     * @param body Articletext as child of a body element.
-     * @return HippoRichText object for the contact details.
-     */
-    private HippoRichText extractContactDetails(Element body) {
-        Element gossContactDetails = body.selectFirst("#" + CONTACT_INFO.getId());
-        HippoRichText result = null;
-        if (gossContactDetails != null) {
-            result = new HippoRichText(gossContactDetails.html(), gossId);
-        }
-        return result;
-    }
-
-    private HippoRichText extractKeyFacts(Element body) {
-        Element gossContactDetails = body.selectFirst("#" + FACTS.getId());
-        HippoRichText result = null;
-        if (gossContactDetails != null) {
-            result = new HippoRichText(gossContactDetails.html(), gossId);
-        }
-        return result;
-    }
 
     /**
      * ARTICLETEXT <textbody id="__DEFAULT">body lives here<textbody>
      * Any stuff that appears before a h2 inside a textbody with id __DEFAULT. Most won't have these. (From spec).
      *
-     * @param body The Goss ARTICLETEXT.
      * @return Introduction html.
      */
-    private HippoRichText extractIntroduction(Element body) {
+    private HippoRichText extractIntroduction() {
         Element gossIntroNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
 
         // Assume the intro node has no text of its own, only children.
@@ -139,29 +100,14 @@ public class ParsedArticleText {
         return null;
     }
 
-    /**
-     * There is a component part of the Goss ARTICLETEXT.
-     * Not used at the moment.  In to log a warning if we find it containing data in full export.
-     *
-     * @param body The ARTICLETEXT as child of a body node.
-     */
-    private void extractComponent(Element body) {
-        Element componentGossNode = body.selectFirst("#" + COMPONENT.getId());
-        if (null != componentGossNode) {
-            if (componentGossNode.children().size() > 0 || !StringUtils.isEmpty(componentGossNode.ownText())) {
-                LOGGER.warn("Goss Id:{}.  Has data in ARTICLETEXT 'Component' Section.  Currently ignored in import.", gossId);
-            }
-        }
-    }
 
     /**
      * Get List of top tasks.
      * In source data these are separated by paragraph tags.
      *
-     * @param body Parent element of Goss ARTICLETEXT
      * @return List of top tasks as HippoRichText objects.
      */
-    private List<HippoRichText> extractTopTasks(Element body) {
+    private List<HippoRichText> extractTopTasks() {
         Element gossTopTasksNode = body.selectFirst("#" + ArticleTextSection.TOPTASKS.getId());
         List<HippoRichText> topTasks = null;
 
@@ -186,11 +132,10 @@ public class ParsedArticleText {
      * Anything before first h2 is the introduction and should have already been dealt with
      * and removed from tree.
      * TODO Verify h2/h3 are always immediate children.  Expect them to be.
-     *
-     * @param body The parent of the __DEFAULT span.
+     *     *
      * @return A list of Sections.
      */
-    private List<Section> extractSections(Element body) {
+    private List<Section> extractSections() {
         Element gossSectionsNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
         promoteH3s(gossSectionsNode);
 
@@ -295,5 +240,7 @@ public class ParsedArticleText {
                 "}";
     }
 
-
+    public HippoRichText getComponent() {
+        return component;
+    }
 }
