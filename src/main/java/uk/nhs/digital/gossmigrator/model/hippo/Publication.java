@@ -141,7 +141,7 @@ public class Publication extends HippoImportable {
      * @param gossContent, the goss extract with the publication to be processed
      */
     private void setFilesAndLinks(GossPublicationContent gossContent){
-        ParsedArticleLinks parsedArticleLinks = new ParsedArticleLinks(gossContent.getText());
+        ParsedArticleLinks parsedArticleLinks = new ParsedArticleLinks(id, gossContent.getText());
         this.relatedLinks = parsedArticleLinks.getRelatedLinks();
         this.resourceLinks = parsedArticleLinks.getResourceLinks();
 

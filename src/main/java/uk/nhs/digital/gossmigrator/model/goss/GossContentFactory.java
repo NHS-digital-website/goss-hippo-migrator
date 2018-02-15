@@ -19,7 +19,9 @@ public class GossContentFactory {
         Long templateId = getLong(gossJson, TEMPLATE_ID, id);
         if (templateId != null && templateId.equals(PUBLICATION_ID)) {
             content = GossPublicationContent.getInstance(gossJson, gossExportFileLine);
-        } else {
+        } else if(templateId != null && templateId.equals(18L))            {
+            content = new GossHubContent(gossJson, gossExportFileLine);
+        }else{
             content = GossServiceContent.getInstance(gossJson, gossExportFileLine);
         }
         return content;
