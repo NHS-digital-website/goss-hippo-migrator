@@ -19,10 +19,10 @@ public class TaxonomyMapper {
      */
     public Map<String, String> generateTaxonomyMap() {
         File csvData = new File(Config.TAXONOMY_MAPPING_FILE);
-        CSVReader<Map<String,String>> reader = new CSVReader<>();
+        CSVReader<Map<String, String>> reader = new CSVReader<>();
         CSVParser parser = reader.readFile(csvData);
-         parser.forEach(record -> taxonomyMap = reader.processMapping(taxonomyMap,record, TAXONOMY_MAPPING));
-         return taxonomyMap;
+        parser.forEach(record -> taxonomyMap = reader.processMapping(taxonomyMap, record, TAXONOMY_MAPPING));
+        return taxonomyMap;
     }
 
 }

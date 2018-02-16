@@ -43,8 +43,8 @@ public class MetadataMappingItems extends HashMap<String, MetadataMappingItem> {
 
     public String getHippoValue(GossContentMeta gossContentMeta) {
         if (null == get(getKey(gossContentMeta.getGroup(), gossContentMeta.getValue()))) {
-            LOGGER.error("No hippo static data mapping for goss values:{}",
-                    getKey(gossContentMeta.getGroup(), gossContentMeta.getValue()));
+            LOGGER.error("No hippo static data mapping for goss values:Group:{}, Value:{}",
+                    gossContentMeta.getGroup(), gossContentMeta.getValue());
             return "";
         }
         return get(getKey(gossContentMeta.getGroup(), gossContentMeta.getValue())).getHippoValue();

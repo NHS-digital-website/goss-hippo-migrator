@@ -33,12 +33,15 @@ public class GossExportHelper {
     public static List<Long> getLongList(JSONObject gossJson, GossExportFieldNames fieldName, long gossId) {
         List<Long> ids = new ArrayList<>();
         Object value = gossJson.get(fieldName.getName());
+        if(StringUtils.isEmpty(value.toString())){
+            return ids;
+        }
         String[] idStrings = ((String)value).split(",");
 
-        for(int i = 0; i < idStrings.length; i++){
-            try{
-                ids.add(Long.parseLong(idStrings[i]));
-            }catch (NumberFormatException e){
+        for (String idString : idStrings) {
+            try {
+                ids.add(Long.parseLong(idString));
+            } catch (NumberFormatException e) {
                 LOGGER.warn("Goss Id:{}, Field:{}, Value present:{}. Expected Long value, but was not there. "
                         , gossId, fieldName, value.toString());
             }

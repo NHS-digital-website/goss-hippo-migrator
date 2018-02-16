@@ -7,7 +7,8 @@ public enum ArticleTextSection {
     COMPONENT("COMPONENT"),
     FACTS("FACTS"),
     RESOURCE_LINKS("RESOURCELINKS"),
-    RELATED_LINKS("LINKS")
+    RELATED_LINKS("LINKS"),
+    NEWSFLASH("NEWSFLASH")
     ;
 
     private String id;

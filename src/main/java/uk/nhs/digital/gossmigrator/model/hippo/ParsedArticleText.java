@@ -36,20 +36,17 @@ public class ParsedArticleText extends ParsedArticle {
     /**
      * Parses ARTICLETEXT node from Goss export.
      * Results available from getters.
-     *  @param gossId          ARTICLEID value for logging.
+     *
+     * @param gossId          ARTICLEID value for logging.
      * @param gossArticleText ARTICLETEXT String.
      * @param contentType
      */
-     ParsedArticleText(long gossId, String gossArticleText, ContentType contentType) {
+    ParsedArticleText(long gossId, String gossArticleText, ContentType contentType) {
         super(gossId, gossArticleText);
 
         this.contentType = contentType;
 
-        // Turn the comments into elements (so can parse)
-        gossArticleText = gossArticleText.replace("<!--", "<").replace("-->", ">");
-        Document doc = Jsoup.parse(gossArticleText);
-
-         checkSections(body);
+        checkSections(body);
         defaultNode = extracRichTextElement(INTRO_AND_SECTIONS);
         introduction = extractIntroduction();
         sections = extractSections();
@@ -60,7 +57,7 @@ public class ParsedArticleText extends ParsedArticle {
         LOGGER.debug(toString());
     }
 
-    private HippoRichText extracRichTextElement(ArticleTextSection section){
+    private HippoRichText extracRichTextElement(ArticleTextSection section) {
         Element gossDefaultNode = body.selectFirst("#" + section.getId());
         HippoRichText result = null;
         if (gossDefaultNode != null) {
@@ -73,10 +70,10 @@ public class ParsedArticleText extends ParsedArticle {
         for (Element a : body.select("textbody")) {
             String id = a.attr("id");
             if (!ArticleTextSection.idExists(id)) {
-                if(id.equals("ALSOINTERESTED") && contentType != ContentType.PUBLICATION){
+                if (id.equals("ALSOINTERESTED") && contentType != ContentType.PUBLICATION) {
                     // We have knowingly ignored these for publications.
                     LOGGER.error("Article id:{}, (not a publication). section ALSOINTERESTED unexpected", gossId, id);
-                }else if(!id.equals("ALSOINTERESTED")){
+                } else if (!id.equals("ALSOINTERESTED")) {
                     LOGGER.error("Article id:{}, ARTICLETEXT section {} unexpected.", gossId, id);
                 }
             }
@@ -100,9 +97,12 @@ public class ParsedArticleText extends ParsedArticle {
         boolean haveIntro = false;
 
         // Going to assume any h2 or h3 is an immediate child of this for now.
+        // If they are in a table leave them together.
         Elements h2h3Elements = body.select("h2, h3");
         for (Element h2h3Element : h2h3Elements) {
-            if (!h2h3Element.parent().tagName().equals("textbody")) {
+            if (!h2h3Element.parent().tagName().equals("textbody")
+                    && !h2h3Element.parent().tagName().equals("td")
+                    && !h2h3Element.parent().tagName().equals("caption")) {
                 LOGGER.warn("Goss Article Id:{}, Found h2 or h3 in article text nested deeper than expected.", gossId);
             }
         }
@@ -111,6 +111,10 @@ public class ParsedArticleText extends ParsedArticle {
 
             if ("h2".equals(child.tagName()) || "h3".equals(child.tagName())) {
                 // Found first h2 or h3
+                break;
+            }
+            if ("caption".equals(child.tagName()) && ("h2".equals(child.child(0).tagName())
+                    || "h3".equals(child.child(0).tagName()))) {
                 break;
             }
             haveIntro = true;
@@ -156,8 +160,7 @@ public class ParsedArticleText extends ParsedArticle {
      * If no h2's then promote any h3's to h2.
      * Anything before first h2 is the introduction and should have already been dealt with
      * and removed from tree.
-     * TODO Verify h2/h3 are always immediate children.  Expect them to be.
-     *     *
+     *
      * @return A list of Sections.
      */
     private List<Section> extractSections() {
@@ -199,7 +202,7 @@ public class ParsedArticleText extends ParsedArticle {
         StringBuilder content = new StringBuilder();
 
         for (Element element : defaultNode.children()) {
-            if ("h2".equals(element.tagName()) && !haveSection) {
+            if (("h2".equals(element.tagName()) || "caption".equals(element.tagName())) && !haveSection) {
                 title = element.ownText();
                 haveSection = true;
                 element.remove();

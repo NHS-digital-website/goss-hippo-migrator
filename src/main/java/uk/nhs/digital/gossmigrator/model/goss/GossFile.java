@@ -102,7 +102,7 @@ public class GossFile {
         }
 
         // Check source file exists
-        p = Paths.get(fileSourceFolder, p.toString(), fileName);
+        p = Paths.get(fileSourceFolder, p.toString());
         if (!p.toFile().exists()) {
             LOGGER.error("Could not find file:{} when processing goss MediaId:{}", p, id);
             warnings.add("Could not find file " + p);

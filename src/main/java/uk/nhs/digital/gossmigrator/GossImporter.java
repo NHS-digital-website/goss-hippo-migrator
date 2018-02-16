@@ -65,9 +65,9 @@ public class GossImporter {
 
         ReportWriter.generateReport();
 
-        AssetImporter assetImporter = new AssetImporter();
-        assetImporter.createAssetHippoImportables();
-        assetImporter.writeHippoAssetImportables();
+      //  AssetImporter assetImporter = new AssetImporter();
+      //  assetImporter.createAssetHippoImportables();
+      //  assetImporter.writeHippoAssetImportables();
 
         SeriesImporter seriesImporter = new SeriesImporter();
         gossData.setSeriesContentList(seriesImporter.createPublicationSeries());

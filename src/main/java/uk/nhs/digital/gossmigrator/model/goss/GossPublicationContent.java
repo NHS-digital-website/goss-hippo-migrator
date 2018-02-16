@@ -102,6 +102,12 @@ public class GossPublicationContent extends GossContent {
                     case GRANULARITY:
                         granularity.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
                         break;
+                    case IMPORTFIELDCREATOR:
+                        // Don't need
+                    case AREA:
+                    case SUB_TOPIC:
+                        // TODO with Dave Baines.  Don't know if need
+                        break;
                     default:
                         LOGGER.warn("Meta group ignored:{}, article id:{}", metaGroup, id);
                         warnings.add("Meta group ignored: " + metaGroup);

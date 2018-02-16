@@ -98,6 +98,10 @@ public class Publication extends HippoImportable {
                         , publication.getId(), seriesId);
                 publication.getWarnings().add("No matching series found. SeriesId: " + seriesId);
             }
+        }else {
+            LOGGER.warn("No matching series found.  ArticleId:{}. "
+                    , publication.getId());
+            publication.getWarnings().add("No matching series found. ArticleId: " + publicationId);
         }
         return publication;
     }

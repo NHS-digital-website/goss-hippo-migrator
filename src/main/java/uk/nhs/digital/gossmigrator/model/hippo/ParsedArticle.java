@@ -1,8 +1,10 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class ParsedArticle {
 
@@ -13,7 +15,10 @@ public class ParsedArticle {
 
         this.gossId = gossId;
 
-        // Turn the comments into elements (so can parse)
+
+        gossArticleText = StringUtils.replace(gossArticleText, "<!--Changing the preceding comment will unlock the text block-->", "");
+        gossArticleText = StringUtils.replace(gossArticleText, "<!--iCMLockedTextBlock-->", "");
+
         gossArticleText = gossArticleText.replace("<!--", "<").replace("-->", ">");
         Document doc = Jsoup.parse(gossArticleText);
 

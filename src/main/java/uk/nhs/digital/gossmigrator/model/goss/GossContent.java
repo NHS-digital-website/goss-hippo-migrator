@@ -93,11 +93,15 @@ public class GossContent implements Comparable<GossContent> {
             if (maxExpectedValues < count && maxExpectedValues > 0) {
                 break;
             }
-            if (!isFirstRow) {
-                csvList.append(", ");
+
+            String hippoValue = GossImporter.metadataMapping.getHippoValue(item);
+            if(!StringUtils.isEmpty(hippoValue)) {
+                if (!isFirstRow) {
+                    csvList.append(", ");
+                }
+                csvList.append("\"").append(hippoValue).append("\"");
+                isFirstRow = false;
             }
-            csvList.append("\"").append(GossImporter.metadataMapping.getHippoValue(item)).append("\"");
-            isFirstRow = false;
             count++;
         }
 
