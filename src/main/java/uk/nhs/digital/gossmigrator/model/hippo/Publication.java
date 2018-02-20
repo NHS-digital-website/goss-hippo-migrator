@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLATE_FORMAT;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType.TAXONOMY;
 
 public class Publication extends HippoImportable {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Publication.class);
     private final HippoRichText summary;
-    private String title;
     private final String informationType;
     private final HippoRichText keyFacts;
     private final String coverageStart;
@@ -32,7 +32,6 @@ public class Publication extends HippoImportable {
     private List<HippoLink> relatedLinks = new ArrayList<>();
     private List<HippoLink> resourceLinks = new ArrayList<>();
     private List<HippoFile> files = new ArrayList<>();
-    private List<String> warnings = new ArrayList<>();
 
     public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
@@ -117,7 +116,7 @@ public class Publication extends HippoImportable {
         List<GossContentMeta> metadataList = gossContent.getTaxonomyData();
 
         for (GossContentMeta metaData : metadataList) {
-            if ("Topics".equals(metaData.getGroup())) {
+            if (TAXONOMY.name().equals(metaData.getGroup())) {
                 String gossValue = metaData.getValue();
                 String hippoValue = gossData.getTaxonomyMap().get(gossValue);
 

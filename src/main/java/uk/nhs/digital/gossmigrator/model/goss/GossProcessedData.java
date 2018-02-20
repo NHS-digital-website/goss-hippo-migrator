@@ -1,5 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
+import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ public class GossProcessedData {
     private Map<Long, String> gossContentUrlMap;
     private Map<String, String> taxonomyMap;
     private Map<Long,GossLink> gossLinkMap;
+    private Map<Long, ContentType> contentTypeMap;
 
     public Map<Long, GossFile> getGossFileMap() {
         return gossFileMap;
@@ -80,5 +82,13 @@ public class GossProcessedData {
 
     public void setTaxonomyMap(Map<String, String> taxonomyMap) {
         this.taxonomyMap = taxonomyMap;
+    }
+
+    public Map<Long, ContentType> getContentTypeMap() {
+        return contentTypeMap;
+    }
+
+    public void setContentTypeMap(Map<Long, ContentType> contentTypeMap) {
+        this.contentTypeMap = contentTypeMap;
     }
 }

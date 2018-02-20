@@ -69,4 +69,28 @@ public abstract class HippoImportable {
     public Long getId() {
         return id;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public List<String> getWarnings() {
+        return warnings;
+    }
+
+    public String getSeoSummary() {
+        return seoSummary;
+    }
+
+    public String getShortSummary() {
+        return shortSummary;
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }

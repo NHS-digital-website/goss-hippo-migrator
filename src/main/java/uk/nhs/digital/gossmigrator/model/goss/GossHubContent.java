@@ -16,7 +16,7 @@ public class GossHubContent extends GossServiceContent{
         super(gossJson, gossExportFileLine);
         contentType = ContentType.HUB;
         extra = new GossContentExtra(gossJson, GossExportFieldNames.EXTRA, id);
-        introduction = getString(gossJson, INTRO, id);
+        introduction = GossExportHelper.getString(gossJson, GossExportFieldNames.INTRO, id);
     }
 
     public static GossHubContent getInstance(JSONObject gossJson, long gossExportFileLine){
