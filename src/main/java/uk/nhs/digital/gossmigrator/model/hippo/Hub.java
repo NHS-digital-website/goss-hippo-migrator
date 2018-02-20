@@ -1,7 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import uk.nhs.digital.gossmigrator.model.goss.GossHubContent;
-import uk.nhs.digital.gossmigrator.model.goss.GossServiceContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import java.util.List;

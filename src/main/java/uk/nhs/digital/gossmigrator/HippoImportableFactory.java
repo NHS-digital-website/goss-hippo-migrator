@@ -3,12 +3,12 @@ package uk.nhs.digital.gossmigrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
-import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.Report.ServicesReportWriter;
 import uk.nhs.digital.gossmigrator.model.goss.*;
 import uk.nhs.digital.gossmigrator.model.hippo.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HippoImportableFactory {
 

@@ -5,8 +5,6 @@ import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 
-import java.util.List;
-
 public class GossHubContent extends GossServiceContent{
 
     private GossContentExtra extra;

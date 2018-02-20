@@ -1,7 +1,7 @@
-package uk.nhs.digital.gossmigrator.model.goss;
+package uk.nhs.digital.gossmigrator;
 
 import org.json.simple.JSONObject;
-import uk.nhs.digital.gossmigrator.GossImporter;
+import uk.nhs.digital.gossmigrator.model.goss.*;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import static uk.nhs.digital.gossmigrator.config.TemplateConfig.PUBLICATION_ID;
@@ -18,9 +18,10 @@ public class GossContentFactory {
     public static GossContent generateGossContent(JSONObject gossJson, long gossExportFileLine){
         GossContent content = null;
         ContentType type;
-        Long id = getIdOrError(gossJson, ID);
 
+        Long id = getIdOrError(gossJson, ID);
         Long templateId = getLong(gossJson, TEMPLATE_ID, id);
+
         if(PUBLICATION_ID.equals(templateId)) {
             type = ContentType.PUBLICATION;
         }else if (GossImporter.gossData.getContentTypeMap().get(templateId) != null){
@@ -40,6 +41,7 @@ public class GossContentFactory {
                 content = GossHubContent.getInstance(gossJson, gossExportFileLine);
                 break;
         }
+
         return content;
     }
 

@@ -18,7 +18,7 @@ public class GossContentExtra {
     private String title;
     private List<Long> componentIds;
 
-    public GossContentExtra(JSONObject gossJson, GossExportFieldNames fieldName, long gossId){
+    GossContentExtra(JSONObject gossJson, GossExportFieldNames fieldName, long gossId){
         JSONObject extra = (JSONObject)gossJson.get(fieldName.getName());
         this.coverageStart = GossExportHelper.getDate(extra, COVSTARTDATE, gossId, GOSS_SHOR_FORMAT);
         this.coverageEnd = GossExportHelper.getDate(extra, COVENDDATE, gossId, GOSS_SHOR_FORMAT);
@@ -27,7 +27,7 @@ public class GossContentExtra {
         componentIds = GossExportHelper.getLongList(extra, GossExportFieldNames.COMPONENTS, gossId);
     }
 
-    public GossContentExtra() {
+    GossContentExtra() {
 
     }
 

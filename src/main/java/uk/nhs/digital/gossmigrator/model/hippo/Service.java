@@ -1,6 +1,5 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
-import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.model.goss.GossServiceContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
@@ -38,8 +37,8 @@ public class Service extends HippoImportable {
      * Factory method to generate a Service instance
      */
     public static Service getInstance(GossServiceContent gossContent) {
-        Service service = new Service(gossContent);
-        return service;
+        return new Service(gossContent);
+
     }
 
     @SuppressWarnings("unused")
