@@ -33,7 +33,7 @@ public class GossExportHelper {
     public static List<Long> getLongList(JSONObject gossJson, GossExportFieldNames fieldName, long gossId) {
         List<Long> ids = new ArrayList<>();
         Object value = gossJson.get(fieldName.getName());
-        if(StringUtils.isEmpty(value.toString())){
+        if(value == null || StringUtils.isEmpty(value.toString())){
             return ids;
         }
         String[] idStrings = ((String)value).split(",");

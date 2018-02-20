@@ -89,39 +89,43 @@ public class ParsedArticleText extends ParsedArticle {
      */
     private HippoRichText extractIntroduction() {
         Element gossIntroNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
-
-        // Assume the intro node has no text of its own, only children.
-        if (!StringUtils.isEmpty(gossIntroNode.ownText())) {
-            LOGGER.warn("Goss article id: {}. Unexpected text in goss article text introduction.", gossId);
-        }
+        StringBuilder result = new StringBuilder();
         boolean haveIntro = false;
 
-        // Going to assume any h2 or h3 is an immediate child of this for now.
-        // If they are in a table leave them together.
-        Elements h2h3Elements = body.select("h2, h3");
-        for (Element h2h3Element : h2h3Elements) {
-            if (!h2h3Element.parent().tagName().equals("textbody")
-                    && !h2h3Element.parent().tagName().equals("td")
-                    && !h2h3Element.parent().tagName().equals("caption")) {
-                LOGGER.warn("Goss Article Id:{}, Found h2 or h3 in article text nested deeper than expected.", gossId);
+        if (gossIntroNode != null) {
+            // Assume the intro node has no text of its own, only children.
+            if (!StringUtils.isEmpty(gossIntroNode.ownText())) {
+                LOGGER.warn("Goss article id: {}. Unexpected text in goss article text introduction.", gossId);
             }
-        }
-        StringBuilder result = new StringBuilder();
-        for (Element child : gossIntroNode.children()) {
 
-            if ("h2".equals(child.tagName()) || "h3".equals(child.tagName())) {
-                // Found first h2 or h3
-                break;
+            // Going to assume any h2 or h3 is an immediate child of this for now.
+            // If they are in a table leave them together.
+            Elements h2h3Elements = body.select("h2, h3");
+            for (Element h2h3Element : h2h3Elements) {
+                if (!h2h3Element.parent().tagName().equals("textbody")
+                        && !h2h3Element.parent().tagName().equals("td")
+                        && !h2h3Element.parent().tagName().equals("caption")) {
+                    LOGGER.warn("Goss Article Id:{}, Found h2 or h3 in article text nested deeper than expected.", gossId);
+                }
             }
-            if ("caption".equals(child.tagName()) && ("h2".equals(child.child(0).tagName())
-                    || "h3".equals(child.child(0).tagName()))) {
-                break;
+
+            for (Element child : gossIntroNode.children()) {
+
+                if ("h2".equals(child.tagName()) || "h3".equals(child.tagName())) {
+                    // Found first h2 or h3
+                    break;
+                }
+                if ("caption".equals(child.tagName()) && ("h2".equals(child.child(0).tagName())
+                        || "h3".equals(child.child(0).tagName()))) {
+                    break;
+                }
+                haveIntro = true;
+                result.append(child.outerHtml());
+                // Remove the node so does not get processed as part of sections.
+                child.remove();
             }
-            haveIntro = true;
-            result.append(child.outerHtml());
-            // Remove the node so does not get processed as part of sections.
-            child.remove();
         }
+
 
         if (haveIntro) {
             return new HippoRichText(result.toString(), gossId);
@@ -165,24 +169,27 @@ public class ParsedArticleText extends ParsedArticle {
      */
     private List<Section> extractSections() {
         Element gossSectionsNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
-        promoteH3s(gossSectionsNode);
-
-        boolean haveSections = false;
         List<Section> sections = null;
-        Section section;
 
-        while (true) {
-            section = extractSection(gossSectionsNode);
-            if (section != null) {
-                if (!haveSections) {
-                    sections = new ArrayList<>();
+        if(gossSectionsNode != null){
+            promoteH3s(gossSectionsNode);
+
+            boolean haveSections = false;
+            Section section;
+
+            while (true) {
+                section = extractSection(gossSectionsNode);
+                if (section != null) {
+                    if (!haveSections) {
+                        sections = new ArrayList<>();
+                    }
+                    sections.add(section);
+                    haveSections = true;
+                } else {
+                    // Finished with __DEFAULT node
+                    gossSectionsNode.remove();
+                    break;
                 }
-                sections.add(section);
-                haveSections = true;
-            } else {
-                // Finished with __DEFAULT node
-                gossSectionsNode.remove();
-                break;
             }
         }
 
@@ -201,19 +208,22 @@ public class ParsedArticleText extends ParsedArticle {
         String title = null;
         StringBuilder content = new StringBuilder();
 
-        for (Element element : defaultNode.children()) {
-            if (("h2".equals(element.tagName()) || "caption".equals(element.tagName())) && !haveSection) {
-                title = element.ownText();
-                haveSection = true;
-                element.remove();
-            } else if ("h2".equals(element.tagName())) {
-                // Start of new section
-                break;
-            } else {
-                // Part of section to be processed.
-                content.append(element.toString());
-                element.remove();
+        if (defaultNode != null) {
+            for (Element element : defaultNode.children()) {
+                if (("h2".equals(element.tagName()) || "caption".equals(element.tagName())) && !haveSection) {
+                    title = element.ownText();
+                    haveSection = true;
+                    element.remove();
+                } else if ("h2".equals(element.tagName())) {
+                    // Start of new section
+                    break;
+                } else {
+                    // Part of section to be processed.
+                    content.append(element.toString());
+                    element.remove();
+                }
             }
+
         }
 
         return haveSection ? new Section(title, SectionTypes.DEFAULT.getTypeName()
@@ -226,7 +236,7 @@ public class ParsedArticleText extends ParsedArticle {
      * @param body Element to parse.
      */
     private void promoteH3s(Element body) {
-        if (body.selectFirst("h2") == null) {
+        if (body != null && body.selectFirst("h2") == null) {
             // No h2's so promote any h3s
             for (Element h3 : body.select("h3")) {
                 h3.tagName("h2");

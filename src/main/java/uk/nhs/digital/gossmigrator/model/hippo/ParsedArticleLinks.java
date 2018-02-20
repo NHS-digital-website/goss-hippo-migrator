@@ -33,12 +33,15 @@ public class ParsedArticleLinks extends ParsedArticle{
     private List<HippoLink> extractLinks(ArticleTextSection section, Element body) {
         List<HippoLink> links = new ArrayList<>();
         Element gossLinks = body.selectFirst("#" + section.getId());
-        List<Element> elements = gossLinks.getElementsByTag("a");
-        for (Element element : elements) {
-            String text = element.ownText();
-            String address = element.attributes().get("href");
-            links.add(new HippoLink(address, text));
+        if(gossLinks != null){
+            List<Element> elements = gossLinks.getElementsByTag("a");
+            for (Element element : elements) {
+                String text = element.ownText();
+                String address = element.attributes().get("href");
+                links.add(new HippoLink(address, text));
+            }
         }
+
         return links;
     }
 
