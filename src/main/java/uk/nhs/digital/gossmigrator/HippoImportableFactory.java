@@ -6,10 +6,7 @@ import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
 import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.Report.ServicesReportWriter;
 import uk.nhs.digital.gossmigrator.model.goss.*;
-import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
-import uk.nhs.digital.gossmigrator.model.hippo.Publication;
-import uk.nhs.digital.gossmigrator.model.hippo.Series;
-import uk.nhs.digital.gossmigrator.model.hippo.Service;
+import uk.nhs.digital.gossmigrator.model.hippo.*;
 
 import java.util.*;
 
@@ -43,6 +40,9 @@ public class HippoImportableFactory {
                 break;
             case SERIES:
                 hippoContent = Series.getInstance((GossSeriesContent) gossContent);
+                break;
+            case HUB:
+                hippoContent = Hub.getInstance((GossHubContent)gossContent);
                 break;
             default:
                 LOGGER.error("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());

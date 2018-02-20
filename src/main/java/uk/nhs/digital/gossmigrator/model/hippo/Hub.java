@@ -2,20 +2,47 @@ package uk.nhs.digital.gossmigrator.model.hippo;
 
 import uk.nhs.digital.gossmigrator.model.goss.GossHubContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossServiceContent;
+import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import java.util.List;
 
-public class Hub extends Service {
+public class Hub extends HippoImportable {
 
-    List<Long> componentIds;
+    private List<Long> componentIds;
+    private String listTitle;
+    private HippoRichText component;
 
-    public Hub(GossServiceContent gossContent){
+    private Hub(GossHubContent gossContent){
         super(gossContent);
-        componentIds = ((GossHubContent)gossContent).getComponentIds();
+        id = gossContent.getId();
+        title = gossContent.getHeading();
+        seoSummary = gossContent.getIntroduction();
+        summary = gossContent.getIntroduction();
+        shortSummary = gossContent.getIntroduction();
+
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.HUB);
+        sections = parsedArticleText.getSections();
+        componentIds = gossContent.getExtra().getComponentIds();
+        listTitle = gossContent.getExtra().getTitle();
+        component = parsedArticleText.getComponent();
+    }
+
+    public static Hub getInstance(GossHubContent hubContent){
+        return new Hub(hubContent);
     }
 
     @SuppressWarnings("unused")
     public List<Long> getComponentIds() {
         return componentIds;
+    }
+
+    @SuppressWarnings("unused")
+    public String getListTitle() {
+        return listTitle;
+    }
+
+    @SuppressWarnings("unused")
+    public HippoRichText getComponent() {
+        return component;
     }
 }

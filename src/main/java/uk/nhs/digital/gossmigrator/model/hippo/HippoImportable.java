@@ -1,6 +1,10 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import uk.nhs.digital.gossmigrator.model.goss.GossContent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static uk.nhs.digital.gossmigrator.misc.TextHelper.toLowerCaseDashedValue;
 import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
@@ -11,11 +15,23 @@ public abstract class HippoImportable {
     private String jcrNodeName;
     private String jcrPath;
     protected Long id;
+    protected String title;
+    protected String summary;
+    List<String> warnings = new ArrayList<>();
+    String seoSummary;
+    String shortSummary;
+    List<Section> sections;
 
     protected HippoImportable(final String localizedName, final String jcrPath, final String jcrNodeName) {
         this.localizedName = localizedName;
         this.jcrNodeName = toLowerCaseDashedValue(jcrNodeName);
         this.jcrPath = jcrPath.toLowerCase();
+    }
+
+    protected HippoImportable(GossContent gossContent){
+        localizedName = gossContent.getHeading();
+        jcrNodeName = toLowerCaseDashedValue(gossContent.getJcrPath());
+        jcrPath = (gossContent.getJcrNodeName()).toLowerCase();
     }
 
     /**

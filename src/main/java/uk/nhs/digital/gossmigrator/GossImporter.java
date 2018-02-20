@@ -78,6 +78,9 @@ public class GossImporter {
         TaxonomyMapper mapper = new TaxonomyMapper();
         gossData.setTaxonomyMap(mapper.generateTaxonomyMap());
 
+        DocumentTypeImporter typeImporter = new DocumentTypeImporter();
+        gossData.setContentTypeMap(typeImporter.populateContentTypes());
+
         ContentImporter contentImporter = new ContentImporter();
         contentImporter.populateGossData(gossData);
 

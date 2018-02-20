@@ -74,7 +74,7 @@ public class GossExportHelper {
             if(fieldName.isMandatory() && StringUtils.isEmpty(stringValue)){
                 LOGGER.error("Goss Id:{}, Field:{}. Expected value.  Was Empty.", gossId, fieldName);
             }
-            return stringValue;
+            return escapeForJson(stringValue);
         } else {
             LOGGER.error("Goss Id:{}, FieldName:{}, Value:{}. Expected String.  Got something else."
                     , gossId, fieldName, nodeValue);
@@ -116,9 +116,6 @@ public class GossExportHelper {
     }
 
 
-
-
-
     @SuppressWarnings("SimplifiableIfStatement")
     public static boolean getBoolean(JSONObject gossJson, GossExportFieldNames fieldName, boolean defaultValue) {
         String value = (String) gossJson.get(fieldName.getName());
@@ -142,6 +139,10 @@ public class GossExportHelper {
                 || file.endsWith(".xlsx") || file.endsWith(".pdf") || file.endsWith(".csv")
                 || file.endsWith(".zip") || file.endsWith(".txt") || file.endsWith(".rar")
                 || file.endsWith(".ppt") || file.endsWith(".pptx"));
+    }
+
+    private static String escapeForJson(String value){
+        return value.replaceAll("\"", "\\\\\"");
     }
 
 }
