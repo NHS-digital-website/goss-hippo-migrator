@@ -6,6 +6,7 @@ public enum GossExportFieldNames {
     EXTRA("Extra", true),
     EXTRA_INCLUDE_RELATED("INCLUDERELATEDARTICLES", false),
     EXTRA_INCLUDE_CHILD("INCLUDECHILDARTICLES", false),
+    EXTRA_TITLE("TITLE", false),
     TEMPLATE_ID("ARTICLETEMPLATEID", true),
     SUMMARY("ARTICLESUMMARY", false),
     FRIENDLY_URL("FRIENDLYURL", false),

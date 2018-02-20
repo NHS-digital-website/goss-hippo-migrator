@@ -6,7 +6,8 @@ public enum MappingType {
     SERIES_ITEM("series item", Config.SERIES_FILE_HEADER_COUNT, 3),
     PUBLICATION_SERIES_MAPPING("publication-series",Config.SERIES_PUBLICATION_MAPPING_FILE_HEADER_COUNT, 2),
     TAXONOMY_MAPPING("taxonomy", 1, 2),
-    METADATA_MAPPING("metadata", 1, 3);
+    METADATA_MAPPING("metadata", 1, 3),
+    DOCUMENT_TYPE("document type", 1, 2);
 
     private final String description;
     private final long headerCount;

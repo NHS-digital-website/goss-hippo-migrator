@@ -32,7 +32,9 @@ public class Config {
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media"),
         TAXONOMY_MAPPING_FILE_PROP("goss.taxonomy.mapping.file", "File system path to Taxonomy mapping csv.", true, ""),
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/publicationsystem/"),
-        IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media");
+        IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media"),
+        DOCUMENT_TYPE_FILE_PROP("goss.document.type.file", "File holding document type mappings", true, "");
+
 
         final String key;
         final String help;
@@ -73,6 +75,7 @@ public class Config {
     public static String ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT;
     public static String TAXONOMY_MAPPING_FILE;
     public static String IGNORE_MEDIA_WITH_PATH_PART;
+    public static String DOCUMENT_TYPE_FILE;
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
@@ -92,6 +95,7 @@ public class Config {
         TAXONOMY_MAPPING_FILE = getConfig(TAXONOMY_MAPPING_FILE_PROP, propertiesMap);
         JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP, propertiesMap);
         IGNORE_MEDIA_WITH_PATH_PART = getConfig(IGNORE_MEDIA_WITH_PATH_PART_PROP, propertiesMap);
+        DOCUMENT_TYPE_FILE = getConfig(DOCUMENT_TYPE_FILE_PROP, propertiesMap);
     }
 
     private static String getConfig(PropertiesEnum propertiesEnum, Properties propertiesMap) {
