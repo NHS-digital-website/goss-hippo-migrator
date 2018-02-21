@@ -1,9 +1,14 @@
 <#-- @ftlvariable name="publication" type="uk.nhs.digital.gossmigrator.model.hippo.Publication" -->
 {
 "name" : "${publication.jcrNodeName}",
-"primaryType" : "publicationsystem:publication",
-"mixinTypes" : [ "mix:referenceable", "hippotaxonomy:classifiable" ],
+"primaryType" : "publicationsystem:legacypublication",
+"mixinTypes" : [ "mix:versionable", "mix:referenceable", "hippotaxonomy:classifiable" ],
 "properties" : [ {
+"name" : "common:FacetType",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "publication" ]
+}, {
 "name" : "jcr:path",
 "type" : "STRING",
 "multiple" : false,
@@ -19,6 +24,11 @@
 "multiple" : false,
 "values" : [ "${publication.title}" ]
 }, {
+"name" : "publicationsystem:AdministrativeSources",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "" ]
+},{
 "name" : "publicationsystem:InformationType",
 "type" : "STRING",
 "multiple" : true,
@@ -34,11 +44,17 @@
 "multiple" : false,
 "values" : [ ${publication.geographicCoverage} ]
 }, {
-"name" : "publicationsystem:Summary",
+"name" : "publicationsystem:PubliclyAccessible",
+"type" : "BOOLEAN",
+"multiple" : false,
+"values" : [ "true" ]
+},{
+"name" : "hippotranslation:locale",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${publication.summary}" ]
-}<#if publication.coverageEnd?has_content>, {
+"values" : [ "en" ]
+}
+<#if publication.coverageEnd?has_content>, {
 "name" : "publicationsystem:CoverageEnd",
 "type" : "DATE",
 "multiple" : false,
@@ -53,27 +69,7 @@
 "type" : "DATE",
 "multiple" : false,
 "values" : [ "${publication.coverageStart}" ]
-}</#if>, {
-"name" : "publicationsystem:PubliclyAccessible",
-"type" : "BOOLEAN",
-"multiple" : false,
-"values" : [ "true" ]
-}, {
-"name" : "publicationsystem:AdministrativeSources",
-"type" : "STRING",
-"multiple" : false,
-"values" : [ "" ]
-}, {<#-- This should change to rich text soon -->
-"name" : "publicationsystem:KeyFacts",
-"type" : "STRING",
-"multiple" : false,
-"values" : [ "${publication.keyFactsString}" ]
-}, {
-"name" : "hippotranslation:locale",
-"type" : "STRING",
-"multiple" : false,
-"values" : [ "en" ]
-}<#if publication.taxonomyKeys?has_content>, {
+}</#if><#if publication.taxonomyKeys?has_content>, {
 "name" : "hippotaxonomy:keys",
 "type" : "STRING",
 "multiple" : true,
@@ -85,7 +81,30 @@
 "values" : [ <#list publication.fullTaxonomy as key>"${key}"<#sep>, </#sep></#list> ]
 }</#if>
 ],
-"nodes" : [<#if publication.relatedLinks?has_content><#list publication.relatedLinks as relatedLink>
+"nodes" : [
+{
+"name" : "publicationsystem:Summary",
+"primaryType" : "hippostd:html",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippostd:content",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${publication.summary}" ]
+} ]
+},{
+"name" : "publicationsystem:KeyFacts",
+"primaryType" : "hippostd:html",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippostd:content",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${publication.keyFacts.content}" ]
+} ]
+}
+<#if publication.relatedLinks?has_content || publication.resourceLinks?has_content || publication.files?has_content>, </#if>
+<#if publication.relatedLinks?has_content><#list publication.relatedLinks as relatedLink>
 {
 "name" : "publicationsystem:RelatedLinks",
 "primaryType" : "publicationsystem:relatedlink",
@@ -167,18 +186,5 @@
 "nodes" : [ ]
 } ]
 }<#sep>, </#sep></#list></#if>
-
-<#--  Key facts should be rich text.  Currently String in doc type in hippo. <#if publication.keyFacts??>{
-"name" : "publicationsystem:KeyFacts",
-"primaryType" : "hippostd:html",
-"mixinTypes" : [ ],
-"properties" : [ {
-"name" : "hippostd:content",
-"type" : "STRING",
-"multiple" : false,
-"values" : [ "${publication.keyFacts.content}" ]
-} ]
-}</#if>
-End commenting out key facts-->
 ]
 }

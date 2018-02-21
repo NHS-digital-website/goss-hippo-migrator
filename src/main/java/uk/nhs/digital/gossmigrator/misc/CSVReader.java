@@ -12,14 +12,18 @@ import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentFactory;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 import uk.nhs.digital.gossmigrator.model.goss.GossSeriesContent;
+import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItem;
 import uk.nhs.digital.gossmigrator.model.mapping.enums.MappingType;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.nio.charset.Charset.defaultCharset;
+import static uk.nhs.digital.gossmigrator.config.TemplateConfig.PUBLICATION_ID;
 
 
 public class CSVReader<T> {
@@ -90,15 +94,29 @@ public class CSVReader<T> {
                         ((MetadataMappingItem)target).setHippoValue(hippoValue);
                         CSVMappingReportWriter.addMetadataRow(gossGroup, gossValue, hippoValue);
                         break;
+                    case DOCUMENT_TYPE:
+                        ContentType type;
+
+                        Pattern r = Pattern.compile("\\\\[ID=(\\\\d+)\\\\]");
+                        Matcher m = r.matcher(record.get(0));
+
+                        if (m.find()) {
+                            Long templateID = Long.parseLong(m.group(0));
+                            if(PUBLICATION_ID.equals(templateID)){
+                                type = ContentType.PUBLICATION;
+                            }else if(record.get(1) != null && record.get(1).equals("y")){
+                                type = ContentType.SERVICE;
+                            }else{
+                                type = ContentType.HUB;
+                            }
+
+                            ((Map<Long,ContentType>)target).put(templateID,type);
+                        }
+                        break;
                 }
             }
         }
         return target;
-    }
-
-    private void addSeriesReportRow(CSVRecord record){
-
-
     }
 
 }

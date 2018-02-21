@@ -30,9 +30,7 @@ public abstract class HippoImportable {
     }
 
     protected HippoImportable(GossContent gossContent){
-        localizedName = gossContent.getHeading();
-        jcrNodeName = toLowerCaseDashedValue(gossContent.getJcrPath());
-        jcrPath = (gossContent.getJcrNodeName()).toLowerCase();
+        this(gossContent.getHeading(), gossContent.getJcrNodeName(), gossContent.getJcrPath());
     }
 
     /**
@@ -83,14 +81,17 @@ public abstract class HippoImportable {
         return warnings;
     }
 
+    @SuppressWarnings("unused") // Used by template.
     public String getSeoSummary() {
         return seoSummary;
     }
 
+    @SuppressWarnings("unused") // Used by template.
     public String getShortSummary() {
         return shortSummary;
     }
 
+    @SuppressWarnings("unused") // Used by template.
     public List<Section> getSections() {
         return sections;
     }

@@ -214,5 +214,19 @@
        } ],
        "nodes" : [ ]
      }<#sep>, </#sep> </#list>]
-   }<#-- End if service.contactDetails --></#if>]<#-- Closing array complex nodes -->
+   }<#-- End if service.contactDetails --></#if>
+  <#if service.component??>
+  ,{
+  "name" : "website:component",
+  "primaryType" : "hippostd:html",
+  "mixinTypes" : [ ],
+  "properties" : [ {
+  "name" : "hippostd:content",
+  "type" : "STRING",
+  "multiple" : false,
+  "values" : [ "${service.component.content}" ]
+  } ],
+  "nodes" : [ ]
+  }</#if>
+]<#-- Closing array complex nodes -->
 }

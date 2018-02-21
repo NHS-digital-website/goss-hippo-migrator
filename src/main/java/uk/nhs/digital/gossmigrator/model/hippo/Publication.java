@@ -19,7 +19,7 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType.TAXONOMY
 public class Publication extends HippoImportable {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Publication.class);
-    private final HippoRichText summary;
+    private HippoRichText summary;
     private final String informationType;
     private final HippoRichText keyFacts;
     private final String coverageStart;
@@ -29,8 +29,8 @@ public class Publication extends HippoImportable {
     private List<String> fullTaxonomy = new ArrayList<>();
     private final String geographicCoverage;
     private final String granuality;
-    private List<HippoLink> relatedLinks = new ArrayList<>();
-    private List<HippoLink> resourceLinks = new ArrayList<>();
+    private List<HippoLink> relatedLinks;
+    private List<HippoLink> resourceLinks;
     private List<HippoFile> files = new ArrayList<>();
 
     public Publication(GossPublicationContent gossContent) {
@@ -39,7 +39,7 @@ public class Publication extends HippoImportable {
         id = gossContent.getId();
 
         if (gossContent.getHeading() != null) {
-            this.title = gossContent.getHeading();
+            title = gossContent.getHeading();
         } else {
             LOGGER.warn("Title field is empty. ArticleId:{}.", id);
             warnings.add("Title field is empty.");
@@ -53,17 +53,16 @@ public class Publication extends HippoImportable {
             warnings.add("Publication Date field is empty.");
         }
         Date endDate = gossContent.getExtra().getCoverageEnd();
-        this.coverageEnd = GossExportHelper.getDateString(endDate, TEMPLATE_FORMAT);
+        coverageEnd = GossExportHelper.getDateString(endDate, TEMPLATE_FORMAT);
         Date startDate = gossContent.getExtra().getCoverageStart();
-        this.coverageStart = GossExportHelper.getDateString(startDate, TEMPLATE_FORMAT);
+        coverageStart = GossExportHelper.getDateString(startDate, TEMPLATE_FORMAT);
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.PUBLICATION);
-        this.keyFacts = parsedArticleText.getKeyFacts();
-        this.summary = parsedArticleText.getDefaultNode();
-
-        this.geographicCoverage = gossContent.getGeographicalData();
-        this.granuality = gossContent.getGranularity();
-        this.informationType = gossContent.getInformationTypes();
+        keyFacts = parsedArticleText.getKeyFacts();
+        summary = parsedArticleText.getDefaultNode();
+        geographicCoverage = gossContent.getGeographicalData();
+        granuality = gossContent.getGranularity();
+        informationType = gossContent.getInformationTypes();
 
         setFilesAndLinks(gossContent);
     }
