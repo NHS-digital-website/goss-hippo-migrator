@@ -82,6 +82,9 @@
 }</#if>
 ],
 "nodes" : [
+<#assign firstNode = true>
+<#if publication.summary??>
+<#if firstNode==false> , <#else><#assign firstNode=false></#if>
 {
 "name" : "publicationsystem:Summary",
 "primaryType" : "hippostd:html",
@@ -91,8 +94,10 @@
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${publication.summary}" ]
-} ]
-},{
+}]}
+</#if><#if publication.keyFacts??>
+<#if firstNode == false> , <#else><#assign firstNode=false></#if>
+{
 "name" : "publicationsystem:KeyFacts",
 "primaryType" : "hippostd:html",
 "mixinTypes" : [ ],
@@ -103,8 +108,9 @@
 "values" : [ "${publication.keyFacts.content}" ]
 } ]
 }
-<#if publication.relatedLinks?has_content || publication.resourceLinks?has_content || publication.files?has_content>, </#if>
-<#if publication.relatedLinks?has_content><#list publication.relatedLinks as relatedLink>
+</#if><#if publication.relatedLinks?has_content>
+<#if firstNode == false> , <#else><#assign firstNode=false></#if>
+<#list publication.relatedLinks as relatedLink>
 {
 "name" : "publicationsystem:RelatedLinks",
 "primaryType" : "publicationsystem:relatedlink",
@@ -121,9 +127,10 @@
 "values" : [ "${relatedLink.address}" ]
 } ],
 "nodes" : [ ]
-}<#sep>, </#sep></#list><#if publication.resourceLinks?has_content || publication.files?has_content>, </#if>
-</#if>
-<#if publication.resourceLinks?has_content><#list publication.resourceLinks as resourceLink>
+}<#sep>, </#sep></#list></#if>
+<#if publication.resourceLinks?has_content>
+<#if firstNode == false> , <#else><#assign firstNode=false></#if>
+<#list publication.resourceLinks as resourceLink>
 {
 "name" : "publicationsystem:ResourceLinks",
 "primaryType" : "publicationsystem:relatedlink",
@@ -140,9 +147,10 @@
 "values" : [ "${resourceLink.address}" ]
 } ],
 "nodes" : [ ]
-}<#sep>, </#sep></#list><#if publication.files?has_content>, </#if>
-</#if>
-<#if publication.files?has_content><#list publication.files as file>
+}<#sep>, </#sep></#list></#if>
+<#if publication.files?has_content>
+<#if firstNode == false> , <#else><#assign firstNode=false></#if>
+<#list publication.files as file>
 {
 "name" : "publicationsystem:Attachments-v3",
 "primaryType" : "publicationsystem:attachment",
@@ -186,5 +194,4 @@
 "nodes" : [ ]
 } ]
 }<#sep>, </#sep></#list></#if>
-]
-}
+]}

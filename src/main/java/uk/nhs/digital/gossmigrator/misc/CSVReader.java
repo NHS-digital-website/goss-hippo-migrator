@@ -102,9 +102,7 @@ public class CSVReader<T> {
 
                         if (m.find()) {
                             Long templateID = Long.parseLong(m.group(0));
-                            if(PUBLICATION_ID.equals(templateID)){
-                                type = ContentType.PUBLICATION;
-                            }else if(record.get(1) != null && record.get(1).equals("y")){
+                            if(record.get(1) != null && record.get(1).equals("y")){
                                 type = ContentType.SERVICE;
                             }else{
                                 type = ContentType.HUB;

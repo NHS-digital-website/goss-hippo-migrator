@@ -38,9 +38,14 @@
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${hub.localizedName}" ]
+}, {
+"name" : "website:listTitle",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${hub.listTitle}" ]
 } ],
-"nodes":[
-<#if hub.sections?has_content>
+"nodes":[ <#assign firstNode = true>
+<#if hub.sections?has_content> <#if firstNode==false>,<#else><#assign firstNode=false></#if>
 {
 <#list hub.sections as section>{
 "name" : "website:sections",
@@ -69,6 +74,18 @@
 } ]
 }]}
 <#-- End list hub.sections --><#sep>, </#sep></#list>
-}
-</#if>
+}</#if>
+<#if service.component??><#if firstNode==false>,<#else><#assign firstNode=false></#if>
+{
+"name" : "website:component",
+"primaryType" : "hippostd:html",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippostd:content",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${service.component.content}" ]
+} ],
+"nodes" : [ ]
+}</#if>
 ]
