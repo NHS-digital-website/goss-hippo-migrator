@@ -20,12 +20,8 @@ public class TextHelper {
     public static String trimAndStripLeadingTrailingQuotes(final String input){
         return StringUtils.trim(input).replaceAll("^\"", "").replaceAll("\"$", "");
     }
-    /* TODO delete if not required.  Got some very long names though......
-    public static String toLowerCaseDashedShortValue(final String input) {
-        return Arrays.stream(toLowerCaseDashedValue(input).split("-"))
-                .map(word -> StringUtils.truncate(word, 3))
-                .collect(Collectors.joining("-"));
-    }
-    */
 
+    public static String escapeForJson(String value){
+        return value.replaceAll("\"", "\\\\\"");
+    }
 }

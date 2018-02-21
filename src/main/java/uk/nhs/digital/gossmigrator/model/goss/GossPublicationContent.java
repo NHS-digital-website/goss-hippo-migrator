@@ -31,7 +31,7 @@ public class GossPublicationContent extends GossContent {
     private List<GossContentMeta> taxonomyData = new ArrayList<>();
     private List<GossContentMeta> informationTypes = new ArrayList<>();
     private List<GossContentMeta> granularity = new ArrayList<>();
-     private List<GossFile> files = new ArrayList<>();
+    private List<GossFile> files = new ArrayList<>();
     private List<String> warnings = new ArrayList<>();
 
     private GossPublicationContent(JSONObject gossJson, long gossExportFileLine) {
@@ -56,7 +56,7 @@ public class GossPublicationContent extends GossContent {
         // Process Media node
         JSONArray filesJson = (JSONArray) gossJson.get(GossExportFieldNames.MEDIA.getName());
         if (null != filesJson) {
-            for (Object fileObject : filesJson){
+            for (Object fileObject : filesJson) {
                 GossFile file = new GossFile((JSONObject) fileObject);
                 files.add(file);
             }

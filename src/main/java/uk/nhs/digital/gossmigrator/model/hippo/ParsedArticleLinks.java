@@ -1,8 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection;
 
 import java.util.ArrayList;
@@ -37,11 +36,10 @@ public class ParsedArticleLinks extends ParsedArticle{
             List<Element> elements = gossLinks.getElementsByTag("a");
             for (Element element : elements) {
                 String text = element.ownText();
-                String address = element.attributes().get("href");
+                String address =  TextHelper.escapeForJson(element.attributes().get("href"));
                 links.add(new HippoLink(address, text));
             }
         }
-
         return links;
     }
 

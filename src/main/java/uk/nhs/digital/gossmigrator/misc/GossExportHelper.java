@@ -74,10 +74,12 @@ public class GossExportHelper {
             if(fieldName.isMandatory() && StringUtils.isEmpty(stringValue)){
                 LOGGER.error("Goss Id:{}, Field:{}. Expected value.  Was Empty.", gossId, fieldName);
             }
-            return escapeForJson(stringValue);
+            return stringValue;
         } else {
-            LOGGER.error("Goss Id:{}, FieldName:{}, Value:{}. Expected String.  Got something else."
-                    , gossId, fieldName, nodeValue);
+            if(fieldName.isMandatory()) {
+                LOGGER.error("Goss Id:{}, FieldName:{}, Value:{}. Expected String.  Got something else."
+                        , gossId, fieldName, nodeValue);
+            }
         }
         return null;
     }

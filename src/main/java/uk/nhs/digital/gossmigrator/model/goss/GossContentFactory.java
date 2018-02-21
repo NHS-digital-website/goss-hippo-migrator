@@ -26,7 +26,7 @@ public class GossContentFactory {
         }else if (GossImporter.gossData.getContentTypeMap().get(templateId) != null){
             type = GossImporter.gossData.getContentTypeMap().get(templateId);
         }else{
-            type = ContentType.HUB;
+            type = ContentType.SERVICE;
         }
 
         switch (type){

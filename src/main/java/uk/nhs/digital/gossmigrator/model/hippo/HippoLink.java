@@ -1,5 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import org.apache.commons.lang3.StringUtils;
 import uk.nhs.digital.gossmigrator.model.goss.GossLink;
 
 public class HippoLink {
@@ -26,7 +27,8 @@ public class HippoLink {
 
     @SuppressWarnings("unused")
     public String getDisplayText() {
-        return displayText;
+        // TODO article 5199 has a quote at start of heading
+        return StringUtils.removeAll(displayText,"\"");
     }
 
     public Long getId() {

@@ -1,5 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import uk.nhs.digital.gossmigrator.GossImporter;
+import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossServiceContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
@@ -19,10 +21,10 @@ public class Service extends HippoImportable {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
         id = gossContent.getId();
 
-        seoSummary = gossContent.getSummary();
-        title = gossContent.getHeading();
-        summary = gossContent.getIntroduction();
-        shortSummary = gossContent.getSummary();
+        seoSummary = TextHelper.escapeForJson(gossContent.getSummary());
+        title = TextHelper.escapeForJson(gossContent.getHeading());
+        summary = TextHelper.escapeForJson(gossContent.getIntroduction());
+        shortSummary = TextHelper.escapeForJson(gossContent.getSummary());
         servicePath = gossContent.getServicePath();
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.SERVICE);

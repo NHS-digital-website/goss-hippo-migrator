@@ -13,9 +13,7 @@ import uk.nhs.digital.gossmigrator.model.goss.GossLink;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * POJO to populate hippo rich text elements in hippo EXIM templates.
@@ -26,7 +24,7 @@ public class HippoRichText {
 
     private String content;
     private long gossArticleId;
-    private List<HippoLinkRef> docReferences = new ArrayList<>();
+    private Set<HippoLinkRef> docReferences = new HashSet<>();
 
     HippoRichText(String html, long gossArticleId) {
         this.gossArticleId = gossArticleId;
@@ -38,7 +36,7 @@ public class HippoRichText {
     }
 
     @SuppressWarnings("unused") // Used by template
-    public List<HippoLinkRef> getDocReferences() {
+    public Set<HippoLinkRef> getDocReferences() {
         return docReferences;
     }
 
@@ -55,10 +53,14 @@ public class HippoRichText {
 
     private String escapeChars(String source) {
         String replaced = source.replaceAll("\"", "\\\\\"");
-        // String replaced = source;
 
         // Looks like the chosen html/xml library adds carriage return line feeds.
         replaced = replaced.replaceAll("\n", "").replaceAll("\r", "");
+        // TODO Article 8548 has invalid html.  Will be fixed in source doc.
+        // For now fix with below.
+        replaced = replaced.replaceAll("D:\\\\&gt", "D:&gt");
+        // TODO Article 7881 similar problem
+        replaced = replaced.replaceAll("C:\\\\&gt", "C:&gt");
         return replaced;
     }
 

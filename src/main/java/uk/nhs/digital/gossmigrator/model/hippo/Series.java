@@ -10,6 +10,7 @@ public class Series extends HippoImportable {
         super(trimAndStripLeadingTrailingQuotes(gossContent.getHeading()), gossContent.getJcrPath(), gossContent.getJcrNodeName());
         title = trimAndStripLeadingTrailingQuotes(gossContent.getHeading());
         summary = trimAndStripLeadingTrailingQuotes(gossContent.getSummary());
+        id = gossContent.getId();
     }
 
     public static Series getInstance(GossSeriesContent gossContent){

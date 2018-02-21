@@ -251,7 +251,9 @@ public class Publication extends HippoImportable {
     }
 
     public List<HippoFile> getFiles() {
-        return files;
+        // TODO put files back when know RPS solution!
+        //return files;
+        return null;
     }
 
     public List<String> getWarnings() {

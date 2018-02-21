@@ -90,9 +90,10 @@ public class ImportableFileWriter {
 
     private static String getFileName(final int i, final HippoImportable importableItem) {
         return String.format(
-                "%06d%s_%s%s_%s" + OUTPUT_FILE_TYPE_SUFFIX,
+                "%06d%s_%06d_%s%s_%s" + OUTPUT_FILE_TYPE_SUFFIX,
                 i,
                 StringUtils.leftPad("", 1, '_'),
+                importableItem.getId(),
                 importableItem.getClass().getSimpleName().toUpperCase(),
                 "",
                 TextHelper.toLowerCaseDashedValue(importableItem.getLocalizedName())

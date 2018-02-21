@@ -16,6 +16,7 @@ public class Asset extends HippoImportable implements AssetReportable {
     public Asset(String localizedName, String jcrPath, Path sourceFile) {
         super(localizedName, jcrPath, localizedName);
         this.filePath = "file:///" + sourceFile.toString();
+        id = 0L;
         lastModifiedDate = "2018-01-19T10:07:03.592Z";
         sourceFilePath = sourceFile;
     }

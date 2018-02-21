@@ -21,12 +21,15 @@ public class GossImporter {
 
     public static GossProcessedData gossData = new GossProcessedData();
     public static HSSFWorkbook report = new HSSFWorkbook();
+    static boolean skipAssets = false;
 
     public static void main(String[] args) throws Exception {
 
         Options options = new Options();
         Option propertiesFileOption = new Option("p", "properties", true, "Properties file path.");
         Option templateFileOption = new Option("t", "templateProperties", true, "Template properties file path.");
+        options.addOption(Option.builder().longOpt("skipAssets").hasArg(false).required(false)
+                .desc("Set to suppress processing assets.  Only useful in dev.").build());
         propertiesFileOption.setRequired(true);
         templateFileOption.setRequired(true);
         options.addOption(propertiesFileOption);
@@ -50,6 +53,10 @@ public class GossImporter {
             templateProperties.load(new FileReader(templateFile));
             TemplateConfig.parsePropertiesFile(templateProperties);
 
+            if(cmd.hasOption("skipAssets")){
+                skipAssets = true;
+            }
+
         } catch (MissingOptionException e) {
             formatter.printHelp("GossImporter", options);
             LOGGER.error(e.getMessage(), e);
@@ -65,9 +72,11 @@ public class GossImporter {
 
         ReportWriter.generateReport();
 
-      //  AssetImporter assetImporter = new AssetImporter();
-      //  assetImporter.createAssetHippoImportables();
-      //  assetImporter.writeHippoAssetImportables();
+        if(!skipAssets) {
+            AssetImporter assetImporter = new AssetImporter();
+            assetImporter.createAssetHippoImportables();
+            assetImporter.writeHippoAssetImportables();
+        }
 
         SeriesImporter seriesImporter = new SeriesImporter();
         gossData.setSeriesContentList(seriesImporter.createPublicationSeries());

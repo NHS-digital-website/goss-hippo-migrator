@@ -1,5 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 
@@ -23,7 +24,7 @@ public abstract class HippoImportable {
     List<Section> sections;
 
     protected HippoImportable(final String localizedName, final String jcrPath, final String jcrNodeName) {
-        this.localizedName = localizedName;
+        this.localizedName = StringUtils.removeAll(localizedName, "\"");
         this.jcrNodeName = toLowerCaseDashedValue(jcrNodeName);
         this.jcrPath = jcrPath.toLowerCase();
     }
