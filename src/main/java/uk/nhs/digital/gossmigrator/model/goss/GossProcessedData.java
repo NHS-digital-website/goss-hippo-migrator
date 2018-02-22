@@ -3,7 +3,6 @@ package uk.nhs.digital.gossmigrator.model.goss;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,11 +10,11 @@ public class GossProcessedData {
 
     private GossContentList seriesContentList;
     private GossContentList articlesContentList;
-    private Map<Long, Long> publicationSeriesMap;
+    private Map<String, Long> publicationSeriesMap;
     private List<HippoImportable> importableContentItems;
     private Map<Long, String> gossContentUrlMap;
     private Map<String, String> taxonomyMap;
-    private Map<Long,GossLink> gossLinkMap;
+    private Map<Long, GossLink> gossLinkMap;
     private Map<Long, ContentType> contentTypeMap;
 
     public Map<Long, GossFile> getGossFileMap() {
@@ -40,11 +39,11 @@ public class GossProcessedData {
         this.articlesContentList = articlesContentList;
     }
 
-    public Map<Long, Long> getPublicationSeriesMap() {
+    public Map<String, Long> getPublicationSeriesMap() {
         return publicationSeriesMap;
     }
 
-    public void setPublicationSeriesMap(Map<Long, Long> publicationSeriesMap) {
+    public void setPublicationSeriesMap(Map<String, Long> publicationSeriesMap) {
         this.publicationSeriesMap = publicationSeriesMap;
     }
 

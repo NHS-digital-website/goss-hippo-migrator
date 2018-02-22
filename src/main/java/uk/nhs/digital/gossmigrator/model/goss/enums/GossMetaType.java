@@ -24,6 +24,10 @@ public enum GossMetaType {
         return null;
     }
 
+    public String getGroup() {
+        return group;
+    }
+
     @Override
     public String toString() {
         return group;

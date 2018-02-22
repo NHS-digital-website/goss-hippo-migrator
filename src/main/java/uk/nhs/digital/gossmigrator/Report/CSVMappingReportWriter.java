@@ -40,7 +40,7 @@ public class CSVMappingReportWriter {
 
     }
 
-    public static void addPublicationSeriesRow(Long seriesID, Long PublicationID) {
+    public static void addPublicationSeriesRow(String seriesID, String PublicationID) {
         HSSFSheet sheet = report.getSheet("Publication-Series Mapping");
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
         row.createCell(0).setCellValue(seriesID);

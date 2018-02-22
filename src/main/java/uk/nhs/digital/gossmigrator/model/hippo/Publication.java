@@ -32,6 +32,7 @@ public class Publication extends HippoImportable {
     private List<HippoLink> relatedLinks;
     private List<HippoLink> resourceLinks;
     private List<HippoFile> files = new ArrayList<>();
+    private String publicationId;
 
     public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
@@ -64,6 +65,7 @@ public class Publication extends HippoImportable {
         granuality = gossContent.getGranularity();
         informationType = gossContent.getInformationTypes();
 
+        publicationId = gossContent.getExtra().getPublicationId();
         setFilesAndLinks(gossContent);
     }
 
@@ -80,7 +82,7 @@ public class Publication extends HippoImportable {
         Publication publication = new Publication(gossContent);
         publication.generateHippoTaxonomy(gossData, gossContent);
 
-        Long publicationId = publication.getId();
+        String publicationId = publication.getPublicationId();
         Long seriesId = gossData.getPublicationSeriesMap().get(publicationId);
         if (seriesId != null) {
             Optional<GossContent> matchingSeries = gossData.getSeriesContentList().stream().
@@ -96,10 +98,10 @@ public class Publication extends HippoImportable {
                         , publication.getId(), seriesId);
                 publication.getWarnings().add("No matching series found. SeriesId: " + seriesId);
             }
-        }else {
-            LOGGER.warn("No matching series found.  ArticleId:{}. "
-                    , publication.getId());
-            publication.getWarnings().add("No matching series found. ArticleId: " + publicationId);
+        } else {
+            LOGGER.warn("No matching series found.  ArticleId:{}. PublicationId:{}"
+                    , publication.getId(), publication.getPublicationId());
+            publication.getWarnings().add("No matching series found. ArticleId: " + publication.getId());
         }
         return publication;
     }
@@ -115,7 +117,7 @@ public class Publication extends HippoImportable {
         List<GossContentMeta> metadataList = gossContent.getTaxonomyData();
 
         for (GossContentMeta metaData : metadataList) {
-            if (TAXONOMY.name().equals(metaData.getGroup())) {
+            if (TAXONOMY.getGroup().equalsIgnoreCase(metaData.getGroup())) {
                 String gossValue = metaData.getValue();
                 String hippoValue = gossData.getTaxonomyMap().get(gossValue);
 
@@ -259,5 +261,9 @@ public class Publication extends HippoImportable {
         return warnings;
     }
 
+
+    private String getPublicationId() {
+        return publicationId;
+    }
 
 }

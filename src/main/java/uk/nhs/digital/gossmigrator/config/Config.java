@@ -23,17 +23,15 @@ public class Config {
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         CONTENT_TARGET_FOLDER_PROP("content.target.folder", "File system folder to hold created content json hippo import files.", true, ""),
         JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/statpubs/", true, ""),
-        SERIES_PUBLICATION_MAPPING_FILE_PROP("goss.series.publication.mapping.file", "File system path to Series Publication mapping csv.", true, ""),
-        SERIES_PUBLICATION_MAPPING_FILE_HEADER_COUNT_PROP("goss.series.publication.mapping.file.header.count", "Count of header lines to ignore in Series Publication mapping csv file.", false, "1"),
-        SERIES_FILE_PROP("goss.series.file", "Location of Series definition file.", true, ""),
-        SERIES_FILE_HEADER_COUNT_PROP("goss.series.file.header.count", "Number of header lines to skip in series file.", false, "1"),
         METADATA_MAPPING_FILE_PROP("meta.data.mapping.file", "File holding metadata mappings.", true, ""),
         SPLIT_ASSET_PATH_ON("split.asset.path.on", "For file nodes in goss export there is a path.  " +
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media"),
         TAXONOMY_MAPPING_FILE_PROP("goss.taxonomy.mapping.file", "File system path to Taxonomy mapping csv.", true, ""),
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/publicationsystem/"),
         IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media"),
-        DOCUMENT_TYPE_FILE_PROP("goss.document.type.file", "File holding document type mappings", true, "");
+        DOCUMENT_TYPE_FILE_PROP("goss.document.type.file", "File holding document type mappings", true, ""),
+        GOSS_HIPPO_MAPPING_FILE_PROP("goss.hippo.mapping.file", "Spreadsheet with mappings.", false, "goss_hippo_digital_mappings.xlsx")
+        ;
 
 
         final String key;
@@ -46,6 +44,15 @@ public class Config {
             this.help = help;
             this.isMandatory = isMandatory;
             this.defaultValue = defaultValue;
+        }
+
+        static boolean hasKey(String key){
+            for(PropertiesEnum property : PropertiesEnum.values()){
+                if(property.key.equals(key)){
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
@@ -67,15 +74,12 @@ public class Config {
     public static String GOSS_CONTENT_SOURCE_FILE;
     public static String CONTENT_TARGET_FOLDER;
     public static String JCR_PUBLICATION_ROOT;
-    public static String SERIES_PUBLICATION_MAPPING_FILE;
-    public static Long SERIES_PUBLICATION_MAPPING_FILE_HEADER_COUNT;
-    public static String SERIES_FILE;
-    public static Long SERIES_FILE_HEADER_COUNT;
     public static String METADATA_MAPPING_FILE;
     public static String ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT;
     public static String TAXONOMY_MAPPING_FILE;
     public static String IGNORE_MEDIA_WITH_PATH_PART;
     public static String DOCUMENT_TYPE_FILE;
+    public static String GOSS_HIPPO_MAPPING_FILE;
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
@@ -86,16 +90,20 @@ public class Config {
         GOSS_CONTENT_SOURCE_FILE = getConfig(GOSS_CONTENT_SOURCE_FILE_PROP, propertiesMap);
         CONTENT_TARGET_FOLDER = getConfig(CONTENT_TARGET_FOLDER_PROP, propertiesMap);
         JCR_PUBLICATION_ROOT = getConfig(JCR_PUBLICATION_ROOT_PROP, propertiesMap);
-        SERIES_PUBLICATION_MAPPING_FILE = getConfig(SERIES_PUBLICATION_MAPPING_FILE_PROP, propertiesMap);
-        SERIES_PUBLICATION_MAPPING_FILE_HEADER_COUNT = Long.valueOf(getConfig(SERIES_PUBLICATION_MAPPING_FILE_HEADER_COUNT_PROP, propertiesMap));
-        SERIES_FILE = getConfig(SERIES_FILE_PROP, propertiesMap);
-        SERIES_FILE_HEADER_COUNT = Long.valueOf(getConfig(SERIES_FILE_HEADER_COUNT_PROP, propertiesMap));
+        GOSS_HIPPO_MAPPING_FILE = getConfig(GOSS_HIPPO_MAPPING_FILE_PROP, propertiesMap);
         METADATA_MAPPING_FILE = getConfig(METADATA_MAPPING_FILE_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT = getConfig(SPLIT_ASSET_PATH_ON, propertiesMap);
         TAXONOMY_MAPPING_FILE = getConfig(TAXONOMY_MAPPING_FILE_PROP, propertiesMap);
         JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP, propertiesMap);
         IGNORE_MEDIA_WITH_PATH_PART = getConfig(IGNORE_MEDIA_WITH_PATH_PART_PROP, propertiesMap);
         DOCUMENT_TYPE_FILE = getConfig(DOCUMENT_TYPE_FILE_PROP, propertiesMap);
+
+        // Check all properties in file are expected
+        for(String property : propertiesMap.stringPropertyNames()){
+            if(!PropertiesEnum.hasKey(property)){
+                LOGGER.warn("Unexpected property:{}.  This is unused and can be safely deleted from properties file.", property);
+            }
+        }
     }
 
     private static String getConfig(PropertiesEnum propertiesEnum, Properties propertiesMap) {

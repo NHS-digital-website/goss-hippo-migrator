@@ -21,7 +21,7 @@ public class GossImporter {
 
     public static GossProcessedData gossData = new GossProcessedData();
     public static HSSFWorkbook report = new HSSFWorkbook();
-    static boolean skipAssets = false;
+    private static boolean skipAssets = false;
 
     public static void main(String[] args) throws Exception {
 
@@ -79,10 +79,8 @@ public class GossImporter {
         }
 
         SeriesImporter seriesImporter = new SeriesImporter();
-        gossData.setSeriesContentList(seriesImporter.createPublicationSeries());
-
-        PublicationSeriesMapper seriesMapper = new PublicationSeriesMapper();
-        gossData.setPublicationSeriesMap(seriesMapper.readPublicationSeriesMappings());
+        gossData.setSeriesContentList(seriesImporter.getSeriesContentList());
+        gossData.setPublicationSeriesMap(seriesImporter.getPublicationKeyToSeriesIdMap());
 
         TaxonomyMapper mapper = new TaxonomyMapper();
         gossData.setTaxonomyMap(mapper.generateTaxonomyMap());

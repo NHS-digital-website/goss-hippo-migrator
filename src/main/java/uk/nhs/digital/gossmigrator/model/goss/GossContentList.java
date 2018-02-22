@@ -71,7 +71,10 @@ public class GossContentList extends ArrayList<GossContent> {
 
         if (null == p1) {
             // p1 should never be null with real data.
-            LOGGER.error("Invalid article parent id:{} for article:{}", p.getParentId(), p.getId());
+            if(p.getParentId() != 0) {
+                // Home document has parent id 0 in extract.
+                LOGGER.error("Invalid article parent id:{} for article:{}", p.getParentId(), p.getId());
+            }
             p.setDepth(1);
             p.setJcrParentPath(Config.JCR_SERVICE_DOC_ROOT);
             return;

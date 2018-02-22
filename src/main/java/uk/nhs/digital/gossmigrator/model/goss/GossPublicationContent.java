@@ -40,7 +40,6 @@ public class GossPublicationContent extends GossContent {
         contentType = PUBLICATION;
         displayDate = GossExportHelper.getDate(gossJson, DISPLAY_DATE, id, GOSS_LONG_FORMAT);
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
-
         Object etcid = gossJson.get(EXTRA_OBJECT_ID.getName());
 
         // Not all documents have an extra section.
@@ -49,7 +48,9 @@ public class GossPublicationContent extends GossContent {
             extra = new GossContentExtra(gossJson, EXTRA, id);
             extra.setIncludeChildArticles(getBoolean(extraJson, EXTRA_INCLUDE_CHILD, false));
             extra.setIncludeRelatedArticles(getBoolean(extraJson, EXTRA_INCLUDE_RELATED, false));
+            extra.setPublicationId(GossExportHelper.getString(extraJson,PUBID, id));
         } else {
+            LOGGER.error("Publication with no extra node. Id:{}", id);
             extra = new GossContentExtra();
         }
 

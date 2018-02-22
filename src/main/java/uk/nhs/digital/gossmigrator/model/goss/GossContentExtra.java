@@ -17,6 +17,7 @@ public class GossContentExtra {
     private Date publicationDate;
     private String title;
     private List<Long> componentIds;
+    private String publicationId;
 
     GossContentExtra(JSONObject gossJson, GossExportFieldNames fieldName, long gossId){
         JSONObject extra = (JSONObject)gossJson.get(fieldName.getName());
@@ -69,5 +70,13 @@ public class GossContentExtra {
 
     public List<Long> getComponentIds() {
         return componentIds;
+    }
+
+    public void setPublicationId(String publicationId) {
+        this.publicationId = publicationId;
+    }
+
+    public String getPublicationId() {
+        return publicationId;
     }
 }
