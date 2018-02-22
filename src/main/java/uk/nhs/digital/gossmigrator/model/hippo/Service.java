@@ -1,6 +1,5 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
-import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossServiceContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
@@ -15,7 +14,6 @@ public class Service extends HippoImportable {
     private List<HippoRichText> topTasks;
     private HippoRichText introduction;
     private HippoRichText contactDetails;
-    private HippoRichText component;
 
     protected Service(GossServiceContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
@@ -25,7 +23,7 @@ public class Service extends HippoImportable {
         title = TextHelper.escapeForJson(gossContent.getHeading());
         summary = TextHelper.escapeForJson(gossContent.getIntroduction());
         shortSummary = TextHelper.escapeForJson(gossContent.getSummary());
-        servicePath = gossContent.getServicePath();
+        servicePath = gossContent.getModifiedPath();
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.SERVICE);
         introduction = parsedArticleText.getIntroduction();
@@ -63,8 +61,6 @@ public class Service extends HippoImportable {
         return servicePath;
     }
 
-    @SuppressWarnings("unused")
-    public HippoRichText getComponent() {
-        return component;
-    }
-}
+
+
+  }

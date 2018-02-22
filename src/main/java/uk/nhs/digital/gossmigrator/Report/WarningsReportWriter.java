@@ -2,15 +2,13 @@ package uk.nhs.digital.gossmigrator.Report;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import uk.nhs.digital.gossmigrator.GossImporter;
+
+import static uk.nhs.digital.gossmigrator.GossImporter.report;
 
 public class WarningsReportWriter {
 
-    public static HSSFWorkbook report = GossImporter.report;
 
     public static void createWarningsTab() {
-
 
         HSSFSheet warnings = report.createSheet("Warnings");
         HSSFRow warningsRowhead = warnings.createRow(0);

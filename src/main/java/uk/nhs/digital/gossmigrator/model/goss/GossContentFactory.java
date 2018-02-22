@@ -4,6 +4,7 @@ import org.json.simple.JSONObject;
 import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
+import static uk.nhs.digital.gossmigrator.config.TemplateConfig.GENERAL_ID;
 import static uk.nhs.digital.gossmigrator.config.TemplateConfig.PUBLICATION_ID;
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.getIdOrError;
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.getLong;
@@ -23,10 +24,12 @@ public class GossContentFactory {
         Long templateId = getLong(gossJson, TEMPLATE_ID, id);
         if(PUBLICATION_ID.equals(templateId)) {
             type = ContentType.PUBLICATION;
+        }else if(GENERAL_ID.equals(templateId)){
+            type = ContentType.GENERAL;
         }else if (GossImporter.gossData.getContentTypeMap().get(templateId) != null){
             type = GossImporter.gossData.getContentTypeMap().get(templateId);
         }else{
-            type = ContentType.SERVICE;
+            type = ContentType.GENERAL;
         }
 
         switch (type){
@@ -38,6 +41,9 @@ public class GossContentFactory {
                 break;
             case HUB:
                 content = GossHubContent.getInstance(gossJson, gossExportFileLine);
+                break;
+            case GENERAL:
+                content = GossGeneralContent.getInstance(gossJson, gossExportFileLine);
                 break;
         }
         return content;

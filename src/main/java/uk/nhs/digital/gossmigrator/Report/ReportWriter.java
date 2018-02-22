@@ -2,27 +2,29 @@ package uk.nhs.digital.gossmigrator.Report;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import uk.nhs.digital.gossmigrator.GossImporter;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
-public class ReportWriter {
+import static uk.nhs.digital.gossmigrator.GossImporter.report;
 
-    private static HSSFWorkbook report = GossImporter.report;
+public class ReportWriter {
 
     public static void generateReport() {
 
         WarningsReportWriter.createWarningsTab();
 
-        AssetReportWriter.createAssetTab();
+        GeneralReportWriter.createGeneralTab();
+
+        PublicationReportWriter.createPublicationTabs();
 
         ServicesReportWriter.createServicesTab();
 
-        PublicationReportWriter.createPublicationTabs();
+        HubReportWriter.createHubTab();
+
+        AssetReportWriter.createAssetTab();
 
         CSVMappingReportWriter.createMappingTabs();
 

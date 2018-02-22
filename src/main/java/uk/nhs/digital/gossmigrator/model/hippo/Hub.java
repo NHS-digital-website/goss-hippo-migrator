@@ -9,7 +9,6 @@ public class Hub extends HippoImportable {
 
     private List<Long> componentIds;
     private String listTitle;
-    private HippoRichText component;
 
     private Hub(GossHubContent gossContent){
         super(gossContent);
@@ -40,8 +39,4 @@ public class Hub extends HippoImportable {
         return listTitle;
     }
 
-    @SuppressWarnings("unused")
-    public HippoRichText getComponent() {
-        return component;
-    }
 }

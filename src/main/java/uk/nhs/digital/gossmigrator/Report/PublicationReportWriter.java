@@ -2,15 +2,14 @@ package uk.nhs.digital.gossmigrator.Report;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoFile;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoLink;
 import uk.nhs.digital.gossmigrator.model.hippo.Publication;
 
+import static uk.nhs.digital.gossmigrator.GossImporter.report;
+
 public class PublicationReportWriter {
 
-    public static HSSFWorkbook report = GossImporter.report;
 
     public static void createPublicationTabs(){
 

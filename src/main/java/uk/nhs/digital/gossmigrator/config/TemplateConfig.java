@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
+import static uk.nhs.digital.gossmigrator.config.TemplateConfig.TemplateEnum.GENERAL_TEMPLATE;
 import static uk.nhs.digital.gossmigrator.config.TemplateConfig.TemplateEnum.PUBLICATION_TEMPLATE;
 
 public class TemplateConfig {
@@ -13,7 +14,8 @@ public class TemplateConfig {
     private final static Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
     enum TemplateEnum {
-        PUBLICATION_TEMPLATE("publication.id");
+        PUBLICATION_TEMPLATE("publication.id"),
+        GENERAL_TEMPLATE("general.id");
 
         private String key;
 
@@ -21,16 +23,14 @@ public class TemplateConfig {
             this.key = key;
         }
 
-        public String getKey() {
-            return key;
-        }
-
     }
 
     public static Long PUBLICATION_ID;
+    public static Long GENERAL_ID;
 
     public static void parsePropertiesFile(Properties propertiesMap){
         PUBLICATION_ID = getConfig(PUBLICATION_TEMPLATE, propertiesMap);
+        GENERAL_ID = getConfig(GENERAL_TEMPLATE, propertiesMap);
     }
 
     private static Long getConfig(TemplateEnum templateEnum, Properties propertiesMap) {

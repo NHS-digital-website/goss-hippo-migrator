@@ -22,6 +22,7 @@ public abstract class HippoImportable {
     String seoSummary;
     String shortSummary;
     List<Section> sections;
+    HippoRichText component;
 
     protected HippoImportable(final String localizedName, final String jcrPath, final String jcrNodeName) {
         this.localizedName = StringUtils.removeAll(localizedName, "\"");
@@ -95,4 +96,11 @@ public abstract class HippoImportable {
     public List<Section> getSections() {
         return sections;
     }
+
+    @SuppressWarnings("unused")
+    public HippoRichText getComponent() {
+        return component;
+    }
+
+
 }

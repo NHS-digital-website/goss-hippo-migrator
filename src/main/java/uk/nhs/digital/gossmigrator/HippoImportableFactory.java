@@ -2,6 +2,8 @@ package uk.nhs.digital.gossmigrator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.Report.GeneralReportWriter;
+import uk.nhs.digital.gossmigrator.Report.HubReportWriter;
 import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
 import uk.nhs.digital.gossmigrator.Report.ServicesReportWriter;
 import uk.nhs.digital.gossmigrator.model.goss.*;
@@ -43,6 +45,11 @@ public class HippoImportableFactory {
                 break;
             case HUB:
                 hippoContent = Hub.getInstance((GossHubContent)gossContent);
+                HubReportWriter.addHubRow((Hub)hippoContent);
+                break;
+            case GENERAL:
+                hippoContent = General.getInstance((GossGeneralContent) gossContent);
+                GeneralReportWriter.addGeneralRow((General)hippoContent);
                 break;
             default:
                 LOGGER.error("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());

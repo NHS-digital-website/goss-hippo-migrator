@@ -2,28 +2,27 @@ package uk.nhs.digital.gossmigrator.Report;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import uk.nhs.digital.gossmigrator.model.hippo.Service;
+import uk.nhs.digital.gossmigrator.model.hippo.Hub;
 
 import static uk.nhs.digital.gossmigrator.GossImporter.report;
 
-public class ServicesReportWriter {
+public class HubReportWriter {
 
-    public static void createServicesTab(){
+    public static void createHubTab(){
 
-        HSSFSheet services = report.createSheet("Services");
+        HSSFSheet services = report.createSheet("Hub");
         HSSFRow servicesRowhead = services.createRow(0);
-        servicesRowhead.createCell(0).setCellValue("Service ID");
+        servicesRowhead.createCell(0).setCellValue("Hub ID");
         servicesRowhead.createCell(1).setCellValue("Title");
         servicesRowhead.createCell(2).setCellValue("Status");
 
     }
 
-    public static void addServiceRow(Service service) {
-        HSSFSheet sheet = report.getSheet("Services");
+    public static void addHubRow(Hub hub) {
+        HSSFSheet sheet = report.getSheet("Hub");
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
-        row.createCell(0).setCellValue(service.getId());
-        row.createCell(1).setCellValue(service.getTitle());
+        row.createCell(0).setCellValue(hub.getId());
+        row.createCell(1).setCellValue(hub.getTitle());
         row.createCell(2).setCellValue("Success");
     }
-
 }

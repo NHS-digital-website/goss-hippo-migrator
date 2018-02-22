@@ -4,5 +4,6 @@ public enum ContentType {
     SERVICE,
     PUBLICATION,
     SERIES,
-    HUB;
+    HUB,
+    GENERAL;
 }

@@ -2,13 +2,11 @@ package uk.nhs.digital.gossmigrator.Report;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.model.goss.GossSeriesContent;
 
-public class CSVMappingReportWriter {
+import static uk.nhs.digital.gossmigrator.GossImporter.report;
 
-    public static HSSFWorkbook report = GossImporter.report;
+public class CSVMappingReportWriter {
 
     public static void createMappingTabs(){
 

@@ -2,14 +2,12 @@ package uk.nhs.digital.gossmigrator.Report;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import uk.nhs.digital.gossmigrator.GossImporter;
-import uk.nhs.digital.gossmigrator.model.hippo.Asset;
 import uk.nhs.digital.gossmigrator.model.hippo.AssetReportable;
+
+import static uk.nhs.digital.gossmigrator.GossImporter.report;
 
 public class AssetReportWriter {
 
-    public static HSSFWorkbook report = GossImporter.report;
 
     public static void createAssetTab() {
 

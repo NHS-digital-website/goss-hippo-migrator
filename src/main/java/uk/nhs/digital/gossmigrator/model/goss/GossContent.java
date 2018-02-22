@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
-import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 
 import java.nio.file.Paths;
 import java.util.List;
@@ -28,7 +27,6 @@ public class GossContent implements Comparable<GossContent> {
     protected String text;
     ContentType contentType;
     private String friendlyUrl;
-
 
     // Non Goss sourced variables
     Integer depth;
@@ -119,6 +117,14 @@ public class GossContent implements Comparable<GossContent> {
         }
         return getValuesAsCsvList(sourceList, maxExpectedValues);
     }
+
+    /*
+     * Adds one additional level for Services/General folder structure
+     */
+    public String getModifiedPath() {
+        return Paths.get(jcrParentPath, jcrNodeName, jcrNodeName).toString();
+    }
+
 
     /**
      * This is the raw string from the database containing each text area.
