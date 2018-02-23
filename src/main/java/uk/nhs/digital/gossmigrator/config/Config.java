@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 import static uk.nhs.digital.gossmigrator.config.Config.PropertiesEnum.*;
+import static uk.nhs.digital.gossmigrator.config.Constants.*;
 
 /**
  * Config from properties file.
@@ -23,16 +24,12 @@ public class Config {
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         CONTENT_TARGET_FOLDER_PROP("content.target.folder", "File system folder to hold created content json hippo import files.", true, ""),
         JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/statpubs/", true, ""),
-        METADATA_MAPPING_FILE_PROP("meta.data.mapping.file", "File holding metadata mappings.", true, ""),
         SPLIT_ASSET_PATH_ON("split.asset.path.on", "For file nodes in goss export there is a path.  " +
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media"),
-        TAXONOMY_MAPPING_FILE_PROP("goss.taxonomy.mapping.file", "File system path to Taxonomy mapping csv.", true, ""),
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/publicationsystem/"),
         IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media"),
-        DOCUMENT_TYPE_FILE_PROP("goss.document.type.file", "File holding document type mappings", true, ""),
-        GOSS_HIPPO_MAPPING_FILE_PROP("goss.hippo.mapping.file", "Spreadsheet with mappings.", false, "goss_hippo_digital_mappings.xlsx")
+        CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true,"")
         ;
-
 
         final String key;
         final String help;
@@ -78,11 +75,15 @@ public class Config {
     public static String ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT;
     public static String TAXONOMY_MAPPING_FILE;
     public static String IGNORE_MEDIA_WITH_PATH_PART;
-    public static String DOCUMENT_TYPE_FILE;
+    public static String DOCUMENT_TYPE_MAPPING_FILE;
     public static String GOSS_HIPPO_MAPPING_FILE;
+    private static String CONFIG_FOLDER;
+    public static String GENERAL_TYPE_MAPPING_FILE;
+
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
+        CONFIG_FOLDER = getConfig(CONFIG_FOLDER_PROP, propertiesMap);
         JCR_ASSET_ROOT = getConfig(JCR_ASSET_ROOT_PROP, propertiesMap);
         JCR_SERVICE_DOC_ROOT = getConfig(JCR_SERVICE_DOC_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER = getConfig(ASSET_SOURCE_FOLDER_PROP, propertiesMap);
@@ -90,13 +91,14 @@ public class Config {
         GOSS_CONTENT_SOURCE_FILE = getConfig(GOSS_CONTENT_SOURCE_FILE_PROP, propertiesMap);
         CONTENT_TARGET_FOLDER = getConfig(CONTENT_TARGET_FOLDER_PROP, propertiesMap);
         JCR_PUBLICATION_ROOT = getConfig(JCR_PUBLICATION_ROOT_PROP, propertiesMap);
-        GOSS_HIPPO_MAPPING_FILE = getConfig(GOSS_HIPPO_MAPPING_FILE_PROP, propertiesMap);
-        METADATA_MAPPING_FILE = getConfig(METADATA_MAPPING_FILE_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT = getConfig(SPLIT_ASSET_PATH_ON, propertiesMap);
-        TAXONOMY_MAPPING_FILE = getConfig(TAXONOMY_MAPPING_FILE_PROP, propertiesMap);
         JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP, propertiesMap);
         IGNORE_MEDIA_WITH_PATH_PART = getConfig(IGNORE_MEDIA_WITH_PATH_PART_PROP, propertiesMap);
-        DOCUMENT_TYPE_FILE = getConfig(DOCUMENT_TYPE_FILE_PROP, propertiesMap);
+        GOSS_HIPPO_MAPPING_FILE = CONFIG_FOLDER.concat(PUB_SERIES_FILE);
+        METADATA_MAPPING_FILE =  CONFIG_FOLDER.concat(METADATA_FILE);
+        DOCUMENT_TYPE_MAPPING_FILE =  CONFIG_FOLDER.concat(DOC_TYPE_FILE);
+        TAXONOMY_MAPPING_FILE =  CONFIG_FOLDER.concat(TAXONOMY_FILE);
+        GENERAL_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(GENERAL_TYPE_FILE);
 
         // Check all properties in file are expected
         for(String property : propertiesMap.stringPropertyNames()){

@@ -97,9 +97,10 @@
 "values" : [ ]
 } ],
 "nodes" : [ ]
-}<#sep>, </#sep> </#list>]
-} ]<#-- Closing array section rich text content -->
-}<#-- End list general.sections --><#sep>, </#sep></#list><#-- End if general.sections?? --></#if>
+}<#sep>, </#sep> </#list>]}
+]}
+<#-- End list general.sections --><#sep>, </#sep></#list>
+<#-- End if general.sections?? --></#if>
 <#if general.component??><#if firstNode==false>,<#else><#assign firstNode=false></#if>
 {
 "name" : "website:component",
@@ -112,5 +113,5 @@
 "values" : [ "${general.component.content}" ]
 } ],
 "nodes" : [ ]
-}</#if> ]
-}
+}</#if>
+]}

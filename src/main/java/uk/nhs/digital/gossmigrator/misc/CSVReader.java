@@ -79,21 +79,24 @@ public class CSVReader<T> {
                         CSVMappingReportWriter.addMetadataRow(gossGroup, gossValue, hippoValue);
                         break;
                     case DOCUMENT_TYPE:
-                        ContentType type;
 
-                        Pattern r = Pattern.compile("\\\\[ID=(\\\\d+)\\\\]");
+                        Pattern r = Pattern.compile("ID=([0-9]+)");
                         Matcher m = r.matcher(record.get(0));
 
                         if (m.find()) {
-                            Long templateID = Long.parseLong(m.group(0));
-                            if (record.get(1) != null && record.get(1).equals("y")) {
-                                type = ContentType.SERVICE;
-                            } else {
-                                type = ContentType.HUB;
+                            Long templateID = Long.parseLong(m.group(1));
+                            for(ContentType contentType :ContentType.values()){
+                                if(contentType.getDescription().equals(record.get(1))){
+                                    ((Map<Long, ContentType>) target).put(templateID, contentType);
+                                    break;
+                                }
                             }
-
-                            ((Map<Long, ContentType>) target).put(templateID, type);
                         }
+                        break;
+                    case GENERAL_TYPE:
+                        Long templateID = Long.parseLong(record.get(0));
+                        String documentType = record.get(1);
+                        ((Map<Long, String>) target).put(templateID, documentType);
                         break;
                 }
             }

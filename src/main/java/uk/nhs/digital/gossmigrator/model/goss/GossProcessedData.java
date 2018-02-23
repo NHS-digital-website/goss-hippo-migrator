@@ -16,6 +16,8 @@ public class GossProcessedData {
     private Map<String, String> taxonomyMap;
     private Map<Long, GossLink> gossLinkMap;
     private Map<Long, ContentType> contentTypeMap;
+    private Map<Long,String> generalDocumentTypeMap;
+
 
     public Map<Long, GossFile> getGossFileMap() {
         return gossFileMap;
@@ -89,5 +91,13 @@ public class GossProcessedData {
 
     public void setContentTypeMap(Map<Long, ContentType> contentTypeMap) {
         this.contentTypeMap = contentTypeMap;
+    }
+
+    public Map<Long, String> getGeneralDocumentTypeMap() {
+        return generalDocumentTypeMap;
+    }
+
+    public void setGeneralDocumentTypeMap(Map<Long, String> generalDocumentTypeMap) {
+        this.generalDocumentTypeMap = generalDocumentTypeMap;
     }
 }

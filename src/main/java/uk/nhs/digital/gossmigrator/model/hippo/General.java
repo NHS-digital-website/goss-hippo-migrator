@@ -7,11 +7,13 @@ public class General extends HippoImportable {
 
     private Long templateId;
     private String generalPath;
+    private String type;
 
     protected General(GossGeneralContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
         id = gossContent.getId();
         templateId = gossContent.getTemplateId();
+        type = gossContent.getDocumentType();
 
         generalPath = gossContent.getModifiedPath();
 
@@ -41,5 +43,9 @@ public class General extends HippoImportable {
     @SuppressWarnings("unused")
     public String getGeneralPath() {
         return generalPath;
+    }
+
+    public String getType() {
+        return type;
     }
 }

@@ -3,7 +3,6 @@ package uk.nhs.digital.gossmigrator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import uk.nhs.digital.gossmigrator.Report.CSVMappingReportWriter;
 import uk.nhs.digital.gossmigrator.misc.SpreadsheetHelper;
-import uk.nhs.digital.gossmigrator.model.goss.GossContentFactory;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 
 import java.util.HashMap;

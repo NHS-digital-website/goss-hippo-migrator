@@ -4,23 +4,20 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.model.goss.*;
-import uk.nhs.digital.gossmigrator.model.goss.GossContent;
-import uk.nhs.digital.gossmigrator.model.goss.GossContentFactory;
-import uk.nhs.digital.gossmigrator.model.goss.GossContentList;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static uk.nhs.digital.gossmigrator.config.Config.CONTENT_TARGET_FOLDER;
 import static uk.nhs.digital.gossmigrator.config.Constants.OUTPUT_FILE_TYPE_SUFFIX;
@@ -121,9 +118,9 @@ public class ContentImporter {
         return gossContentList;
     }
 
-    public Map<Long, String> populateGossContentJcrStructure(GossContentList gossContentList) {
+    private Map<Long, String> populateGossContentJcrStructure(GossContentList gossContentList) {
         gossContentList.generateJcrStructure();
-        Map<Long, String> gossContentUrlMap = new HashMap<Long, String>();
+        Map<Long, String> gossContentUrlMap = new HashMap<>();
         for (GossContent content : gossContentList) {
             gossContentUrlMap.put(content.getId(), Paths.get(content.getJcrParentPath(),content.getJcrNodeName()).toString());
         }

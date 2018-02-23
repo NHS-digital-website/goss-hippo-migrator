@@ -18,7 +18,7 @@ public class GossServiceContent extends GossContent{
     private String display;
     private Date archiveDate;
 
-    private GossServiceContent(JSONObject gossJson, long gossExportFileLine){
+    GossServiceContent(JSONObject gossJson, long gossExportFileLine){
         super(gossJson, gossExportFileLine);
         contentType = SERVICE;
         linkText = getString(gossJson, LINK_TEXT, id);

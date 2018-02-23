@@ -4,16 +4,15 @@ import org.apache.commons.cli.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.nhs.digital.gossmigrator.config.Config;
-import uk.nhs.digital.gossmigrator.config.TemplateConfig;
 import uk.nhs.digital.gossmigrator.Report.ReportWriter;
+import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
 import java.io.File;
 import java.io.FileReader;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Properties;
 
 public class GossImporter {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossImporter.class);
@@ -27,13 +26,10 @@ public class GossImporter {
 
         Options options = new Options();
         Option propertiesFileOption = new Option("p", "properties", true, "Properties file path.");
-        Option templateFileOption = new Option("t", "templateProperties", true, "Template properties file path.");
         options.addOption(Option.builder().longOpt("skipAssets").hasArg(false).required(false)
                 .desc("Set to suppress processing assets.  Only useful in dev.").build());
         propertiesFileOption.setRequired(true);
-        templateFileOption.setRequired(true);
         options.addOption(propertiesFileOption);
-        options.addOption(templateFileOption);
         CommandLineParser parser = new DefaultParser();
         HelpFormatter formatter = new HelpFormatter();
 
@@ -46,12 +42,6 @@ public class GossImporter {
             Properties properties = new Properties();
             properties.load(new FileReader(propertiesFile));
             Config.parsePropertiesFile(properties);
-
-            File templateFile = Paths.get(cmd.getOptionValue("templateProperties")).toFile();
-            LOGGER.info("Properties file:{}", templateFile);
-            Properties templateProperties = new Properties();
-            templateProperties.load(new FileReader(templateFile));
-            TemplateConfig.parsePropertiesFile(templateProperties);
 
             if(cmd.hasOption("skipAssets")){
                 skipAssets = true;
@@ -87,6 +77,7 @@ public class GossImporter {
 
         DocumentTypeImporter typeImporter = new DocumentTypeImporter();
         gossData.setContentTypeMap(typeImporter.populateContentTypes());
+        gossData.setGeneralDocumentTypeMap(typeImporter.populateGeneralContentTypes());
 
         ContentImporter contentImporter = new ContentImporter();
         contentImporter.populateGossData(gossData);
