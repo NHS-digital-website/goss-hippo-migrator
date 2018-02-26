@@ -1,49 +1,137 @@
-Topic,Mapping
-Access to services,Data and Information-Health and Social Care-Health Services----
-Accidents and injuries,Data and Information-Health and Social Care-Activity-Admissions and Attendance-Unplanned-Accidents and Emergencies-
-Admissions and attendances,Data and Information-Health and Social Care-Activity-Admissions and Attendance---
-Cancer,Data and Information-Conditions-Cancer----
-Circulatory system diseases,Data and Information-Conditions-Cardiovascular system----
-Community pharmacy services,Data and Information-Health and Social Care-Health Services-Prescribing-Community pharmacy services--
-Complaints,Data and Information-Performance-Patient experience Surveys-Complaints---
-Critical care admissions,Data and Information-Health and Social Care-Health Services-Hospital-Critical Care--
-Data quality,Data and Information-Performance-Data Quality----
-Dental health,Data and Information-Health and Social Care-Health Services-Dental health---
-Dental services,Data and Information-Health and Social Care-Health Services-Dental health---
-Digestive system diseases and disorders,Data and Information-Conditions-Digestive system----
-"Endocrine, nutritional and metabolic disorders",Data and Information-Conditions-Metabolic and Nutrition----
-Environment,Data and Information-People and Places- Environment----
-Experience of care,Data and Information-Performance-Patient experience Surveys----
-Eye care services,Data and Information-Health and Social Care-Health Services-Ophthalmic services---
-General practice,Data and Information-Health and Social Care-Health Services-General Practice---
-Genitourinary diseases and disorders,Data and Information-Conditions-Genitourinary system----
-Genitourinary system diseases and disorders,Data and Information-Conditions-Genitourinary system----
-Health promotion,Data and Information-Health and Social Care-Health Services-Public health-Health promotion --
-Health protection,Data and Information-Health and Social Care-Health Services-Public health-Health protection --
-Health status,Data and Information-People and Places- Health status----
-Hospital prescribing,Data and Information-Health and Social Care-Health Services-Prescribing---
-Human rights,Data and Information-Legal Obligations-----
-Immune system disorders,Data and Information-Conditions-Immune system----
-Infectious diseases,Data and Information-Conditions-Infectious diseases----
-Lifestyle,Data and Information-People and Places- Lifestyle----
-"Maternal, infant and child health","Data and Information-Health and Social Care-Health Services-Maternal, infant and child health ---"
-Mental and behavioural disorders,Data and Information-Conditions-Mental and Behavioural----
-Mental health services,Data and Information-Health and Social Care-Health Services-Mental Health---
-Mental health surveys,Data and Information-Health and Social Care-Health Services-Mental Health-Mental health surveys --
-Nervous system diseases and disorders,Data and Information-Conditions-Brain and Nervous System----
-NICE appraised medicines,Data and Information-Health and Social Care-Health Services-Prescribing-NICE appraised medicines --
-Outcomes,Data and Information-Outcomes-----
-Patient journey,Data and Information-People and Places- Patient journey----
-Patient Reported Outcome Measures,Data and Information-Performance-Patient experience Surveys-Patient Reported Outcome Measures (PROMS)---
-Patient safety,Data and Information-People and Places- Patient safety----
-Primary care prescribing,Data and Information-Health and Social Care-Health Services-Prescribing-Primary care prescribing--
-Quality Outcomes Framework,Data and Information-Performance-Frameworks-Quality Outcomes Framework (QOF)---
-Respiratory system diseases and disorders,Data and Information-Conditions-Infectious diseases-Whooping cough---
-Sensory impairment,Data and Information-Conditions- Sensory impairment ----
-Social care activity,Data and Information-Health and Social Care-Care Services-Social care---
-Social care expenditure,Data and Information-Health and Social Care-Care Services-Social care---
-Social care workforce,Data and Information-Health and Social Care-Care Services-Social care---
-Staff earnings,Data and Information-People and Places- Workforce-Staff earnings ---
-Staff management,Data and Information-People and Places- Workforce-Staff management ---
-Staff numbers,Data and Information-People and Places- Workforce-Staff numbers ---
-User experience,Data and Information-Performance-Patient experience Surveys----
+Topic,Mapping,Additional Mapping 1, Additional Mapping 2
+Cancer,Cancer,,
+Bowel cancer,Colorectal cancer,,
+Breast cancer,Breast cancer,,
+Cervical cancer,Cervical cancer,,
+Head and neck cancer,Cancer,,
+Lung cancer,Lung cancer,,
+Oesophago-gastric cancer,Oesophagus cancer,,
+"Endocrine, nutritional and metabolic disorders",Metabolic and Nutrition,,
+Diabetes,Diabetes,,
+Circulatory system diseases,Circulatory system,,
+All circulatory diseases,Circulatory system,,
+Atrial fibrilation,Atrial fibrillation and Flutter,,
+Chronic rheumatic heart disease,Chronic rheumatic heart disease,,
+Coronary heart disease,Coronary heart disease (CHD),,
+Heart failure,Heart failure,,
+Hypertension,Hypertension (HTN),,
+Stroke,Stroke,,
+Genitourinary diseases and disorders,Genitourinary system,,
+Genitourinary system diseases and disorders,Genitourinary system,,
+Kidney diseases,Kidney disease,,
+Admissions and attendances,Admission,Attendance (Outpatient),
+Accident and Emergency admissions,Emergency / unplanned admission,,
+Elective admissions,Elective / planned admission,,
+Inpatients,Inpatient,,
+Maternity admissions,"Maternal, infant and child health",Admission,
+Mental health admissions,Mental health,Admission,
+Outpatient attendances,Attendance (Outpatient),Outpatients,
+Critical care admissions,Critical care,Admission,
+"Maternal, infant and child health","Maternal, infant and child health",,
+Child development,Child development,,
+Childbirth,Childbirth,,
+Infant and child mortality,Child,Mortality and Death,
+Maternal mortality,"Maternal, infant and child health ",Mortality and Death,
+Pregnancy,Pregnancy,,
+Patient Reported Outcome Measures,Patient Reported Outcome Measures (PROMS),,
+Mental and behavioural disorders,Mental and behavioural,,
+Autistic spectrum disorders,Autistic spectrum,,
+Dementia,Dementia,,
+Depression,Depression,,
+Learning difficulties,Learning disability,,
+Patient journey,Patient journey,,
+ Ambulance services,Ambulance services,,
+Referral to treatment,Referral to treatment,,
+Mental health surveys,Mental health surveys ,,
+Human rights,Legal obligations,Mental Health Act 1983,
+Mental Capacity Act 2005,Mental Capacity Act 2005,,
+Mental Health Act 1983,Mental Health Act 1983,,
+Complaints,Complaints,,
+Community pharmacy services,Community pharmacy services,,
+Primary care prescribing,Primary care prescribing,,
+Dental services,Dental health,,
+Clinical dentistry,Clinical dentistry,,
+Dental health and treatment,Dental treatment,,
+NICE appraised medicines,NICE appraised medicines ,,
+Hospital prescribing,Hospital prescribing,,
+Staff earnings,Staff earnings ,,
+Dental earnings and expenses,Dental earnings and expenses,,
+ Directly employed NHS staff,Directly employed NHS staff,,
+GP earnings and expenses,GP earnings and expenses,,
+Staff numbers,Staff numbers ,,
+All NHS staff,NHS staff,,
+General practice staff,Primary Care,Staff numbers ,
+Hospital and community health service staff,Hospital,Community health care,Staff numbers
+Medical and dental staff,Medical staff,,
+Non-medical staff,Non-medical staff,,
+Social care staff,Social care staff,,
+Eye care services,Ophthalmic services,,
+Eye care services activity,Ophthalmic services,Health and Care Activity ,
+Eye care services workforce,Ophthalmic services,Workforce,
+General practice,Primary Care,,
+General Practice activity,Primary Care,Health and Care Activity ,
+General Practice expenditure,GP earnings and expenses,,
+General Practice patient experience,Primary Care,Experience Survey,
+General Practice workforce,Primary Care,Workforce,
+GP registered population,Primary Care,Patient registrations,
+Accidents and injuries,Accident,Injury undetermined,
+Breaks and fractures,Breaks and fractures,,
+Quality Outcomes Framework,Quality Outcomes Framework ,,
+Lifestyle,Lifestyle,,
+Alcohol misuse,Alcohol use,,
+Contraception,Contraception,,
+Diet,Diet,,
+Drug misuse,Drug use,,
+Physical activity,Physical activity,,
+Smoking,Smoking,,
+Health protection,Health protection ,,
+Immunisation,Immunisation,,
+Screening,Screening,,
+Health status,Health status,,
+Obesity,Obese,,
+Health promotion,Health promotion ,,
+NHS Stop Smoking Services,NHS Stop Smoking Services,,
+Social care activity,Social care,Health and Care Activity ,
+Grant funded services,Grant funded services,,
+Home care,Home care,,
+"Referrals, Assessments and Packages of Care","Referrals, assessments and packages of care",,
+Supported residents,Supported residents,,
+Vulnerable adults,Vulnerable adults,,
+Social care expenditure,Social care,Expenditure,
+Personal Social Services expenditure,Personal social services,Expenditure,
+User experience,Experience Survey,,
+Social care workforce,Social care,Workforce,
+Sensory impairment,Sensory impairment ,,
+Blind or partially sighted,Blind or partially sighted,,
+Deaf or hard of hearing,Deaf / Hard of hearing,,
+Staff management,Staff management ,,
+Sickness absence,Sickness absence,,
+Staff turnover,Staff turnover,,
+Vacancies,Vacancies,,
+Working hours,Working hours,,
+Mental health services,Mental health,,
+Improving access to physcological therapies,Improving access to psychological therapies (IAPT),,
+Mental health community activity,Mental health,Community health care,Health and Care Activity
+Mental Health Minimum Dataset,Mental health,Mental and behavioural,
+Environment,Environment,,
+Patient Action Environment Team,Patient environment,,
+Access to services,Health services,,
+Experience of care,Experience Survey,,
+Digestive system diseases and disorders,Digestive system,,
+Chronic liver diseases,Chronic liver diseases,,
+Nervous system diseases and disorders,Brain and Nervous System,,
+Epilepsy,Epilepsy,,
+Immune system disorders,Immune system,,
+Respiratory system diseases and disorders,Respiratory system,,
+Asthma,Asthma,,
+Chronic obstructive pulmonary disease,Chronic obstructive pulmonary disease (COPD),,
+Lower respiratory tract infections,Lower respiratory tract infection (LRTI),,
+Pneumonia,Pneumonia,,
+Outcomes,Outcomes,,
+Deaths,Mortality and Death,,
+Discharges,Discharge,,
+Readmissions,Readmission,,
+Patient safety,Patient safety,,
+Data quality,Data and Information,,
+Dental health,Dental,,
+Infectious diseases,Infectious disease,,

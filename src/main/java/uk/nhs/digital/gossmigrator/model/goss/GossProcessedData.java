@@ -13,7 +13,7 @@ public class GossProcessedData {
     private Map<String, Long> publicationSeriesMap;
     private List<HippoImportable> importableContentItems;
     private Map<Long, String> gossContentUrlMap;
-    private Map<String, String> taxonomyMap;
+    private Map<String, List<String>> taxonomyMap;
     private Map<Long, GossLink> gossLinkMap;
     private Map<Long, ContentType> contentTypeMap;
     private Map<Long,String> generalDocumentTypeMap;
@@ -77,11 +77,11 @@ public class GossProcessedData {
         this.gossFileMap = gossFileMap;
     }
 
-    public Map<String, String> getTaxonomyMap() {
+    public Map<String, List<String>> getTaxonomyMap() {
         return taxonomyMap;
     }
 
-    public void setTaxonomyMap(Map<String, String> taxonomyMap) {
+    public void setTaxonomyMap(Map<String, List<String>> taxonomyMap) {
         this.taxonomyMap = taxonomyMap;
     }
 

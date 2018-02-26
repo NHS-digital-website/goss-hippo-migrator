@@ -2,7 +2,7 @@ package uk.nhs.digital.gossmigrator.model.goss.enums;
 
 public enum GossMetaType {
     GEOGRAPHICAL("Geographical Coverage"),
-    TAXONOMY("Topic"),
+    TOPIC("Topic"),
     INFORMATION_TYPE("Information Type"),
     GRANULARITY("Geographical Granularity"),
     IMPORTFIELDCREATOR("ImportFieldCreator"),

@@ -14,6 +14,8 @@ import uk.nhs.digital.gossmigrator.model.mapping.enums.MappingType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,8 +68,21 @@ public class CSVReader<T> {
                     case TAXONOMY_MAPPING:
                         String gossTaxonomy = StringUtils.trim(record.get(0));
                         String hippoTaxonomy = StringUtils.trim(record.get(1));
-                        ((Map<String, String>) target).put(gossTaxonomy, hippoTaxonomy);
-                        CSVMappingReportWriter.addTaxonomyRow(gossTaxonomy, hippoTaxonomy);
+                        String additionalTaxononomy1 = StringUtils.trim(record.get(2));
+                        String additionalTaxononomy2 = StringUtils.trim(record.get(3));
+
+                        List<String> taxonomies = new ArrayList<>();
+                        taxonomies.add(hippoTaxonomy);
+                        if(additionalTaxononomy1 != null && !additionalTaxononomy1.isEmpty()){
+                            taxonomies.add(additionalTaxononomy1);
+                        }
+                        if(additionalTaxononomy2 != null && !additionalTaxononomy1.isEmpty()){
+                            taxonomies.add(additionalTaxononomy2);
+                        }
+                        for (String taxonomy: taxonomies){
+                            CSVMappingReportWriter.addTaxonomyRow(gossTaxonomy, taxonomy);
+                        }
+                        ((Map<String, List<String>>) target).put(gossTaxonomy, taxonomies);
                         break;
                     case METADATA_MAPPING:
                         String gossGroup = record.get(0);
