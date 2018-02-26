@@ -2,6 +2,7 @@ package uk.nhs.digital.gossmigrator.model.goss;
 
 import org.json.simple.JSONObject;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
+import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import java.util.Date;
 
@@ -17,14 +18,18 @@ public class GossServiceContent extends GossContent{
     private Date date;
     private Date archiveDate;
 
-    GossServiceContent(JSONObject gossJson, long gossExportFileLine){
-        super(gossJson, gossExportFileLine);
-        contentType = SERVICE;
+
+    GossServiceContent(JSONObject gossJson, long gossExportFileLine, ContentType contentType){
+        super(gossJson, gossExportFileLine, contentType);
         linkText = getString(gossJson, LINK_TEXT, id);
         introduction = getString(gossJson, INTRO, id);
         date = GossExportHelper.getDate(gossJson, DATE, id, GOSS_LONG_FORMAT);
 
         archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id, GOSS_LONG_FORMAT);
+    }
+
+    GossServiceContent(JSONObject gossJson, long gossExportFileLine) {
+        this(gossJson, gossExportFileLine, SERVICE);
     }
 
     /*

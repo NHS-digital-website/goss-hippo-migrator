@@ -10,11 +10,13 @@ public class GossLink {
     private Long id;
     private String address;
     private String displayText;
+    private String description;
 
     public GossLink(JSONObject linkJson) {
         id = GossExportHelper.getIdOrError(linkJson, LINK_ID);
         address = GossExportHelper.getString(linkJson, LINK_ADDRESS, id);
         displayText = GossExportHelper.getString(linkJson, LINK_DISPLAY_TEXT, id);
+        description = GossExportHelper.getString(linkJson, LINK_DESCRIPTION, id);
     }
 
     public Long getId() {
@@ -27,5 +29,9 @@ public class GossLink {
 
     public String getDisplayText() {
         return displayText;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

@@ -39,6 +39,13 @@ public class GossContentFactory {
                 break;
             case GENERAL:
                 content = GossGeneralContent.getInstance(gossJson, gossExportFileLine);
+                break;
+            case LIST_PAGE:
+                content = GossListPageContent.getInstance(gossJson, gossExportFileLine);
+                break;
+            case REDIRECT:
+                content = GossRedirectContent.getInstance(gossJson, gossExportFileLine);
+                break;
         }
 
         return content;

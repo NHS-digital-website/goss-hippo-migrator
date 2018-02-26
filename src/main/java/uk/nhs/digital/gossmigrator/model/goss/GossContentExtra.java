@@ -7,6 +7,7 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 import java.util.Date;
 import java.util.List;
 
+import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.getBoolean;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.GOSS_SHOR_FORMAT;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;
 
@@ -18,12 +19,19 @@ public class GossContentExtra {
     private String title;
     private List<Long> componentIds;
     private String publicationId;
+    private boolean includeMetaArticles;
+    private boolean includeRelatedArticles = false;
+    private boolean includeChildArticles = false;
 
     GossContentExtra(JSONObject gossJson, GossExportFieldNames fieldName, long gossId){
         JSONObject extra = (JSONObject)gossJson.get(fieldName.getName());
-        this.coverageStart = GossExportHelper.getDate(extra, COVSTARTDATE, gossId, GOSS_SHOR_FORMAT);
-        this.coverageEnd = GossExportHelper.getDate(extra, COVENDDATE, gossId, GOSS_SHOR_FORMAT);
-        this.publicationDate = GossExportHelper.getDate(extra, PUBDATE, gossId, GOSS_SHOR_FORMAT);
+        coverageStart = GossExportHelper.getDate(extra, COVSTARTDATE, gossId, GOSS_SHOR_FORMAT);
+        coverageEnd = GossExportHelper.getDate(extra, COVENDDATE, gossId, GOSS_SHOR_FORMAT);
+        publicationDate = GossExportHelper.getDate(extra, PUBDATE, gossId, GOSS_SHOR_FORMAT);
+        includeChildArticles = getBoolean(extra, EXTRA_INCLUDE_CHILD, false);
+        includeRelatedArticles = getBoolean(extra, EXTRA_INCLUDE_RELATED, false);
+        includeMetaArticles = getBoolean(extra, EXTRA_INCLUDE_META, false);
+        publicationId = GossExportHelper.getString(extra, PUBID, gossId);
         title = GossExportHelper.getString(extra, EXTRA_TITLE, gossId);
         componentIds = GossExportHelper.getLongList(extra, GossExportFieldNames.COMPONENTS, gossId);
     }
@@ -44,24 +52,12 @@ public class GossContentExtra {
         return publicationDate;
     }
 
-    // TODO default to what?
-    private boolean includeRelatedArticles = false;
-    private boolean includeChildArticles = false;
-
     public boolean isIncludeRelatedArticles() {
         return includeRelatedArticles;
     }
 
-    public void setIncludeRelatedArticles(boolean includeRelatedArticles) {
-        this.includeRelatedArticles = includeRelatedArticles;
-    }
-
     public boolean isIncludeChildArticles() {
         return includeChildArticles;
-    }
-
-    public void setIncludeChildArticles(boolean includeChildArticles) {
-        this.includeChildArticles = includeChildArticles;
     }
 
     public String getTitle() {
@@ -72,11 +68,11 @@ public class GossContentExtra {
         return componentIds;
     }
 
-    public void setPublicationId(String publicationId) {
-        this.publicationId = publicationId;
-    }
-
     public String getPublicationId() {
         return publicationId;
+    }
+
+    public boolean isIncludeMetaArticles() {
+        return includeMetaArticles;
     }
 }

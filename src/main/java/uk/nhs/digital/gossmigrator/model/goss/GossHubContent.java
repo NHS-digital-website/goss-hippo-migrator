@@ -5,19 +5,15 @@ import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 
+import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.HUB;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.EXTRA_OBJECT_ID;
 
 public class GossHubContent extends GossServiceContent {
 
-    private GossContentExtra extra;
     private String introduction;
 
     private GossHubContent(JSONObject gossJson, long gossExportFileLine) {
-        super(gossJson, gossExportFileLine);
-        contentType = ContentType.HUB;
-        Object etcid = gossJson.get(EXTRA_OBJECT_ID.getName());
-        extra = new GossContentExtra(gossJson, GossExportFieldNames.EXTRA, id);
-
+        super(gossJson, gossExportFileLine, HUB);
         introduction = GossExportHelper.getString(gossJson, GossExportFieldNames.INTRO, id);
     }
 

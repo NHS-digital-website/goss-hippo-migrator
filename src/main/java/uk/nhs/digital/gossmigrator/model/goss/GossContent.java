@@ -1,6 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +9,11 @@ import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
+import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
+import uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +38,10 @@ public class GossContent implements Comparable<GossContent> {
 
     //Content should be imported only if true
     private Boolean relevantContentFlag = false;
+    private List<GossContentMeta> metaList = new ArrayList<>();
+    List<String> warnings = new ArrayList<>();
+    GossContentExtra extra;
+    Date displayDate;
 
     // Non Goss sourced variables
     Integer depth;
@@ -41,23 +49,24 @@ public class GossContent implements Comparable<GossContent> {
     String jcrNodeName;
     private int childrenCount;
 
-    // TODO lose the constructors and put in factory methods for each content type.
-    // TODO e.g. Series, General and Publications (which need special node name/parent).
-
     /*
      * Constructor that populates from an article node in Goss export.
      *
      * @param gossJson           Goss article
      * @param gossExportFileLine Source line in export for logging.
      */
-    public GossContent(JSONObject gossJson, long gossExportFileLine) {
+    public GossContent(JSONObject gossJson, long gossExportFileLine, ContentType contentType) {
         id = getIdOrError(gossJson, ID);
+
+        this.contentType = contentType;
         LOGGER.debug("Populating GossContentId:{}, File Line:{}", id, gossExportFileLine);
+        displayDate = GossExportHelper.getDate(gossJson, DISPLAY_DATE, id, GOSS_LONG_FORMAT);
+        displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
         heading = getString(gossJson, HEADING, id);
         summary = getString(gossJson, SUMMARY, id);
         parentId = getLong(gossJson, PARENTID, id);
         text = getString(gossJson, TEXT, id);
-        friendlyUrl = getString(gossJson, FRIENDLY_URL,id);
+        friendlyUrl = getString(gossJson, FRIENDLY_URL, id);
         templateId = getLong(gossJson, TEMPLATE_ID, id);
         display = getString(gossJson, DISPLAY, id);
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
@@ -67,12 +76,61 @@ public class GossContent implements Comparable<GossContent> {
         } else {
             jcrNodeName = friendlyUrl;
         }
+
+        JSONArray metaJson = (JSONArray) gossJson.get(GossExportFieldNames.META_DATA.getName());
+        if (null != metaJson) {
+            processMetaNode(metaJson);
+        }
+
+        if (contentType.isExpectExtraNode()) {
+            processExtraNode(gossJson);
+        }
+    }
+
+    private void processExtraNode(JSONObject gossJson) {
+        Object etcid = gossJson.get(EXTRA_OBJECT_ID.getName());
+
+        // Not all documents have an extra section.
+        if (etcid instanceof Long) {
+            extra = new GossContentExtra(gossJson, EXTRA, id);
+        } else {
+            LOGGER.error("{} with no extra node. Id:{}", contentType.name(), id);
+            extra = new GossContentExtra();
+        }
+    }
+
+    List<GossContentMeta> getMetaByGroup(GossMetaType gossMetaType) {
+        List<GossContentMeta> list = new ArrayList<>();
+        for (GossContentMeta metaObject : metaList) {
+            if (metaObject.getGroup().equals(gossMetaType.getGroup())) {
+                list.add(metaObject);
+            }
+        }
+        return list;
+    }
+
+    private void processMetaNode(JSONArray metaJson) {
+        for (Object metaObject : metaJson) {
+            JSONObject meta = (JSONObject) metaObject;
+            String metaGroup = GossExportHelper.getString(meta, GossExportFieldNames.META_DATA_GROUP, id);
+            GossMetaType gossMetaType = GossMetaType.getByGroup(metaGroup);
+            if (null == gossMetaType) {
+                LOGGER.warn("Unexpected goss meta group:{}. Article id:{}."
+                        , metaGroup, id);
+                warnings.add("Unexpected goss meta group: " + metaGroup);
+            }
+            String gossMetaValue = getString(meta, GossExportFieldNames.META_DATA_VALUE, id);
+            String gossMetaName = getString(meta, GossExportFieldNames.META_DATA_VALUE, id);
+
+            metaList.add(new GossContentMeta(gossMetaName, gossMetaValue, metaGroup));
+        }
     }
 
     /*
      * No-Arg Constructor to populate Series.
      */
-    public GossContent(){}
+    public GossContent() {
+    }
 
     @Override
     public int compareTo(GossContent o) {
@@ -97,20 +155,22 @@ public class GossContent implements Comparable<GossContent> {
         StringBuilder csvList = new StringBuilder();
         boolean isFirstRow = true;
         int count = 0;
-        for (GossContentMeta item : sourceList) {
-            if (maxExpectedValues < count && maxExpectedValues > 0) {
-                break;
-            }
-
-            String hippoValue = GossImporter.metadataMapping.getHippoValue(item);
-            if(!StringUtils.isEmpty(hippoValue)) {
-                if (!isFirstRow) {
-                    csvList.append(", ");
+        if (null != sourceList) {
+            for (GossContentMeta item : sourceList) {
+                if (maxExpectedValues < count && maxExpectedValues > 0) {
+                    break;
                 }
-                csvList.append("\"").append(hippoValue).append("\"");
-                isFirstRow = false;
+
+                String hippoValue = GossImporter.metadataMapping.getHippoValue(item);
+                if (!StringUtils.isEmpty(hippoValue)) {
+                    if (!isFirstRow) {
+                        csvList.append(", ");
+                    }
+                    csvList.append("\"").append(hippoValue).append("\"");
+                    isFirstRow = false;
+                }
+                count++;
             }
-            count++;
         }
 
         if (count == 0) {

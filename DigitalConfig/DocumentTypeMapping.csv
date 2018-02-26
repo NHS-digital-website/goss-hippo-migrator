@@ -1,6 +1,8 @@
 ARTICLES ID, Document Type
 General [ID=1],General
 Publication [ID=23],Publication
+Redirect [ID=13],Redirect
+List [ID=7],List
 About us [Live] [ID=64],Hub
 Tuesday Training [Live] [ID=149],Hub
 Contact Component [Live] [ID=155],Hub

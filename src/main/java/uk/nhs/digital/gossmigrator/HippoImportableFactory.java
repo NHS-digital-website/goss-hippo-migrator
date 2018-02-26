@@ -52,6 +52,13 @@ public class HippoImportableFactory {
                 hippoContent = General.getInstance((GossGeneralContent) gossContent);
                 GeneralReportWriter.addGeneralRow((General)hippoContent);
                 break;
+            case REDIRECT:
+                // No-op
+                break;
+            case LIST_PAGE:
+                hippoContent = ListPage.getInstance((GossListPageContent) gossContent);
+
+                break;
             default:
                 LOGGER.error("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());
         }

@@ -33,10 +33,10 @@ public class GossExportHelper {
     public static List<Long> getLongList(JSONObject gossJson, GossExportFieldNames fieldName, long gossId) {
         List<Long> ids = new ArrayList<>();
         Object value = gossJson.get(fieldName.getName());
-        if(value == null || StringUtils.isEmpty(value.toString())){
+        if (value == null || StringUtils.isEmpty(value.toString())) {
             return ids;
         }
-        String[] idStrings = ((String)value).split(",");
+        String[] idStrings = ((String) value).split(",");
 
         for (String idString : idStrings) {
             try {
@@ -71,12 +71,12 @@ public class GossExportHelper {
         Object nodeValue = gossJson.get(fieldName.getName());
         if (nodeValue instanceof String) {
             String stringValue = (String) nodeValue;
-            if(fieldName.isMandatory() && StringUtils.isEmpty(stringValue)){
+            if (fieldName.isMandatory() && StringUtils.isEmpty(stringValue)) {
                 LOGGER.error("Goss Id:{}, Field:{}. Expected value.  Was Empty.", gossId, fieldName);
             }
             return stringValue;
         } else {
-            if(fieldName.isMandatory()) {
+            if (fieldName.isMandatory()) {
                 LOGGER.error("Goss Id:{}, FieldName:{}, Value:{}. Expected String.  Got something else."
                         , gossId, fieldName, nodeValue);
             }
@@ -94,10 +94,10 @@ public class GossExportHelper {
      */
     public static Date getDate(JSONObject gossJson, GossExportFieldNames fieldName, long gossId, DateFormatEnum dateFormatEnum) {
         // May, 23 2016 16:03:33 +0100 (Goss date example)
-        String date = (String) gossJson.get(fieldName.getName());
+        String date = getString(gossJson, fieldName, gossId);
         Date d = null;
         try {
-            if(StringUtils.isNotEmpty(date)){
+            if (StringUtils.isNotEmpty(date)) {
                 d = DateUtils.parseDate(date, dateFormatEnum.getFormat());
             }
         } catch (ParseException e) {
@@ -106,10 +106,10 @@ public class GossExportHelper {
         return d;
     }
 
-    public static String getDateString(Date date, DateFormatEnum dateFormatEnum){
+    public static String getDateString(Date date, DateFormatEnum dateFormatEnum) {
         String dateString = "";
 
-        if(date != null){
+        if (date != null) {
             DateFormat df = new SimpleDateFormat(dateFormatEnum.getFormat());
             dateString = df.format(date);
         }
@@ -129,7 +129,7 @@ public class GossExportHelper {
     }
 
     public static boolean isImage(String file) {
-        if(null == file){
+        if (null == file) {
             LOGGER.info("");
         }
         return (file.endsWith(".gif") || file.endsWith(".jpeg") || file.endsWith(".jpg")
@@ -143,7 +143,7 @@ public class GossExportHelper {
                 || file.endsWith(".ppt") || file.endsWith(".pptx"));
     }
 
-    private static String escapeForJson(String value){
+    private static String escapeForJson(String value) {
         return value.replaceAll("\"", "\\\\\"");
     }
 

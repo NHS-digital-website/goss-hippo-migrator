@@ -16,8 +16,7 @@ public class GossGeneralContent extends GossContent{
     private String documentType;
 
     private GossGeneralContent(JSONObject gossJson, long gossExportFileLine){
-        super(gossJson, gossExportFileLine);
-        contentType = GENERAL;
+        super(gossJson, gossExportFileLine, GENERAL);
         introduction = getString(gossJson, INTRO, id);
         templateId = getLong(gossJson, TEMPLATE_ID, id);
         documentType = gossData.getGeneralDocumentTypeMap().get(templateId);
