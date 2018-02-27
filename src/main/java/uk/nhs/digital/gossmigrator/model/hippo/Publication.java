@@ -113,11 +113,10 @@ public class Publication extends HippoImportable {
     private void generateHippoTaxonomy(GossProcessedData gossData, GossPublicationContent gossContent) {
 
         List<GossContentMeta> metadataList = gossContent.getTaxonomyData();
-
+        Set<String> hippoUniqueKeys = new HashSet<>();
         for (GossContentMeta metaData : metadataList) {
             String gossValue = metaData.getValue();
             List<String> hippoValues = gossData.getTaxonomyMap().get(gossValue);
-            Set<String> hippoUniqueKeys = new HashSet<>();
             for(String hippoValue: hippoValues) {
                 if (hippoValue != null && !hippoValue.isEmpty()) {
                     List<String> valueList = new ArrayList<>();
@@ -126,16 +125,16 @@ public class Publication extends HippoImportable {
                         valueList.add(s.toLowerCase().replace(' ', '-'));
                     }
 
-                    hippoUniqueKeys.addAll(valueList);
-                    taxonomyKeys.add(valueList.get(valueList.size() - 1));
+                    hippoUniqueKeys.add(valueList.get(valueList.size() - 1));
+                    fullTaxonomy.addAll(valueList);
                 } else {
                     LOGGER.warn("No matching taxonomy found.  ArticleId:{}. GossCategory:{}."
                             , id, gossValue);
                     warnings.add("No matching taxonomy found. Goss Category: " + gossValue);
                 }
             }
-            fullTaxonomy.addAll(hippoUniqueKeys);
         }
+        taxonomyKeys.addAll(hippoUniqueKeys);
     }
 
     /**
