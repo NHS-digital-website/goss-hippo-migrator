@@ -38,7 +38,8 @@ public enum GossExportFieldNames {
     MEDIA("Media", false),
     MEDIA_DIRECTORY("MediaDirectory", true),
     COMPONENTS("COMPONENTS", false),
-    PUBID("PUBID", true);
+    PUBID("PUBID", false),
+    ARTICLES_ARRAY("Articles", false);
 
     private String name;
     private boolean isMandatory;

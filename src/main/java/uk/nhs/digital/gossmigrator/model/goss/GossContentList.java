@@ -34,9 +34,10 @@ public class GossContentList extends ArrayList<GossContent> {
             Collections.sort(this);
         }
         sorted = true;
-        // TODO lose this and put into migration report.  Handy at the mo though.
+
         for (GossContent i : this) {
-            LOGGER.info("Goss Id:{}, Parent:{}, Type:{}, Children Count:{}", i.getId(), i.getParentId(), i.getContentType(), i.getChildrenCount());
+            LOGGER.info("Goss Id:{}, Parent:{}, Type:{}, Children Count:{}", i.getId(), i.getParentId()
+                    , i.getContentType(), i.getChildren().size());
         }
     }
 
@@ -71,7 +72,7 @@ public class GossContentList extends ArrayList<GossContent> {
 
         if (null == p1) {
             // p1 should never be null with real data.
-            if(p.getParentId() != 0) {
+            if (p.getParentId() != 0) {
                 // Home document has parent id 0 in extract.
                 LOGGER.error("Invalid article parent id:{} for article:{}", p.getParentId(), p.getId());
             }
@@ -83,16 +84,32 @@ public class GossContentList extends ArrayList<GossContent> {
         }
 
         p.setDepth(p1.getDepth() + 1);
-        p1.setChildrenCount(p1.getChildrenCount() + 1);
+        p1.addChild(p.getId());
         p.setJcrParentPath(p1.getJcrPath() + "/");
-
     }
 
-    public Map<Long, GossContent> getContentMetaMap() {
-        return contentMetaMap;
+    /**
+     * Get all articles that match at least One of the meta data terms supplied.
+     *
+     * @param matchMetaList List to match to.
+     * @param excludeId     Don't include this article (probably the list page calling this)
+     * @return
+     */
+    public Set<Long> getArticlesMatchingMeta(List<GossContentMeta> matchMetaList, Long excludeId) {
+        Set<Long> includeList = new HashSet<>();
+
+        for (GossContent article : this) {
+            if (article.getId() == excludeId) {
+                continue;
+            }
+            for (GossContentMeta matchTo : matchMetaList) {
+                if (article.getMetaList().contains(matchTo)) {
+                    includeList.add(article.id);
+                    break;
+                }
+            }
+        }
+        return includeList;
     }
 
-    public void setContentMetaMap(Map<Long, GossContent> contentMetaMap) {
-        this.contentMetaMap = contentMetaMap;
-    }
 }

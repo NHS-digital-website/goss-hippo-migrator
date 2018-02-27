@@ -13,9 +13,7 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.*;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.GOSS_LONG_FORMAT;
@@ -42,12 +40,14 @@ public class GossContent implements Comparable<GossContent> {
     List<String> warnings = new ArrayList<>();
     GossContentExtra extra;
     Date displayDate;
+    List<Long> relatedArticles = new ArrayList<>();
+    String introduction;
 
     // Non Goss sourced variables
     Integer depth;
     String jcrParentPath;
     String jcrNodeName;
-    private int childrenCount;
+    private Set<Long> children = new HashSet<>();
 
     /*
      * Constructor that populates from an article node in Goss export.
@@ -70,6 +70,7 @@ public class GossContent implements Comparable<GossContent> {
         templateId = getLong(gossJson, TEMPLATE_ID, id);
         display = getString(gossJson, DISPLAY, id);
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
+        introduction = getString(gossJson, INTRO, id);
 
         if (StringUtils.isEmpty(friendlyUrl)) {
             jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
@@ -84,6 +85,13 @@ public class GossContent implements Comparable<GossContent> {
 
         if (contentType.isExpectExtraNode()) {
             processExtraNode(gossJson);
+        }
+
+        if(contentType.isReadArticlesNode()){
+            JSONArray articlesJson = (JSONArray) gossJson.get(ARTICLES_ARRAY.getName());
+            for(Object article : articlesJson){
+                relatedArticles.add(GossExportHelper.getLong((JSONObject) article, ID, id));
+            }
         }
     }
 
@@ -206,12 +214,12 @@ public class GossContent implements Comparable<GossContent> {
         return text;
     }
 
-    public int getChildrenCount() {
-        return childrenCount;
+    public Set<Long> getChildren() {
+        return children;
     }
 
-    public void setChildrenCount(int childrenCount) {
-        this.childrenCount = childrenCount;
+    public void addChild(Long childrenId) {
+        this.children.add(childrenId);
     }
 
     public Long getId() {
@@ -263,6 +271,17 @@ public class GossContent implements Comparable<GossContent> {
         return friendlyUrl;
     }
 
+    public List<GossContentMeta> getMetaList() {
+        return metaList;
+    }
+
+    public List<Long> getRelatedArticles() {
+        return relatedArticles;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
     public Long getTemplateId() {
         return templateId;
     }

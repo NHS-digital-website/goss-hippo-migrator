@@ -3,6 +3,7 @@ package uk.nhs.digital.gossmigrator.model.goss;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,13 +11,15 @@ public class GossProcessedData {
 
     private GossContentList seriesContentList;
     private GossContentList articlesContentList;
+    private Map<Long, GossContent> articlesContentMap = new HashMap<>();
     private Map<String, Long> publicationSeriesMap;
     private List<HippoImportable> importableContentItems;
     private Map<Long, String> gossContentUrlMap;
     private Map<String, List<String>> taxonomyMap;
     private Map<Long, GossLink> gossLinkMap;
     private Map<Long, ContentType> contentTypeMap;
-    private Map<Long,String> generalDocumentTypeMap;
+    private Map<Long, String> generalDocumentTypeMap;
+
     private List<Long> ignoredTemplateIdsList;
 
     public Map<Long, GossFile> getGossFileMap() {
@@ -39,6 +42,9 @@ public class GossProcessedData {
 
     public void setArticlesContentList(GossContentList articlesContentList) {
         this.articlesContentList = articlesContentList;
+        for (GossContent article : articlesContentList) {
+            articlesContentMap.put(article.id, article);
+        }
     }
 
     public Map<String, Long> getPublicationSeriesMap() {
@@ -99,6 +105,10 @@ public class GossProcessedData {
 
     public void setGeneralDocumentTypeMap(Map<Long, String> generalDocumentTypeMap) {
         this.generalDocumentTypeMap = generalDocumentTypeMap;
+    }
+
+    public Map<Long, GossContent> getArticlesContentMap() {
+        return articlesContentMap;
     }
 
     public List<Long> getIgnoredTemplateIdsList() {

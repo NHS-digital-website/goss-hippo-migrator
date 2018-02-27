@@ -28,6 +28,8 @@ public class ReportWriter {
 
         AssetReportWriter.createAssetTab();
 
+        ListPageReportWriter.createPageTab();
+
         CSVMappingReportWriter.createMappingTabs();
 
     }

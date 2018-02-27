@@ -6,7 +6,10 @@ public enum GossMetaType {
     INFORMATION_TYPE("Information Type"),
     GRANULARITY("Geographical Granularity"),
     IMPORTFIELDCREATOR("ImportFieldCreator"),
-    AREA("Area"),SUB_TOPIC("Sub-Topic");
+    AREA("Area"),
+    SUB_TOPIC("Sub-Topic"),
+    A_TO_Z("AtoZ"),
+    GOSS_TEST("GOSS Test");
 
     private String group;
 

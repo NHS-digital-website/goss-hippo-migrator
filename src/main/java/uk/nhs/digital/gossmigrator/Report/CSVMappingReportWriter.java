@@ -52,7 +52,7 @@ public class CSVMappingReportWriter {
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
         row.createCell(0).setCellValue(series.getId());
         row.createCell(1).setCellValue(series.getHeading());
-        row.createCell(2).setCellValue(series.getChildrenCount());
+        row.createCell(2).setCellValue(series.getChildren().size());
         row.createCell(3).setCellValue("Success");
     }
 

@@ -12,11 +12,11 @@ public class ListPageReportWriter {
 
     public static void createPageTab(){
 
-        HSSFSheet services = report.createSheet("ListPage");
-        HSSFRow servicesRowhead = services.createRow(0);
-        servicesRowhead.createCell(1).setCellValue("Doc ID");
-        servicesRowhead.createCell(2).setCellValue("Title");
-        servicesRowhead.createCell(3).setCellValue("Status");
+        HSSFSheet sheet = report.createSheet("ListPage");
+        HSSFRow rowhead = sheet.createRow(0);
+        rowhead.createCell(1).setCellValue("Doc ID");
+        rowhead.createCell(2).setCellValue("Title");
+        rowhead.createCell(3).setCellValue("Status");
 
     }
 
@@ -26,10 +26,6 @@ public class ListPageReportWriter {
         row.createCell(1).setCellValue(listPage.getId());
         row.createCell(2).setCellValue(listPage.getTitle());
         row.createCell(3).setCellValue("Success");
-        if(gossData.getContentTypeMap().get(listPage.getTemplateId()) == null){
-            WarningsReportWriter.addWarningRow("General Doc", listPage.getId(), listPage.getTitle(),
-                    "Unknown Template ID: " + listPage.getTemplateId());
-        }
     }
 
 }

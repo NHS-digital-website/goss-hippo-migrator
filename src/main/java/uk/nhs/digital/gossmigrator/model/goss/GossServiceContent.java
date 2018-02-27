@@ -14,7 +14,6 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.
 public class GossServiceContent extends GossContent{
 
     private String linkText;
-    private String introduction;
     private Date date;
     private Date archiveDate;
 
@@ -22,7 +21,6 @@ public class GossServiceContent extends GossContent{
     GossServiceContent(JSONObject gossJson, long gossExportFileLine, ContentType contentType){
         super(gossJson, gossExportFileLine, contentType);
         linkText = getString(gossJson, LINK_TEXT, id);
-        introduction = getString(gossJson, INTRO, id);
         date = GossExportHelper.getDate(gossJson, DATE, id, GOSS_LONG_FORMAT);
 
         archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id, GOSS_LONG_FORMAT);
@@ -66,9 +64,4 @@ public class GossServiceContent extends GossContent{
     public String getLinkText() {
         return linkText;
     }
-
-    public String getIntroduction() {
-        return introduction;
-    }
-
 }
