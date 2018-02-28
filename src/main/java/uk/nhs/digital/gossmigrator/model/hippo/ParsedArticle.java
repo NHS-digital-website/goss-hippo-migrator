@@ -4,12 +4,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-public class ParsedArticle {
+class ParsedArticle {
 
-    protected long gossId;
-    protected Element body;
+    long gossId;
+    Element body;
 
     ParsedArticle(long gossId, String gossArticleText) {
 
@@ -26,5 +25,4 @@ public class ParsedArticle {
         body = doc.selectFirst("body");
 
     }
-
 }

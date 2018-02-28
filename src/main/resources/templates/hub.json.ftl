@@ -2,7 +2,7 @@
 {
 "name" : "${hub.jcrNodeName}",
 "primaryType" : "website:hub",
-"mixinTypes" : [ "mix:referenceable" ],
+"mixinTypes" : [ "mix:versionable", "mix:referenceable" ],
 "properties" : [ {
 "name" : "hippotranslation:locale",
 "type" : "STRING",
@@ -34,48 +34,37 @@
 "multiple" : false,
 "values" : [ "${hub.shortSummary}" ]
 }, {
+"name" : "jcr:path",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${hub.jcrPath}" ]
+}, {
 "name" : "jcr:localizedName",
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${hub.localizedName}" ]
 }, {
-"name" : "website:listTitle",
+"name" : "website:listtitle",
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${hub.listTitle}" ]
 } ],
 "nodes":[ <#assign firstNode = true>
-<#if hub.sections?has_content> <#if firstNode==false>,<#else><#assign firstNode=false></#if>
+<#if hub.body?has_content> <#if firstNode==false>,<#else><#assign firstNode=false></#if>
 {
-<#list hub.sections as section>{
-"name" : "website:sections",
-"primaryType" : "website:section",
-"mixinTypes" : [ ],
-"properties" : [ {
-"name" : "website:title",
-"type" : "STRING",
-"multiple" : false,
-"values" : [ "${section.title}" ]
-}, {
-"name" : "website:type",
-"type" : "STRING",
-"multiple" : false,
-"values" : [ "${section.type}" ]
-} ],
-"nodes" : [ {
-"name" : "website:html",
+"name" : "website:body",
 "primaryType" : "hippostd:html",
 "mixinTypes" : [ ],
 "properties" : [ {
 "name" : "hippostd:content",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${section.content.content}" ]
-} ]
-}]}
-<#-- End list hub.sections --><#sep>, </#sep></#list>
-}</#if>
-<#if service.component??><#if firstNode==false>,<#else><#assign firstNode=false></#if>
+"values" : [ "${hub.body.content}" ]
+} ],
+"nodes" : [ ]
+}
+</#if>
+<#if hub.component??><#if firstNode==false>,<#else><#assign firstNode=false></#if>
 {
 "name" : "website:component",
 "primaryType" : "hippostd:html",
@@ -84,8 +73,22 @@
 "name" : "hippostd:content",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${service.component.content}" ]
+"values" : [ "${hub.component.content}" ]
 } ],
 "nodes" : [ ]
 }</#if>
-]
+<#if hub.componentPaths?has_content> <#if firstNode==false>,<#else><#assign firstNode=false></#if>
+<#list hub.componentPaths as component>{
+"name" : "website:componentlist",
+"primaryType" : "hippo:mirror",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippo:docbase",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${component}" ]
+} ],
+"nodes" : [ ]
+}<#sep>, </#sep></#list>
+</#if>
+]}

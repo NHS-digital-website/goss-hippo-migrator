@@ -31,7 +31,7 @@ public abstract class HippoImportable {
     }
 
     protected HippoImportable(GossContent gossContent){
-        this(gossContent.getHeading(), gossContent.getJcrNodeName(), gossContent.getJcrPath());
+        this(gossContent.getHeading(), gossContent.getModifiedPath(), gossContent.getJcrNodeName());
     }
 
     /**

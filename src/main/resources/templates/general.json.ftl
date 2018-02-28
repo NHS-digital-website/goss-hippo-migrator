@@ -42,7 +42,7 @@
 "name" : "jcr:localizedName",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${general.localizedName}" ]
+"values" : [ "${general.jcrNodeName}" ]
 } ],
 "nodes" : [ <#assign firstNode = true>
 <#if general.sections??> <#if firstNode==false>,<#else><#assign firstNode=false></#if><#list general.sections as section>{

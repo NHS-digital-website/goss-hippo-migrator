@@ -21,7 +21,7 @@ public class GossContent implements Comparable<GossContent> {
 
     // Fields read from Goss export.
     String heading;
-    protected long id;
+    protected Long id;
     protected String summary;
     Long parentId;
     protected String text;
@@ -144,7 +144,7 @@ public class GossContent implements Comparable<GossContent> {
         this.childrenCount = childrenCount;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

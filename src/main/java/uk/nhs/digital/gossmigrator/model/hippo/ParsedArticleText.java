@@ -1,8 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
@@ -39,7 +37,7 @@ public class ParsedArticleText extends ParsedArticle {
      *
      * @param gossId          ARTICLEID value for logging.
      * @param gossArticleText ARTICLETEXT String.
-     * @param contentType
+     * @param contentType, type of content to be parsed
      */
     ParsedArticleText(long gossId, String gossArticleText, ContentType contentType) {
         super(gossId, gossArticleText);
@@ -281,4 +279,5 @@ public class ParsedArticleText extends ParsedArticle {
     public HippoRichText getComponent() {
         return component;
     }
+
 }
