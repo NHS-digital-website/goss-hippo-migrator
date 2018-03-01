@@ -11,8 +11,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLATE_FORMAT;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType.SUB_TOPIC;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType.TOPIC;
 
 public class Publication extends HippoImportable {
 
@@ -84,7 +82,7 @@ public class Publication extends HippoImportable {
         Long seriesId = gossData.getPublicationSeriesMap().get(publicationId);
         if (seriesId != null) {
             Optional<GossContent> matchingSeries = gossData.getSeriesContentList().stream().
-                    filter(s -> s.getId() == seriesId).findFirst();
+                    filter(s -> Objects.equals(s.getId(), seriesId)).findFirst();
             GossContent matchingSeriesGoss = matchingSeries.orElse(null);
 
             if (matchingSeriesGoss != null) {
@@ -117,22 +115,22 @@ public class Publication extends HippoImportable {
         for (GossContentMeta metaData : metadataList) {
             String gossValue = metaData.getValue();
             List<String> hippoValues = gossData.getTaxonomyMap().get(gossValue);
-            for(String hippoValue: hippoValues) {
-                if (hippoValue != null && !hippoValue.isEmpty()) {
-                    List<String> valueList = new ArrayList<>();
-                    String[] values = hippoValue.split("-");
-                    for (String s : values) {
-                        valueList.add(s.toLowerCase().replace(' ', '-'));
-                    }
+                for (String hippoValue : hippoValues) {
+                    if (hippoValue != null && !hippoValue.isEmpty()) {
+                        List<String> valueList = new ArrayList<>();
+                        String[] values = hippoValue.split("-");
+                        for (String s : values) {
+                            valueList.add(s.toLowerCase().replace(' ', '-'));
+                        }
 
-                    hippoUniqueKeys.add(valueList.get(valueList.size() - 1));
-                    fullTaxonomy.addAll(valueList);
-                } else {
-                    LOGGER.warn("No matching taxonomy found.  ArticleId:{}. GossCategory:{}."
-                            , id, gossValue);
-                    warnings.add("No matching taxonomy found. Goss Category: " + gossValue);
+                        hippoUniqueKeys.add(valueList.get(valueList.size() - 1));
+                        fullTaxonomy.addAll(valueList);
+                    } else {
+                        LOGGER.warn("No matching taxonomy found.  ArticleId:{}. GossCategory:{}."
+                                , id, gossValue);
+                        warnings.add("No matching taxonomy found. Goss Category: " + gossValue);
+                    }
                 }
-            }
         }
         taxonomyKeys.addAll(hippoUniqueKeys);
     }

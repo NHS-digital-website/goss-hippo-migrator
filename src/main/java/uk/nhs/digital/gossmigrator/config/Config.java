@@ -77,13 +77,13 @@ public class Config {
     public static String IGNORE_MEDIA_WITH_PATH_PART;
     public static String DOCUMENT_TYPE_MAPPING_FILE;
     public static String GOSS_HIPPO_MAPPING_FILE;
-    private static String CONFIG_FOLDER;
     public static String GENERAL_TYPE_MAPPING_FILE;
+    public static String NON_RELEVANT_TEMPLATE_IDS_FILE;
 
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
-        CONFIG_FOLDER = getConfig(CONFIG_FOLDER_PROP, propertiesMap);
+        String CONFIG_FOLDER = getConfig(CONFIG_FOLDER_PROP, propertiesMap);
         JCR_ASSET_ROOT = getConfig(JCR_ASSET_ROOT_PROP, propertiesMap);
         JCR_SERVICE_DOC_ROOT = getConfig(JCR_SERVICE_DOC_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER = getConfig(ASSET_SOURCE_FOLDER_PROP, propertiesMap);
@@ -99,6 +99,7 @@ public class Config {
         DOCUMENT_TYPE_MAPPING_FILE =  CONFIG_FOLDER.concat(DOC_TYPE_FILE);
         TAXONOMY_MAPPING_FILE =  CONFIG_FOLDER.concat(TAXONOMY_FILE);
         GENERAL_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(GENERAL_TYPE_FILE);
+        NON_RELEVANT_TEMPLATE_IDS_FILE = CONFIG_FOLDER.concat(NON_RELEVANT_IDS_FILE);
 
         // Check all properties in file are expected
         for(String property : propertiesMap.stringPropertyNames()){

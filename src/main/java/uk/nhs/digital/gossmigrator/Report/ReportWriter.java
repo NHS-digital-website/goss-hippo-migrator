@@ -16,6 +16,8 @@ public class ReportWriter {
 
         WarningsReportWriter.createWarningsTab();
 
+        NonRevelantReportWriter.createNonRelevantTab();
+
         GeneralReportWriter.createGeneralTab();
 
         PublicationReportWriter.createPublicationTabs();

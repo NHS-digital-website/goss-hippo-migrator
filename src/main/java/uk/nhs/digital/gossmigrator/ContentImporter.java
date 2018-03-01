@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
+import uk.nhs.digital.gossmigrator.misc.GossContentFilter;
 import uk.nhs.digital.gossmigrator.model.goss.*;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
@@ -115,7 +116,7 @@ public class ContentImporter {
         for (Object childJsonObject : jsonArray) {
             gossContentList.add(GossContentFactory.generateGossContent((JSONObject) childJsonObject, ++count));
         }
-        return gossContentList;
+        return GossContentFilter.setRelevantGossContentFlag(gossContentList);
     }
 
     private Map<Long, String> populateGossContentJcrStructure(GossContentList gossContentList) {

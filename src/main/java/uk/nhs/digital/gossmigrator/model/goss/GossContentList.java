@@ -88,4 +88,11 @@ public class GossContentList extends ArrayList<GossContent> {
 
     }
 
+    public Map<Long, GossContent> getContentMetaMap() {
+        return contentMetaMap;
+    }
+
+    public void setContentMetaMap(Map<Long, GossContent> contentMetaMap) {
+        this.contentMetaMap = contentMetaMap;
+    }
 }

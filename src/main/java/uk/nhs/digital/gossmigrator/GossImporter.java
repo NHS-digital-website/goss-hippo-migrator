@@ -78,6 +78,7 @@ public class GossImporter {
         DocumentTypeImporter typeImporter = new DocumentTypeImporter();
         gossData.setContentTypeMap(typeImporter.populateContentTypes());
         gossData.setGeneralDocumentTypeMap(typeImporter.populateGeneralContentTypes());
+        gossData.setIgnoredTemplateIdsList(typeImporter.populateIgnoredTemplateIds());
 
         ContentImporter contentImporter = new ContentImporter();
         contentImporter.populateGossData(gossData);

@@ -10,4 +10,5 @@ public interface Constants {
     String PUB_SERIES_FILE = "PublicationSeriesMapping.xlsx";
     String METADATA_FILE = "MetadataMapping.csv";
     String TAXONOMY_FILE = "TaxonomyMapping.csv";
+    String NON_RELEVANT_IDS_FILE = "NonRelevantTemplateIDs.csv";
 }

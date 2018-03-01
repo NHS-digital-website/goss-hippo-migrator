@@ -1,20 +1,21 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
+import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.*;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.GOSS_LONG_FORMAT;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;
-
 
 public class GossContent implements Comparable<GossContent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossContent.class);
@@ -27,6 +28,12 @@ public class GossContent implements Comparable<GossContent> {
     protected String text;
     ContentType contentType;
     private String friendlyUrl;
+    private Long templateId;
+    private Date displayEndDate;
+    private String display;
+
+    //Content should be imported only if true
+    private Boolean relevantContentFlag = false;
 
     // Non Goss sourced variables
     Integer depth;
@@ -51,6 +58,9 @@ public class GossContent implements Comparable<GossContent> {
         parentId = getLong(gossJson, PARENTID, id);
         text = getString(gossJson, TEXT, id);
         friendlyUrl = getString(gossJson, FRIENDLY_URL,id);
+        templateId = getLong(gossJson, TEMPLATE_ID, id);
+        display = getString(gossJson, DISPLAY, id);
+        displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
 
         if (StringUtils.isEmpty(friendlyUrl)) {
             jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
@@ -193,4 +203,35 @@ public class GossContent implements Comparable<GossContent> {
         return friendlyUrl;
     }
 
+    public Long getTemplateId() {
+        return templateId;
+    }
+
+    /**
+     * Date representing when this article will stop displaying
+     *
+     * @return Date
+     */
+    @SuppressWarnings("unused")
+    public Date getDisplayEndDate() {
+        return displayEndDate;
+    }
+
+    /**
+     * Either set as on or off if displayed or hidden.
+     *
+     * @return on, off or hidden.
+     */
+    @SuppressWarnings("unused")
+    public String getDisplay() {
+        return display;
+    }
+
+    public Boolean isRelevantContentFlag() {
+        return relevantContentFlag;
+    }
+
+    public void setRelevantContentFlag(Boolean relevantContentFlag) {
+        this.relevantContentFlag = relevantContentFlag;
+    }
 }

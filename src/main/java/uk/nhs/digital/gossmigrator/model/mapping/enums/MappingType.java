@@ -4,7 +4,8 @@ public enum MappingType {
     TAXONOMY_MAPPING("taxonomy", 1, 4),
     METADATA_MAPPING("metadata", 1, 3),
     DOCUMENT_TYPE("document type", 1, 2),
-    GENERAL_TYPE("general document type", 1, 2);
+    GENERAL_TYPE("general document type", 1, 2),
+    TEMPLATE_ID("template id",1,2);
 
     private final String description;
     private final long headerCount;

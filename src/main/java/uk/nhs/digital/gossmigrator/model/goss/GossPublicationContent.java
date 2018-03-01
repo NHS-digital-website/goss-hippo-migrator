@@ -26,7 +26,6 @@ public class GossPublicationContent extends GossContent {
     private GossContentExtra extra;
     private long gossExportFileLine;
     private Date displayDate;
-    private Date displayEndDate;
     private List<GossContentMeta> geographicalData = new ArrayList<>();
     private List<GossContentMeta> taxonomyData = new ArrayList<>();
     private List<GossContentMeta> informationTypes = new ArrayList<>();
@@ -39,7 +38,6 @@ public class GossPublicationContent extends GossContent {
         this.gossExportFileLine = gossExportFileLine;
         contentType = PUBLICATION;
         displayDate = GossExportHelper.getDate(gossJson, DISPLAY_DATE, id, GOSS_LONG_FORMAT);
-        displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
         Object etcid = gossJson.get(EXTRA_OBJECT_ID.getName());
 
         // Not all documents have an extra section.
@@ -135,17 +133,6 @@ public class GossPublicationContent extends GossContent {
     public String getGranularity() {
         return getValuesAsCsvList(granularity);
     }
-
-    /**
-     * Date representing when this article will stop displaying
-     *
-     * @return Date
-     */
-    @SuppressWarnings("unused")
-    public Date getDisplayEndDate() {
-        return displayEndDate;
-    }
-
 
     /**
      * Display start date. i.e. When published.

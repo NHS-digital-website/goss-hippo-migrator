@@ -17,7 +17,7 @@ public class GossProcessedData {
     private Map<Long, GossLink> gossLinkMap;
     private Map<Long, ContentType> contentTypeMap;
     private Map<Long,String> generalDocumentTypeMap;
-
+    private List<Long> ignoredTemplateIdsList;
 
     public Map<Long, GossFile> getGossFileMap() {
         return gossFileMap;
@@ -99,5 +99,13 @@ public class GossProcessedData {
 
     public void setGeneralDocumentTypeMap(Map<Long, String> generalDocumentTypeMap) {
         this.generalDocumentTypeMap = generalDocumentTypeMap;
+    }
+
+    public List<Long> getIgnoredTemplateIdsList() {
+        return ignoredTemplateIdsList;
+    }
+
+    public void setIgnoredTemplateIdsList(List<Long> ignoredTemplateIdsList) {
+        this.ignoredTemplateIdsList = ignoredTemplateIdsList;
     }
 }

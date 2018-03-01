@@ -2,10 +2,7 @@ package uk.nhs.digital.gossmigrator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.nhs.digital.gossmigrator.Report.GeneralReportWriter;
-import uk.nhs.digital.gossmigrator.Report.HubReportWriter;
-import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
-import uk.nhs.digital.gossmigrator.Report.ServicesReportWriter;
+import uk.nhs.digital.gossmigrator.Report.*;
 import uk.nhs.digital.gossmigrator.model.goss.*;
 import uk.nhs.digital.gossmigrator.model.hippo.*;
 
@@ -20,7 +17,11 @@ public class HippoImportableFactory {
         LOGGER.debug("Begin populating hippo content from Goss content.");
         List<HippoImportable> importableContentItems = new ArrayList<>();
         for (GossContent gossContent : gossData.getArticlesContentList()) {
-            importableContentItems.add(generateHippoImportable(gossData, gossContent));
+            if(gossContent.isRelevantContentFlag()){
+                importableContentItems.add(generateHippoImportable(gossData, gossContent));
+            }else{
+                NonRevelantReportWriter.addNonRelevantRow(gossContent);
+            }
         }
         for (GossContent gossContent : gossData.getSeriesContentList()) {
             importableContentItems.add(generateHippoImportable(gossData, gossContent));

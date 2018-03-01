@@ -15,7 +15,6 @@ public class GossServiceContent extends GossContent{
     private String linkText;
     private String introduction;
     private Date date;
-    private String display;
     private Date archiveDate;
 
     GossServiceContent(JSONObject gossJson, long gossExportFileLine){
@@ -24,7 +23,7 @@ public class GossServiceContent extends GossContent{
         linkText = getString(gossJson, LINK_TEXT, id);
         introduction = getString(gossJson, INTRO, id);
         date = GossExportHelper.getDate(gossJson, DATE, id, GOSS_LONG_FORMAT);
-        display = getString(gossJson, DISPLAY, id);
+
         archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id, GOSS_LONG_FORMAT);
     }
 
@@ -33,17 +32,6 @@ public class GossServiceContent extends GossContent{
      */
     public static GossServiceContent getInstance(JSONObject gossJson, long gossExportFileLine){
         return new GossServiceContent(gossJson, gossExportFileLine);
-    }
-
-
-    /**
-     * Either set as on or off if displayed or hidden.
-     *
-     * @return on, off or hidden.
-     */
-    @SuppressWarnings("unused")
-    public String getDisplay() {
-        return display;
     }
 
     @SuppressWarnings("unused")

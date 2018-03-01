@@ -66,56 +66,86 @@ public class CSVReader<T> {
             } else {
                 switch (mappingType) {
                     case TAXONOMY_MAPPING:
-                        String gossTaxonomy = StringUtils.trim(record.get(0));
-                        String hippoTaxonomy = StringUtils.trim(record.get(1));
-                        String additionalTaxononomy1 = StringUtils.trim(record.get(2));
-                        String additionalTaxononomy2 = StringUtils.trim(record.get(3));
-
-                        List<String> taxonomies = new ArrayList<>();
-                        taxonomies.add(hippoTaxonomy);
-                        if(additionalTaxononomy1 != null && !additionalTaxononomy1.isEmpty()){
-                            taxonomies.add(additionalTaxononomy1);
-                        }
-                        if(additionalTaxononomy2 != null && !additionalTaxononomy1.isEmpty()){
-                            taxonomies.add(additionalTaxononomy2);
-                        }
-                        for (String taxonomy: taxonomies){
-                            CSVMappingReportWriter.addTaxonomyRow(gossTaxonomy, taxonomy);
-                        }
-                        ((Map<String, List<String>>) target).put(gossTaxonomy, taxonomies);
+                        target = (T) processTaxonomyMapping((Map<String, List<String>>)target, record);
                         break;
                     case METADATA_MAPPING:
-                        String gossGroup = record.get(0);
-                        String gossValue = record.get(1);
-                        String hippoValue = record.get(2);
-                        ((MetadataMappingItem) target).setGossGroup(gossGroup);
-                        ((MetadataMappingItem) target).setGossValue(gossValue);
-                        ((MetadataMappingItem) target).setHippoValue(hippoValue);
-                        CSVMappingReportWriter.addMetadataRow(gossGroup, gossValue, hippoValue);
+                        target = (T) processMetadataMapping((MetadataMappingItem)target, record);
                         break;
                     case DOCUMENT_TYPE:
-
-                        Pattern r = Pattern.compile("ID=([0-9]+)");
-                        Matcher m = r.matcher(record.get(0));
-
-                        if (m.find()) {
-                            Long templateID = Long.parseLong(m.group(1));
-                            for(ContentType contentType :ContentType.values()){
-                                if(contentType.getDescription().equals(record.get(1))){
-                                    ((Map<Long, ContentType>) target).put(templateID, contentType);
-                                    break;
-                                }
-                            }
-                        }
+                        target = (T) processDocumentTypeMapping((Map<Long, ContentType>)target, record);
                         break;
                     case GENERAL_TYPE:
-                        Long templateID = Long.parseLong(record.get(0));
-                        String documentType = record.get(1);
-                        ((Map<Long, String>) target).put(templateID, documentType);
+                        target = (T) processGeneralTypeMapping((Map<Long, String>)target, record);
+                        break;
+                    case TEMPLATE_ID:
+                        target = (T) processTemplateIdMapping((List<Long>)target, record);
                         break;
                 }
             }
         }
+        return target;
+    }
+
+    private Map<String, List<String>> processTaxonomyMapping(Map<String, List<String>> target, CSVRecord record){
+        String gossTaxonomy = StringUtils.trim(record.get(0));
+        String hippoTaxonomy = StringUtils.trim(record.get(1));
+        String additionalTaxononomy1 = StringUtils.trim(record.get(2));
+        String additionalTaxononomy2 = StringUtils.trim(record.get(3));
+
+        List<String> taxonomies = new ArrayList<>();
+        taxonomies.add(hippoTaxonomy);
+        if(additionalTaxononomy1 != null && !additionalTaxononomy1.isEmpty()){
+            taxonomies.add(additionalTaxononomy1);
+        }
+        if(additionalTaxononomy2 != null && !additionalTaxononomy2.isEmpty()){
+            taxonomies.add(additionalTaxononomy2);
+        }
+        for (String taxonomy: taxonomies){
+
+            CSVMappingReportWriter.addTaxonomyRow(gossTaxonomy, taxonomy);
+        }
+        target.put(gossTaxonomy, taxonomies);
+        return target;
+    }
+
+    private MetadataMappingItem processMetadataMapping(MetadataMappingItem target, CSVRecord record){
+        String gossGroup = record.get(0);
+        String gossValue = record.get(1);
+        String hippoValue = record.get(2);
+        target.setGossGroup(gossGroup);
+        target.setGossValue(gossValue);
+        target.setHippoValue(hippoValue);
+        CSVMappingReportWriter.addMetadataRow(gossGroup, gossValue, hippoValue);
+        return target;
+    }
+
+    private Map<Long, ContentType> processDocumentTypeMapping(Map<Long, ContentType> target, CSVRecord record){
+
+        Pattern r = Pattern.compile("ID=([0-9]+)");
+        Matcher m = r.matcher(record.get(0));
+
+        if (m.find()) {
+            Long templateID = Long.parseLong(m.group(1));
+            for(ContentType contentType :ContentType.values()){
+                if(contentType.getDescription().equals(record.get(1))){
+                    target.put(templateID, contentType);
+                    break;
+                }
+            }
+        }
+        return target;
+    }
+
+    private Map<Long, String> processGeneralTypeMapping(Map<Long, String> target, CSVRecord record){
+        Long templateID = Long.parseLong(record.get(0));
+        String documentType = record.get(1);
+        target.put(templateID, documentType);
+        return target;
+    }
+
+    private List<Long> processTemplateIdMapping(List<Long> target, CSVRecord record){
+        Long templateID = Long.parseLong(record.get(1));
+        target.add(templateID);
         return target;
     }
 
