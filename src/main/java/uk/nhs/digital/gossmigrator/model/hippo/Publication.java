@@ -77,28 +77,6 @@ public class Publication extends HippoImportable {
 
         Publication publication = new Publication(gossContent);
         publication.generateHippoTaxonomy(gossData, gossContent);
-
-        String publicationId = publication.getPublicationId();
-        Long seriesId = gossData.getPublicationSeriesMap().get(publicationId);
-        if (seriesId != null) {
-            Optional<GossContent> matchingSeries = gossData.getSeriesContentList().stream().
-                    filter(s -> Objects.equals(s.getId(), seriesId)).findFirst();
-            GossContent matchingSeriesGoss = matchingSeries.orElse(null);
-
-            if (matchingSeriesGoss != null) {
-                publication.setJcrPath(Paths.get(matchingSeriesGoss.getJcrParentPath(),
-                        publication.getJcrNodeName(), "content").toString());
-                publication.setJcrNodeName("content");
-            } else {
-                LOGGER.warn("No matching series found.  ArticleId:{}. SeriesId:{}."
-                        , publication.getId(), seriesId);
-                publication.getWarnings().add("No matching series found. SeriesId: " + seriesId);
-            }
-        } else {
-            LOGGER.warn("No matching series found.  ArticleId:{}. PublicationId:{}"
-                    , publication.getId(), publication.getPublicationId());
-            publication.getWarnings().add("No matching series found. ArticleId: " + publication.getId());
-        }
         return publication;
     }
 

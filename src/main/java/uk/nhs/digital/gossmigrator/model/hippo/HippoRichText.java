@@ -160,7 +160,7 @@ public class HippoRichText {
                     // And a doc ref node with something like;
                     // "/content/documents/corporate-website/publication-system/published-upcoming-publication"
                     // in the HippoLinkRef collection as jcrpath and published-upcoming-publication as nodeName.
-                    String jcrUrl = GossImporter.gossData.getGossContentUrlMap().get(referenceKey);
+                    String jcrUrl = GossImporter.gossData.getArticlesContentList().getById(new Long(referenceKey)).getJcrPath();
                     if (null == jcrUrl) {
                         LOGGER.error("ArticleId:{}. Internal link to Article:{} could not be resolved.", gossArticleId, referenceKey);
                         break;

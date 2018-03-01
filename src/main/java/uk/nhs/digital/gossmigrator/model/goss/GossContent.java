@@ -72,11 +72,12 @@ public class GossContent implements Comparable<GossContent> {
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
         introduction = getString(gossJson, INTRO, id);
 
-        if (StringUtils.isEmpty(friendlyUrl)) {
+        // TODO friendly url???
+        //if (StringUtils.isEmpty(friendlyUrl)) {
             jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
-        } else {
-            jcrNodeName = friendlyUrl;
-        }
+        //} else {
+        //    jcrNodeName = friendlyUrl.toLowerCase();
+        //}
 
         JSONArray metaJson = (JSONArray) gossJson.get(GossExportFieldNames.META_DATA.getName());
         if (null != metaJson) {
@@ -144,7 +145,7 @@ public class GossContent implements Comparable<GossContent> {
     public int compareTo(GossContent o) {
         if (o.getDepth() > depth) return -1;
         if (depth > o.getDepth()) return 1;
-        return 0;
+        return o.getContentType().compareTo(this.contentType);
     }
 
     @Override
@@ -195,14 +196,6 @@ public class GossContent implements Comparable<GossContent> {
         }
         return getValuesAsCsvList(sourceList, maxExpectedValues);
     }
-
-    /*
-     * Adds one additional level for Services/General folder structure
-     */
-    public String getModifiedPath() {
-        return Paths.get(jcrParentPath, jcrNodeName, jcrNodeName).toString();
-    }
-
 
     /**
      * This is the raw string from the database containing each text area.
@@ -281,6 +274,22 @@ public class GossContent implements Comparable<GossContent> {
 
     public String getIntroduction() {
         return introduction;
+    }
+
+    public GossContentExtra getExtra() {
+        return extra;
+    }
+
+    public List<String> getWarnings() {
+        return warnings;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setJcrNodeName(String jcrNodeName) {
+        this.jcrNodeName = jcrNodeName;
     }
     public Long getTemplateId() {
         return templateId;

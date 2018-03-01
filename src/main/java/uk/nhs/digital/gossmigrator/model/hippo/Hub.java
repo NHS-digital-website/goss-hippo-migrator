@@ -22,7 +22,8 @@ public class Hub extends HippoImportable {
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.HUB);
         body = parsedArticleText.getDefaultNode();
-        componentPaths = ArticleFinder.findArticlePathsByArticleId(gossContent.getExtra().getComponentIds());
+        componentPaths = ArticleFinder.findArticlePathsByArticleId(
+                gossContent.getExtra().getComponentIds(), "Getting components.", id);
         listTitle = gossContent.getExtra().getTitle();
         component = parsedArticleText.getComponent();
     }

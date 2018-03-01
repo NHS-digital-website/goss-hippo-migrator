@@ -32,7 +32,6 @@ public class ContentImporter {
         JSONObject rootJsonObject = readGossExport();
         gossData.setArticlesContentList(populateGossContent(rootJsonObject));
         gossData.setGossLinkMap(populateGossLinks(rootJsonObject));
-        gossData.setGossContentUrlMap(populateGossContentJcrStructure(gossData.getArticlesContentList()));
         gossData.setGossFileMap(populateGossFiles(rootJsonObject));
     }
 
@@ -117,15 +116,6 @@ public class ContentImporter {
             gossContentList.add(GossContentFactory.generateGossContent((JSONObject) childJsonObject, ++count));
         }
         return GossContentFilter.setRelevantGossContentFlag(gossContentList);
-    }
-
-    private Map<Long, String> populateGossContentJcrStructure(GossContentList gossContentList) {
-        gossContentList.generateJcrStructure();
-        Map<Long, String> gossContentUrlMap = new HashMap<>();
-        for (GossContent content : gossContentList) {
-            gossContentUrlMap.put(content.getId(), Paths.get(content.getJcrParentPath(),content.getJcrNodeName()).toString());
-        }
-        return gossContentUrlMap;
     }
 
     public void writeHippoContentImportables(List<HippoImportable> importableContentItems) {

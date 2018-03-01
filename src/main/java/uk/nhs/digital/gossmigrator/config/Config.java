@@ -18,17 +18,18 @@ public class Config {
 
     enum PropertiesEnum {
         JCR_ASSET_ROOT_PROP("jcr.asset.root", "Root jcr path to assets. e.g. /content/assets/", false, "/content/assets/"),
-        JCR_SERVICE_DOC_ROOT_PROP("jcr.service.doc.root", "Root jcr path to services. e.g. /content/documents/corporate-website/service/", false, "/content/documents/corporate-website/service/"),
+        JCR_SERVICE_DOC_ROOT_PROP("jcr.service.doc.root", "Root jcr path to services. e.g. /content/documents/corporate-website/service/", false, "/content/documents/corporate-website/services/"),
         ASSET_SOURCE_FOLDER_PROP("assets.source.folder", "File system folder holding assets to process.", true, ""),
         ASSET_TARGET_FOLDER_PROP("assets.target.folder", "File system folder to hold created asset json hippo import files.", true, ""),
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         CONTENT_TARGET_FOLDER_PROP("content.target.folder", "File system folder to hold created content json hippo import files.", true, ""),
-        JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/statpubs/", true, ""),
+        JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/documents/corporate-website/", false, "/content/documents/corporate-website/publication-system/statistical/"),
         SPLIT_ASSET_PATH_ON("split.asset.path.on", "For file nodes in goss export there is a path.  " +
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media"),
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/publicationsystem/"),
         IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media"),
-        CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true,"")
+        CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true,""),
+        JCR_GENERAL_ROOT_PROP("jcr.general.root", "JCR path to general root.", false, "/content/documents/corporate-website/general/")
         ;
 
         final String key;
@@ -66,6 +67,7 @@ public class Config {
     public static String JCR_ASSET_ROOT;
     public static String JCR_SERVICE_DOC_ROOT;
     public static String JCR_GALLERY_ROOT;
+    public static String JCR_GENERAL_ROOT;
     public static String ASSET_SOURCE_FOLDER;
     public static String ASSET_TARGET_FOLDER;
     public static String GOSS_CONTENT_SOURCE_FILE;
@@ -100,6 +102,7 @@ public class Config {
         TAXONOMY_MAPPING_FILE =  CONFIG_FOLDER.concat(TAXONOMY_FILE);
         GENERAL_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(GENERAL_TYPE_FILE);
         NON_RELEVANT_TEMPLATE_IDS_FILE = CONFIG_FOLDER.concat(NON_RELEVANT_IDS_FILE);
+        JCR_GENERAL_ROOT = getConfig(JCR_GENERAL_ROOT_PROP, propertiesMap);
 
         // Check all properties in file are expected
         for(String property : propertiesMap.stringPropertyNames()){

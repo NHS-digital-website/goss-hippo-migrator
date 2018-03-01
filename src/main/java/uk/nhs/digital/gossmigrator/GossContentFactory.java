@@ -23,6 +23,8 @@ public class GossContentFactory {
 
         if(GossImporter.gossData.getContentTypeMap().get(templateId) != null){
             type = GossImporter.gossData.getContentTypeMap().get(templateId);
+        }else if(GossImporter.gossData.getContentTypeMap().get(id) != null){
+            type = GossImporter.gossData.getContentTypeMap().get(id);
         }else{
             type = ContentType.GENERAL;
         }

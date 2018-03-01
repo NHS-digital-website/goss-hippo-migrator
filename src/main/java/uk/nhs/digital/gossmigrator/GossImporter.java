@@ -69,7 +69,7 @@ public class GossImporter {
         }
 
         SeriesImporter seriesImporter = new SeriesImporter();
-        gossData.setSeriesContentList(seriesImporter.getSeriesContentList());
+        gossData.addSeriesContentList(seriesImporter.getSeriesContentList());
         gossData.setPublicationSeriesMap(seriesImporter.getPublicationKeyToSeriesIdMap());
 
         TaxonomyMapper mapper = new TaxonomyMapper();
@@ -82,10 +82,13 @@ public class GossImporter {
 
         ContentImporter contentImporter = new ContentImporter();
         contentImporter.populateGossData(gossData);
+        gossData.getArticlesContentList().generateJcrStructure();
 
         HippoImportableFactory factory = new HippoImportableFactory();
         gossData.setImportableContentItems(factory.populateHippoContent(gossData));
         contentImporter.writeHippoContentImportables(gossData.getImportableContentItems());
+
+        gossData.getContentTypeMap().logNeverReferenced();
 
         ReportWriter.writeFile();
     }

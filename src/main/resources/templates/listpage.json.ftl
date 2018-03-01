@@ -90,7 +90,8 @@
       "values" : [ ]
       } ],
       "nodes" : [ ]
-    }<#sep>, </#sep> </#list>]<#if listpage.externalLinks??>, <#list listpage.externalLinks as externalLink>{
+    }<#sep>, </#sep> </#list>]
+    }<#if listpage.externalLinks??>, <#list listpage.externalLinks as externalLink>{
     "name" : "website:items",
     "primaryType" : "website:externallink",
     "mixinTypes" : [ ],

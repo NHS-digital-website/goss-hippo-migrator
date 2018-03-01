@@ -37,7 +37,7 @@
 "name" : "jcr:path",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${general.generalPath}" ]
+"values" : [ "${general.jcrPath}" ]
 }, {
 "name" : "jcr:localizedName",
 "type" : "STRING",

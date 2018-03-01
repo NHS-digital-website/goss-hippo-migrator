@@ -81,7 +81,7 @@ public class GossListPageContent extends GossContent {
     }
 
     private String getArticlePathFactoringInRedirects(Long linkedArticleId) {
-        GossContent content = GossImporter.gossData.getArticlesContentMap().get(linkedArticleId);
+        GossContent content = GossImporter.gossData.getArticlesContentList().getById(linkedArticleId);
         if (content.getContentType() == ContentType.REDIRECT) {
             GossRedirectContent redirect = (GossRedirectContent) content;
             if (redirect.getRelatedArticles().size() == 0) {
@@ -97,7 +97,7 @@ public class GossListPageContent extends GossContent {
     }
 
     private GossLink getLinksFactoringInRedirects(Long linkedArticleId) {
-        GossContent content = GossImporter.gossData.getArticlesContentMap().get(linkedArticleId);
+        GossContent content = GossImporter.gossData.getArticlesContentList().getById(linkedArticleId);
         if (content.getContentType() == ContentType.REDIRECT) {
             GossRedirectContent redirect = (GossRedirectContent) content;
             if (redirect.getLink() != null) {

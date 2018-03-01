@@ -2,6 +2,7 @@ package uk.nhs.digital.gossmigrator.model.goss;
 
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
+import uk.nhs.digital.gossmigrator.model.mapping.ContentTypeMap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,15 +10,12 @@ import java.util.Map;
 
 public class GossProcessedData {
 
-    private GossContentList seriesContentList;
-    private GossContentList articlesContentList;
-    private Map<Long, GossContent> articlesContentMap = new HashMap<>();
+    private GossContentList articlesContentList = new GossContentList();
     private Map<String, Long> publicationSeriesMap;
     private List<HippoImportable> importableContentItems;
-    private Map<Long, String> gossContentUrlMap;
     private Map<String, List<String>> taxonomyMap;
     private Map<Long, GossLink> gossLinkMap;
-    private Map<Long, ContentType> contentTypeMap;
+    private ContentTypeMap contentTypeMap;
     private Map<Long, String> generalDocumentTypeMap;
 
     private List<Long> ignoredTemplateIdsList;
@@ -28,23 +26,12 @@ public class GossProcessedData {
 
     private Map<Long, GossFile> gossFileMap;
 
-    public GossContentList getSeriesContentList() {
-        return seriesContentList;
-    }
-
-    public void setSeriesContentList(GossContentList seriesContentList) {
-        this.seriesContentList = seriesContentList;
-    }
-
     public GossContentList getArticlesContentList() {
         return articlesContentList;
     }
 
     public void setArticlesContentList(GossContentList articlesContentList) {
-        this.articlesContentList = articlesContentList;
-        for (GossContent article : articlesContentList) {
-            articlesContentMap.put(article.id, article);
-        }
+        this.articlesContentList.addAll(articlesContentList);
     }
 
     public Map<String, Long> getPublicationSeriesMap() {
@@ -61,14 +48,6 @@ public class GossProcessedData {
 
     public void setImportableContentItems(List<HippoImportable> importableContentItems) {
         this.importableContentItems = importableContentItems;
-    }
-
-    public Map<Long, String> getGossContentUrlMap() {
-        return gossContentUrlMap;
-    }
-
-    public void setGossContentUrlMap(Map<Long, String> gossContentUrlMap) {
-        this.gossContentUrlMap = gossContentUrlMap;
     }
 
     public Map<Long, GossLink> getGossLinkMap() {
@@ -91,11 +70,11 @@ public class GossProcessedData {
         this.taxonomyMap = taxonomyMap;
     }
 
-    public Map<Long, ContentType> getContentTypeMap() {
+    public ContentTypeMap getContentTypeMap() {
         return contentTypeMap;
     }
 
-    public void setContentTypeMap(Map<Long, ContentType> contentTypeMap) {
+    public void setContentTypeMap(ContentTypeMap contentTypeMap) {
         this.contentTypeMap = contentTypeMap;
     }
 
@@ -107,8 +86,8 @@ public class GossProcessedData {
         this.generalDocumentTypeMap = generalDocumentTypeMap;
     }
 
-    public Map<Long, GossContent> getArticlesContentMap() {
-        return articlesContentMap;
+    public void addSeriesContentList(GossContentList seriesContentList) {
+        articlesContentList.addAll(seriesContentList);
     }
 
     public List<Long> getIgnoredTemplateIdsList() {

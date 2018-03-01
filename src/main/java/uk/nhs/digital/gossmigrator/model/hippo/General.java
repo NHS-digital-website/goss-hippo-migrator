@@ -6,7 +6,6 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 public class General extends HippoImportable {
 
     private Long templateId;
-    private String generalPath;
     private String type;
 
     protected General(GossGeneralContent gossContent) {
@@ -14,8 +13,6 @@ public class General extends HippoImportable {
         id = gossContent.getId();
         templateId = gossContent.getTemplateId();
         type = gossContent.getDocumentType();
-
-        generalPath = gossContent.getModifiedPath();
 
         title = gossContent.getHeading();
         seoSummary = gossContent.getIntroduction();
@@ -38,11 +35,6 @@ public class General extends HippoImportable {
     @SuppressWarnings("unused")
     public Long getTemplateId() {
         return templateId;
-    }
-
-    @SuppressWarnings("unused")
-    public String getGeneralPath() {
-        return generalPath;
     }
 
     public String getType() {

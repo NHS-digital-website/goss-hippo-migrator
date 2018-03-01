@@ -23,9 +23,6 @@ public class HippoImportableFactory {
                 NonRevelantReportWriter.addNonRelevantRow(gossContent);
             }
         }
-        for (GossContent gossContent : gossData.getSeriesContentList()) {
-            importableContentItems.add(generateHippoImportable(gossData, gossContent));
-        }
         return importableContentItems;
     }
 

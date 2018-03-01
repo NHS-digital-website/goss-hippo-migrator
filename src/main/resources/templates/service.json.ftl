@@ -37,7 +37,7 @@
 "name" : "jcr:path",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${service.servicePath}" ]
+"values" : [ "${service.jcrPath}" ]
 }, {
 "name" : "jcr:localizedName",
 "type" : "STRING",

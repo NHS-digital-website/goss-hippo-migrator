@@ -37,7 +37,6 @@ public class CSVReader<T> {
     public CSVParser readFile(File csvData) {
         CSVParser parser;
         try {
-            // TODO utf-8 charset?  Probably does not matter as expecting only ASCII chars.
             parser = CSVParser.parse(csvData, defaultCharset(), CSVFormat.RFC4180);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

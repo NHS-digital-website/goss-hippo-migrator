@@ -8,8 +8,6 @@ import java.util.List;
 
 public class Service extends HippoImportable {
 
-    private String servicePath;
-
     // Do not initialise HippoRichText objects.  Template needs nulls to decide on commas in list separators
     private List<HippoRichText> topTasks;
     private HippoRichText introduction;
@@ -23,7 +21,6 @@ public class Service extends HippoImportable {
         title = TextHelper.escapeForJson(gossContent.getHeading());
         summary = TextHelper.escapeForJson(gossContent.getIntroduction());
         shortSummary = TextHelper.escapeForJson(gossContent.getSummary());
-        servicePath = gossContent.getModifiedPath();
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.SERVICE);
         introduction = parsedArticleText.getIntroduction();
@@ -55,12 +52,5 @@ public class Service extends HippoImportable {
     public HippoRichText getContactDetails() {
         return contactDetails;
     }
-
-    @SuppressWarnings("unused")
-    public String getServicePath() {
-        return servicePath;
-    }
-
-
 
   }
