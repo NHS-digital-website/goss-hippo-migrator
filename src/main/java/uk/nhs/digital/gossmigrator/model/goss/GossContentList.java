@@ -219,13 +219,16 @@ public class GossContentList extends ArrayList<GossContent> {
                 String label;
                 if ("content".equalsIgnoreCase(p.jcrNodeName)) {
                     output.append("\t\t").append(TextHelper.toLowerCaseDashedValue(p.heading))
-                            .append("[").append(p.contentType.name()).append("][").append(p.id).append("]\n");
+                            .append("[").append(p.contentType.name()).append("][").append(p.id).append("]")
+                            .append("[exported=").append(p.isRelevantContentFlag()).append("]\n");
                     output.append("\t\t\t|->").append(p.jcrNodeName)
-                            .append("[").append(p.contentType.name()).append("][").append(p.id).append("]\n");
+                            .append("[").append(p.contentType.name()).append("][").append(p.id).append("]")
+                            .append("[exported=").append(p.isRelevantContentFlag()).append("]\n");
                     printChildren(p, output, 1);
                 } else {
                     output.append("\t\t").append(p.jcrNodeName)
-                            .append("[").append(p.contentType.name()).append("][").append(p.id).append("]\n");
+                            .append("[").append(p.contentType.name()).append("][").append(p.id).append("]")
+                            .append("[exported=").append(p.isRelevantContentFlag()).append("]\n");
                 }
 
             }
@@ -243,13 +246,16 @@ public class GossContentList extends ArrayList<GossContent> {
                 nextExtraTabs++;
                 output.append(StringUtils.repeat("\t", extra)).append("|->")
                         .append(TextHelper.toLowerCaseDashedValue(child.heading))
-                        .append("[").append(child.contentType.name()).append("][").append(child.id).append("]\n");
+                        .append("[").append(child.contentType.name()).append("][").append(child.id).append("]")
+                        .append("[exported=").append(child.isRelevantContentFlag()).append("]\n");
                 output.append(StringUtils.repeat("\t", ++extra)).append("|->").append(child.jcrNodeName)
-                        .append("[").append(child.contentType.name()).append("][").append(child.id).append("]\n");
+                        .append("[").append(child.contentType.name()).append("][").append(child.id).append("]")
+                        .append("[exported=").append(child.isRelevantContentFlag()).append("]\n");
                 printChildren(child, output, nextExtraTabs);
             } else {
                 output.append(StringUtils.repeat("\t", extra)).append(child.jcrNodeName)
-                        .append("[").append(child.contentType.name()).append("][").append(child.id).append("]\n");
+                        .append("[").append(child.contentType.name()).append("][").append(child.id).append("]")
+                        .append("[exported=").append(child.isRelevantContentFlag()).append("]\n");
             }
         }
     }
