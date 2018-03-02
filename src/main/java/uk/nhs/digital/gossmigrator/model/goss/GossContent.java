@@ -71,13 +71,7 @@ public class GossContent implements Comparable<GossContent> {
         display = getString(gossJson, DISPLAY, id);
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
         introduction = getString(gossJson, INTRO, id);
-
-        // TODO friendly url???
-        //if (StringUtils.isEmpty(friendlyUrl)) {
-            jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
-        //} else {
-        //    jcrNodeName = friendlyUrl.toLowerCase();
-        //}
+        jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
 
         JSONArray metaJson = (JSONArray) gossJson.get(GossExportFieldNames.META_DATA.getName());
         if (null != metaJson) {

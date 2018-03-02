@@ -80,8 +80,10 @@ public class HippoRichText {
     private Element parseLinks(Element source) {
         // Get spans with attribute data-icm-arg2
         List<Element> links = source.select("span[data-icm-arg2]");
+        int i = 0;
         for (Element link : links) {
             // External links.
+            i++;
             String linkTypeId = link.attributes().get("data-icm-inlinetypeid");
             String referenceId = link.attributes().get("data-icm-arg2");
             String linkText = link.attributes().get("data-icm-arg2name");
@@ -111,7 +113,7 @@ public class HippoRichText {
                     } else if (GossExportHelper.isImage(fileLink.getFileName())) {
                         LOGGER.warn("Article:{}, Link{} is an asset link to an image.", gossArticleId, referenceKey);
                     } else {
-                        String docName = Paths.get(fileLink.getJcrPath(gossArticleId)).getFileName().toString();
+                        String docName = "Linkref" + referenceKey + "-" + i;
                         Element newLink = new Element("a").text(linkText).attr("href", docName);
                         link.replaceWith(newLink);
                         docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
@@ -126,7 +128,7 @@ public class HippoRichText {
                         LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
                                 , referenceKey, gossArticleId);
                     } else {
-                        String docName = Paths.get(fileLink.getJcrPath(gossArticleId)).getFileName().toString();
+                        String docName = "Linkref" + referenceKey + "-" + i;
                         Element newLink = new Element("img")
                                 .attr("alt", linkText)
                                 .attr("data-type", "hippogallery:original")
@@ -166,7 +168,7 @@ public class HippoRichText {
                         break;
                     } else {
                         // Create replacement node.
-                        String docName = Paths.get(jcrUrl).getFileName().toString();
+                        String docName = "Linkref" + referenceKey + "-" + i;
                         Element newLink = new Element("a").text(linkText).attr("href", docName);
                         link.replaceWith(newLink);
                         docReferences.add(new HippoLinkRef(jcrUrl, docName));
@@ -193,36 +195,5 @@ public class HippoRichText {
 
         }
         return source;
-        // TODO
-        // VIDEO_INLINE lives in a div... Perhaps
-        // div data-icm-arg1=\"92587\" data-icm-arg1name=\"video\" data-icm-inlinetypeid=\"7\">92587<\/div>
-        // Not sure there will be any of these in the export.
-        // If so the below may be needed
-        /*
-        links = source.select("div[data-icm-arg1]");
-        for (Element link : links) {
-            String linkTypeId = link.attributes().get("data-icm-inlinetypeid");
-            String referenceId = link.attributes().get("data-icm-arg1");
-            String linkText = link.attributes().get("data-icm-arg1name");
-            Long referenceKey = null;
-            if (null != referenceId) {
-                if (StringUtils.isNumeric(referenceId)) {
-                    referenceKey = new Long(referenceId);
-                }
-            } else {
-                referenceId = "";
-                LOGGER.warn("ArticleId:{}. Parsing a goss link with no Referenced ID (data-icm-arg2)? Data:{}", gossArticleId, link.toString());
-            }
-            if (Objects.requireNonNull(GossInternalLinkType.getById(linkTypeId)) == VIDEO_INLINE) {
-                GossFile fileLink = GossImporter.gossData.getGossFileMap().get(referenceKey);
-                String docName = Paths.get(fileLink.getJcrPath(gossArticleId)).getFileName().toString();
-                Element newLink = new Element("a").text(linkText).attr("href", docName);
-                link.replaceWith(newLink);
-                docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
-            } else {
-                LOGGER.error("ArticleId:{}. Unexpected inline link in div.  Link refers to:{}.", gossArticleId, referenceId);
-            }
-        }
-        */
     }
 }

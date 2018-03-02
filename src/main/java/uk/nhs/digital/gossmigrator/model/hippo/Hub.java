@@ -1,6 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import uk.nhs.digital.gossmigrator.misc.ArticleFinder;
+import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossHubContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
@@ -15,10 +16,10 @@ public class Hub extends HippoImportable {
     private Hub(GossHubContent gossContent) {
         super(gossContent);
         id = gossContent.getId();
-        title = gossContent.getHeading();
-        seoSummary = gossContent.getIntroduction();
-        summary = gossContent.getIntroduction();
-        shortSummary = gossContent.getIntroduction();
+        title = TextHelper.escapeForJson(gossContent.getHeading());
+        seoSummary = TextHelper.escapeForJson(gossContent.getIntroduction());
+        summary = TextHelper.escapeForJson(gossContent.getIntroduction());
+        shortSummary = TextHelper.escapeForJson(gossContent.getIntroduction());
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.HUB);
         body = parsedArticleText.getDefaultNode();

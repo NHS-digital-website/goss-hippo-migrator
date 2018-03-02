@@ -1,5 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossGeneralContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
@@ -14,10 +15,10 @@ public class General extends HippoImportable {
         templateId = gossContent.getTemplateId();
         type = gossContent.getDocumentType();
 
-        title = gossContent.getHeading();
-        seoSummary = gossContent.getIntroduction();
-        summary = gossContent.getIntroduction();
-        shortSummary = gossContent.getIntroduction();
+        title = TextHelper.escapeForJson(gossContent.getHeading());
+        seoSummary = TextHelper.escapeForJson(gossContent.getIntroduction());
+        summary = TextHelper.escapeForJson(gossContent.getIntroduction());
+        shortSummary = TextHelper.escapeForJson(gossContent.getIntroduction());
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.HUB);
         sections = parsedArticleText.getSections();
