@@ -25,12 +25,16 @@ public class NonRevelantReportWriter {
     public static void addNonRelevantRow(GossContent content) {
         HSSFSheet sheet = report.getSheet("NonRelevant");
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
-        row.createCell(0).setCellValue(content.getId());
-        row.createCell(1).setCellValue(content.getHeading());
-        row.createCell(2).setCellValue(content.getTemplateId());
-        row.createCell(3).setCellValue(content.getDisplay());
-        String displayEndDate = GossExportHelper.getDateString(content.getDisplayEndDate(), TEMPLATE_FORMAT);
-        row.createCell(4).setCellValue(displayEndDate);
+        try {
+            row.createCell(0).setCellValue(content.getId());
+            row.createCell(1).setCellValue(content.getHeading());
+            row.createCell(2).setCellValue(content.getTemplateId());
+            row.createCell(3).setCellValue(content.getDisplay());
+            String displayEndDate = GossExportHelper.getDateString(content.getDisplayEndDate(), TEMPLATE_FORMAT);
+            row.createCell(4).setCellValue(displayEndDate);
+        }catch(Exception e){
+            // no-op
+        }
 
     }
 }
