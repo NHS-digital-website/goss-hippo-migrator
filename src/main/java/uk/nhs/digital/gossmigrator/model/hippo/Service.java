@@ -1,10 +1,12 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
+import uk.nhs.digital.gossmigrator.model.goss.GossLink;
 import uk.nhs.digital.gossmigrator.model.goss.GossServiceContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import java.util.List;
+import java.util.Set;
 
 public class Service extends HippoImportable {
 
@@ -12,6 +14,8 @@ public class Service extends HippoImportable {
     private List<HippoRichText> topTasks;
     private HippoRichText introduction;
     private HippoRichText contactDetails;
+    private Set<String> internalLinks;
+    private Set<GossLink> externalLinks;
 
     protected Service(GossServiceContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
@@ -29,6 +33,8 @@ public class Service extends HippoImportable {
         topTasks = parsedArticleText.getTopTasks();
         contactDetails = parsedArticleText.getContactDetails();
         component = parsedArticleText.getComponent();
+        internalLinks = gossContent.getInternalArticles();
+        externalLinks = gossContent.getExternalArticles();
     }
 
     /*
@@ -52,6 +58,16 @@ public class Service extends HippoImportable {
     @SuppressWarnings("unused")
     public HippoRichText getContactDetails() {
         return contactDetails;
+    }
+
+    @SuppressWarnings("unused")
+    public Set<String> getInternalLinks() {
+        return internalLinks;
+    }
+
+    @SuppressWarnings("unused")
+    public Set<GossLink> getExternalLinks() {
+        return externalLinks;
     }
 
   }

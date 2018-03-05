@@ -91,4 +91,44 @@
 "nodes" : [ ]
 }<#sep>, </#sep></#list>
 </#if>
+<#if hub.externalLinks??><#if firstNode==false>,<#else><#assign firstNode=false></#if><#list hub.externalLinks as externalLink>{
+"name" : "website:items",
+"primaryType" : "website:externallink",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "website:link",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${externalLink.address}" ]
+}, {
+"name" : "website:shortsummary",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${externalLink.description}" ]
+}, {
+"name" : "website:title",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${externalLink.displayText}" ]
+} ],
+"nodes" : [ ]
+}<#sep>, </#sep></#list></#if>
+<#if hub.internalLinks??><#if firstNode==false>,<#else><#assign firstNode=false></#if><#list hub.internalLinks as internalLink>{
+"name" : "website:items",
+"primaryType" : "website:internallink",
+"mixinTypes" : [ ],
+"properties" : [ ],
+"nodes" : [ {
+"name" : "website:link",
+"primaryType" : "hippo:mirror",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippo:docbase",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${internalLink}" ]
+} ],
+"nodes" : [ ]
+} ]
+}<#sep>, </#sep></#list></#if>
 ]}

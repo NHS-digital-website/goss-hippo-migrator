@@ -2,9 +2,11 @@ package uk.nhs.digital.gossmigrator.model.goss;
 
 import org.json.simple.JSONObject;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
+import uk.nhs.digital.gossmigrator.misc.GossLinkHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
 import java.util.Date;
+import java.util.Set;
 
 import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.getString;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.SERVICE;
@@ -17,6 +19,7 @@ public class GossServiceContent extends GossContent{
     private Date date;
     private Date archiveDate;
 
+    private GossLinkHelper linkHelper = new GossLinkHelper(this);
 
     GossServiceContent(JSONObject gossJson, long gossExportFileLine, ContentType contentType){
         super(gossJson, gossExportFileLine, contentType);
@@ -26,7 +29,7 @@ public class GossServiceContent extends GossContent{
         archiveDate = GossExportHelper.getDate(gossJson, ARCHIVE_DATE, id, GOSS_LONG_FORMAT);
     }
 
-    GossServiceContent(JSONObject gossJson, long gossExportFileLine) {
+    private GossServiceContent(JSONObject gossJson, long gossExportFileLine) {
         this(gossJson, gossExportFileLine, SERVICE);
     }
 
@@ -53,8 +56,6 @@ public class GossServiceContent extends GossContent{
         return date;
     }
 
-
-
     /**
      * Text seen on links to the article.
      *
@@ -63,5 +64,17 @@ public class GossServiceContent extends GossContent{
     @SuppressWarnings("unused")
     public String getLinkText() {
         return linkText;
+    }
+
+    public Set<String> getInternalArticles() {
+        return linkHelper.getInternalArticles();
+    }
+
+    public Set<GossLink> getExternalArticles() {
+        return linkHelper.getExternalArticles();
+    }
+
+    public GossContentExtra getExtra() {
+        return extra;
     }
 }

@@ -2,15 +2,18 @@ package uk.nhs.digital.gossmigrator.model.goss;
 
 import org.json.simple.JSONObject;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
-import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
+import uk.nhs.digital.gossmigrator.misc.GossLinkHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames;
 
+import java.util.Set;
+
 import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.HUB;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.EXTRA_OBJECT_ID;
 
 public class GossHubContent extends GossServiceContent {
 
     private String introduction;
+
+    private GossLinkHelper linkHelper = new GossLinkHelper(this);
 
     private GossHubContent(JSONObject gossJson, long gossExportFileLine) {
         super(gossJson, gossExportFileLine, HUB);
@@ -28,6 +31,15 @@ public class GossHubContent extends GossServiceContent {
     @Override
     public String getIntroduction() {
         return introduction;
+    }
+
+    public Set<String> getInternalArticles() {
+        return linkHelper.getInternalArticles();
+    }
+
+
+    public Set<GossLink> getExternalArticles() {
+        return linkHelper.getExternalArticles();
     }
 
 }

@@ -1,7 +1,7 @@
 package uk.nhs.digital.gossmigrator.model.goss.enums;
 
 public enum ContentType {
-    SERVICE("Service", false, false),
+    SERVICE("Service", true, false),
     PUBLICATION("Publication", true, false),
     SERIES("Series", false, false),
     HUB("Hub", true, false),
