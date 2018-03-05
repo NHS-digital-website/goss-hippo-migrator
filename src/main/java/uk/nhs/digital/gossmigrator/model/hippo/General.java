@@ -7,7 +7,6 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 public class General extends HippoImportable {
 
     private Long templateId;
-    private String generalPath;
     private String type = "";
 
     protected General(GossGeneralContent gossContent) {
