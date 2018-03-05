@@ -3,10 +3,8 @@ package uk.nhs.digital.gossmigrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.Report.AssetReportWriter;
-import uk.nhs.digital.gossmigrator.Report.ServicesReportWriter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
-import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.hippo.Asset;
 import uk.nhs.digital.gossmigrator.model.hippo.AssetReportable;
@@ -72,7 +70,7 @@ public class AssetImporter {
 
     public void writeHippoAssetImportables() {
         ImportableFileWriter writer = new ImportableFileWriter();
-        writer.writeImportableFiles(importableAssetItems, Paths.get(ASSET_TARGET_FOLDER));
+        writer.writeImportableFiles(importableAssetItems);
     }
 
 }

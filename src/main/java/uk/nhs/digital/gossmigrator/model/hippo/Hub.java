@@ -15,6 +15,7 @@ public class Hub extends HippoImportable {
 
     private Hub(GossHubContent gossContent) {
         super(gossContent);
+        setLive(gossContent);
         id = gossContent.getId();
         title = TextHelper.escapeForJson(gossContent.getHeading());
         seoSummary = TextHelper.escapeForJson(gossContent.getIntroduction());

@@ -72,6 +72,8 @@ public class Config {
     public static String ASSET_TARGET_FOLDER;
     public static String GOSS_CONTENT_SOURCE_FILE;
     public static String CONTENT_TARGET_FOLDER;
+    public static String LIVE_CONTENT_TARGET_FOLDER;
+    public static String NON_LIVE_CONTENT_TARGET_FOLDER;
     public static String JCR_PUBLICATION_ROOT;
     public static String METADATA_MAPPING_FILE;
     public static String ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT;
@@ -92,6 +94,8 @@ public class Config {
         ASSET_TARGET_FOLDER = getConfig(ASSET_TARGET_FOLDER_PROP, propertiesMap);
         GOSS_CONTENT_SOURCE_FILE = getConfig(GOSS_CONTENT_SOURCE_FILE_PROP, propertiesMap);
         CONTENT_TARGET_FOLDER = getConfig(CONTENT_TARGET_FOLDER_PROP, propertiesMap);
+        LIVE_CONTENT_TARGET_FOLDER = getConfig(CONTENT_TARGET_FOLDER_PROP, propertiesMap).concat("Live/");
+        NON_LIVE_CONTENT_TARGET_FOLDER = getConfig(CONTENT_TARGET_FOLDER_PROP, propertiesMap).concat("Not Live/");
         JCR_PUBLICATION_ROOT = getConfig(JCR_PUBLICATION_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT = getConfig(SPLIT_ASSET_PATH_ON, propertiesMap);
         JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP, propertiesMap);

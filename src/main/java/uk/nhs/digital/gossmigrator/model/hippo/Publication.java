@@ -32,6 +32,7 @@ public class Publication extends HippoImportable {
 
     public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
+        setLive(gossContent);
         warnings.addAll(gossContent.getWarnings());
         id = gossContent.getId();
 

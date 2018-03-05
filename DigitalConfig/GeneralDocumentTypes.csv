@@ -1,21 +1,21 @@
-Article ID,Type
+Article ID,Document Type GROUPING
 7165,FOI
-554,Common
-235,Common
-236,Common
-773,Common
+554,
+235,
+236,
+773,
 8272,Event
 324,Data collection
-1148,Common
-234,footer
-293,tool
+1148,
+234,
+293,Tool
 1026,
 8486,
 6838,FOI
 6839,FOI
 7032,FOI
 7031,FOI
-7361,list
+7361,List
 7030,FOI
 7033,FOI
 7522,FOI
@@ -182,19 +182,19 @@ Article ID,Type
 960,Service
 976,Service
 966,Service
-989,service child page
-1138,service child page
-1110,Service child page
-1139,Service child page
+989,Service
+1138,Service
+1110,Service
+1139,Service
 980,Service
-978,Service child page
-956,Service child page
-953,Service child page
-952,Service child page
-942,Service child page
-933,Service child page
-985,Service child page
-957,Service child page
+978,Service
+956,Service
+953,Service
+952,Service
+942,Service
+933,Service
+985,Service
+957,Service
 939,Service
 937,Service
 974,Service
@@ -236,17 +236,17 @@ Article ID,Type
 6657,News article
 6671,News article
 6659,News article
-7691,data hub page
-7899,data hub page
-7692,data hub page
-1535,data hub page
-1534,data hub page
-1434,data hub page
-1433,data hub page
-7034,data hub page
-1429,data hub page
-7035,data hub page
-1345,data hub page
+7691,Data hub
+7899,Data hub
+7692,Data hub
+1535,Data hub
+1534,Data hub
+1434,Data hub
+1433,Data hub
+7034,Data hub
+1429,Data hub
+7035,Data hub
+1345,Data hub
 6770,News article
 6672,News article
 6869,News article
@@ -298,8 +298,8 @@ Article ID,Type
 1189,News article
 1149,News article
 1154,News article
-1284,Clinical audit/Data set
-1562,document download page
+1284,Clinical audit dataset
+1562,Document download page
 1561,
 1563,
 1557,
@@ -367,38 +367,38 @@ Article ID,Type
 8396,News article
 8403,News article
 1424,News article
-8438,Data Provision Notice
-8437,Data Provision Notice
-8436,Data Provision Notice
-8435,Data Provision Notice
-8434,Data Provision Notice
-8707,Data Provision Notice
-8706,Data Provision Notice
-8256,Data Provision Notice
-8259,Data Provision Notice
-8261,Data Provision Notice
-8260,Data Provision Notice
-1475,Data Provision Notice
-8255,Data Provision Notice
-1423,Data Provision Notice
-8020,Data Provision Notice
-7209,Data Provision Notice
-1470,Data Provision Notice
-7211,Data Provision Notice
-1426,Data Provision Notice
-1459,Data Provision Notice
-1425,Data Provision Notice
-1428,Data Provision Notice
-7210,Data Provision Notice
-1472,Data Provision Notice
-7212,Data Provision Notice
-1422,Data Provision Notice
-8703,Data Provision Notice
-8705,Data Provision Notice
-7208,Data Provision Notice
-8704,Data Provision Notice
-8258,Data Provision Notice
-8262,Data Provision Notice
+8438,Data provision notice
+8437,Data provision notice
+8436,Data provision notice
+8435,Data provision notice
+8434,Data provision notice
+8707,Data provision notice
+8706,Data provision notice
+8256,Data provision notice
+8259,Data provision notice
+8261,Data provision notice
+8260,Data provision notice
+1475,Data provision notice
+8255,Data provision notice
+1423,Data provision notice
+8020,Data provision notice
+7209,Data provision notice
+1470,Data provision notice
+7211,Data provision notice
+1426,Data provision notice
+1459,Data provision notice
+1425,Data provision notice
+1428,Data provision notice
+7210,Data provision notice
+1472,Data provision notice
+7212,Data provision notice
+1422,Data provision notice
+8703,Data provision notice
+8705,Data provision notice
+7208,Data provision notice
+8704,Data provision notice
+8258,Data provision notice
+8262,Data provision notice
 8284,
 8286,
 8285,
@@ -416,182 +416,182 @@ Article ID,Type
 8304,
 1017,
 8353,
-7786,Service child page
-8397,Service child page
-1096,Service child page
-1094,Service child page
-7734,Service child page
-1092,Service child page
-7315,Service child page
-7359,Service child page
-1093,Service child page
-7787,Service child page
-1018,Service child page
-1019,Service child page
-1087,Service child page
-1089,Service child page
-1088,Service child page
-1086,Service child page
-1085,Service child page
-1082,Service child page
-1083,Service child page
-1080,Service child page
-1081,Service child page
-1084,Service child page
-1079,Service child page
-1078,Service child page
-1077,Service child page
-1074,Service child page
-1075,Service child page
-1076,Service child page
-1023,Service child page
-1073,Service child page
-1072,Service child page
-8302,Service child page
-1022,Service child page
-8301,Service child page
-8300,Service child page
-8299,Service child page
-8298,Service child page
-8296,Service child page
-8294,Service child page
-8295,Service child page
-8297,Service child page
-8293,Service child page
-8292,Service child page
-8290,Service child page
-8289,Service child page
-8291,Service child page
-8329,Service child page
-8328,Service child page
-8326,Service child page
-8325,Service child page
-8324,Service child page
-8323,Service child page
-8321,Service child page
-8322,Service child page
-8320,Service child page
-8317,Service child page
-8316,Service child page
-8311,Service child page
-8327,Service child page
-8313,Service child page
-8314,Service child page
-8312,Service child page
-8310,Service child page
-8315,Service child page
-8309,Service child page
-8307,Service child page
-8306,Service child page
-8308,Service child page
-8352,Service child page
-8351,Service child page
-8349,Service child page
-8350,Service child page
-8348,Service child page
-8346,Service child page
-8347,Service child page
-8345,Service child page
-8344,Service child page
-8340,Service child page
-8339,Service child page
-8337,Service child page
-8341,Service child page
-8336,Service child page
-8334,Service child page
-8335,Service child page
-8333,Service child page
-8763,Service child page
-8762,Service child page
-8761,Service child page
-8759,Service child page
-8757,Service child page
-8760,Service child page
-8755,Service child page
-8756,Service child page
-8754,Service child page
-8753,Service child page
-8752,Service child page
-8750,Service child page
-8748,Service child page
-8751,Service child page
+7786,Service
+8397,Service
+1096,Service
+1094,Service
+7734,Service
+1092,Service
+7315,Service
+7359,Service
+1093,Service
+7787,Service
+1018,Service
+1019,Service
+1087,Service
+1089,Service
+1088,Service
+1086,Service
+1085,Service
+1082,Service
+1083,Service
+1080,Service
+1081,Service
+1084,Service
+1079,Service
+1078,Service
+1077,Service
+1074,Service
+1075,Service
+1076,Service
+1023,Service
+1073,Service
+1072,Service
+8302,Service
+1022,Service
+8301,Service
+8300,Service
+8299,Service
+8298,Service
+8296,Service
+8294,Service
+8295,Service
+8297,Service
+8293,Service
+8292,Service
+8290,Service
+8289,Service
+8291,Service
+8329,Service
+8328,Service
+8326,Service
+8325,Service
+8324,Service
+8323,Service
+8321,Service
+8322,Service
+8320,Service
+8317,Service
+8316,Service
+8311,Service
+8327,Service
+8313,Service
+8314,Service
+8312,Service
+8310,Service
+8315,Service
+8309,Service
+8307,Service
+8306,Service
+8308,Service
+8352,Service
+8351,Service
+8349,Service
+8350,Service
+8348,Service
+8346,Service
+8347,Service
+8345,Service
+8344,Service
+8340,Service
+8339,Service
+8337,Service
+8341,Service
+8336,Service
+8334,Service
+8335,Service
+8333,Service
+8763,Service
+8762,Service
+8761,Service
+8759,Service
+8757,Service
+8760,Service
+8755,Service
+8756,Service
+8754,Service
+8753,Service
+8752,Service
+8750,Service
+8748,Service
+8751,Service
 8710,News article
-7990,corporate report
-1188,Service child page
-7504,Service child page
-8161,Service child page
-752,Service child page
-1012,Service child page
-1011,Service child page
-1360,Service child page
-753,Service child page
-8012,Service child page
-1483,Service child page
-8010,Service child page
-1419,Service child page
-1268,Service child page
-7609,Service child page
-1252,Service child page
-934,Service child page
-1474,Service child page
-761,Service child page
-8013,Service child page
-1009,Service child page
-7705,corporate report
-6894,Service child page
-7272,Service child page
-977,Service child page
+7990,Corporate report
+1188,Service
+7504,Service
+8161,Service
+752,Service
+1012,Service
+1011,Service
+1360,Service
+753,Service
+8012,Service
+1483,Service
+8010,Service
+1419,Service
+1268,Service
+7609,Service
+1252,Service
+934,Service
+1474,Service
+761,Service
+8013,Service
+1009,Service
+7705,Corporate report
+6894,Service
+7272,Service
+977,Service
 1456,
 1458,
-6925,Service child page
+6925,Service
 1454,
 6675,
 8853,FOI
-8765,Service child page
-8713,Service child page
-6845,Service child page
-8569,Service child page
-1013,Service child page
-7387,Service child page
-8711,Service child page
-1014,Service child page
-8863,Service child page
-8672,Service child page
-817,corporate publication
-404,common
-7154,child page or 'guidance'?
-7111,child page or 'guidance'?
-1201,child page or 'guidance'?
-1200,child page or 'guidance'?
-1226,child page or 'guidance'?
+8765,Service
+8713,Service
+6845,Service
+8569,Service
+1013,Service
+7387,Service
+8711,Service
+1014,Service
+8863,Service
+8672,Service
+817,Corporate publication
+404,
+7154,Guidance
+7111,Guidance
+1201,Guidance
+1200,Guidance
+1226,Guidance
 8776,FOI
 8770,FOI
 8771,FOI
 8772,FOI
 8773,FOI
-8064,Service child page
-8062,Service child page
-7928,Service child page
-8063,Service child page
+8064,Service
+8062,Service
+7928,Service
+8063,Service
 8774,FOI
 8769,FOI
-764,Service child page
+764,Service
 8775,FOI
 8777,FOI
 8778,FOI
 8779,FOI
 8781,FOI
 8784,FOI
-8386,Service child page
+8386,Service
 8785,FOI
 8780,FOI
 8782,FOI
 8787,FOI
 8786,FOI
 8788,FOI
-7145,child page or guidance?
+7145,Guidance
 8790,FOI
-7144,child page or guidance?
+7144,Guidance
 8789,FOI
 8791,FOI
 8792,FOI
@@ -627,8 +627,8 @@ Article ID,Type
 8825,FOI
 8824,FOI
 8823,FOI
-7147,child page or guidance
-7148,child page or guidance
+7147,Guidance
+7148,Guidance
 8826,FOI
 8821,FOI
 8827,FOI
@@ -665,160 +665,160 @@ Article ID,Type
 8859,FOI
 1203,Direction
 8071,Direction
-7104,child page or guidance
-7140,child page or guidance
+7104,Guidance
+7140,Guidance
 8571,
-7152,child page or guidance
-7142,child page or guidance
-7151,child page or guidance
-7138,child page or guidance
-7136,child page or guidance
-8377,service child page
-7124,child page or guidance
-7119,child page or guidance
-7118,child page or guidance
-7116,child page or guidance
-7115,child page or guidance
+7152,Guidance
+7142,Guidance
+7151,Guidance
+7138,Guidance
+7136,Guidance
+8377,Service
+7124,Guidance
+7119,Guidance
+7118,Guidance
+7116,Guidance
+7115,Guidance
 8572,
 8573,
-7113,child page or guidance
-7183,child page or guidance
+7113,Guidance
+7183,Guidance
 8574,
-7122,child page or guidance
-7121,child page or guidance
-7127,child page or guidance
-7126,child page or guidance
-1064,Service child page
-1099,Service child page
-7130,child page or guidance
-7129,child page or guidance
-7134,child page or guidance
-7133,child page or guidance
-7132,child page or guidance
-7109,child page or guidance
-7108,child page or guidance
-7102,child page or guidance
-7101,child page or guidance
-7099,child page or guidance
-7093,child page or guidance
-7096,child page or guidance
-7089,child page or guidance
-7088,child page or guidance
-7159,child page or guidance
-7155,child page or guidance
-7087,child page or guidance
-7091,child page or guidance
-7095,child page or guidance
-7098,child page or guidance
-7107,child page or guidance
-7085,child page or guidance
-7076,child page or guidance
-7075,child page or guidance
-7079,child page or guidance
-7078,child page or guidance
-7073,child page or guidance
-7064,child page or guidance
-7061,child page or guidance
-7058,child page or guidance
-7063,child page or guidance
-7047,child page or guidance
-7038,child page or guidance
-7045,child page or guidance
-7046,child page or guidance
-7069,child page or guidance
-7042,child page or guidance
-7043,child page or guidance
-7068,child page or guidance
-7066,child page or guidance
-7072,child page or guidance
-7081,child page or guidance
-7082,child page or guidance
-765,Service child page
-8677,Service child page
-8679,Service child page
-8566,Service child page
-8681,Service child page
+7122,Guidance
+7121,Guidance
+7127,Guidance
+7126,Guidance
+1064,Service
+1099,Service
+7130,Guidance
+7129,Guidance
+7134,Guidance
+7133,Guidance
+7132,Guidance
+7109,Guidance
+7108,Guidance
+7102,Guidance
+7101,Guidance
+7099,Guidance
+7093,Guidance
+7096,Guidance
+7089,Guidance
+7088,Guidance
+7159,Guidance
+7155,Guidance
+7087,Guidance
+7091,Guidance
+7095,Guidance
+7098,Guidance
+7107,Guidance
+7085,Guidance
+7076,Guidance
+7075,Guidance
+7079,Guidance
+7078,Guidance
+7073,Guidance
+7064,Guidance
+7061,Guidance
+7058,Guidance
+7063,Guidance
+7047,Guidance
+7038,Guidance
+7045,Guidance
+7046,Guidance
+7069,Guidance
+7042,Guidance
+7043,Guidance
+7068,Guidance
+7066,Guidance
+7072,Guidance
+7081,Guidance
+7082,Guidance
+765,Service
+8677,Service
+8679,Service
+8566,Service
+8681,Service
 8402,
-1266,Service child page
-8139,Service child page
-8693,Service child page
+1266,Service
+8139,Service
+8693,Service
 8716,News article
-7277,Service child page
+7277,Service
 1289,
-8697,data hub page
-862,Service child page
-8553,service
-7275,Service child page
-1193,Service child page
-1147,Service child page
-7307,Service child page
-8392,Service child page
-1340,Service child page
-833,Service child page
-8548,Service child page
+8697,Data hub
+862,Service
+8553,Service
+7275,Service
+1193,Service
+1147,Service
+7307,Service
+8392,Service
+1340,Service
+833,Service
+8548,Service
 8497,News article
-1528,Service child page
-7965,Service child page
-7918,Service child page
-7166,Service child page
-7309,Service child page
-7306,Service child page
-7305,Service child page
-7919,Service child page
-7883,Service child page
-7882,Service child page
-7300,Service child page
+1528,Service
+7965,Service
+7918,Service
+7166,Service
+7309,Service
+7306,Service
+7305,Service
+7919,Service
+7883,Service
+7882,Service
+7300,Service
 1500,News article
-7285,person
-7287,person
-7283,person
+7285,Person
+7287,Person
+7283,Person
 8446,News article
-1278,Service child page
-750,Service child page
-1341,Service child page
-7505,Service child page
-1523,Service child page
-7188,Service child page
+1278,Service
+750,Service
+1341,Service
+7505,Service
+1523,Service
+7188,Service
 7184,News article
-829,Service child page
-7515,Service child page
-1238,Service child page
-7217,Service child page
+829,Service
+7515,Service
+1238,Service
+7217,Service
 1515,
-1262,Service child page
-1249,Service child page
-1412,corporate publication
-7040,Service child page
-914,Service child page
-1243,Service child page
-8158,Service child page
+1262,Service
+1249,Service
+1412,Corporate publication
+7040,Service
+914,Service
+1243,Service
+8158,Service
 7288,Person
-1441,Service child page
-1107,Service child page
-296,service
-1246,Service child page
+1441,Service
+1107,Service
+296,Service
+1246,Service
 8415,News article
 7770,Service
-7263,Service child page
-7905,Service child page
+7263,Service
+7905,Service
 1141,
-8498,Service child page
-8015,Service child page
-7981,Service child page
+8498,Service
+8015,Service
+7981,Service
 8242,FOI
-7337,event
-7980,Service child page
-7979,Service child page
-7978,Service child page
-6662,Service child page
-6664,Service child page
-6665,Service child page
+7337,Event
+7980,Service
+7979,Service
+7978,Service
+6662,Service
+6664,Service
+6665,Service
 8057,Person
 8055,Person
 8052,Person
 8054,Person
-6670,Service child page
-6668,Service child page
+6670,Service
+6668,Service
 8167,FOI
 8169,FOI
 8171,FOI
@@ -904,37 +904,37 @@ Article ID,Type
 8251,FOI
 8249,FOI
 8248,FOI
-6667,Service child page
+6667,Service
 8254,FOI
-6666,Service child page
-6663,Service child page
-457,Service child page
+6666,Service
+6663,Service
+457,Service
 7282,Person
-7262,Service child page
-7230,Service child page
-7695,Service child page
+7262,Service
+7230,Service
+7695,Service
 1030,Event
-7865,Service child page
-7227,Service child page
-7229,Service child page
-7226,Service child page
+7865,Service
+7227,Service
+7229,Service
+7226,Service
 500,
-7916,Service child page
-1036,Service child page
-7372,Service child page
-7674,Service child page
-7871,Service child page
-7872,Service child page
-7870,Service child page
-7374,Service child page
+7916,Service
+1036,Service
+7372,Service
+7674,Service
+7871,Service
+7872,Service
+7870,Service
+7374,Service
 8624,FOI
-1224,Service child page
-1287,Service child page
-1209,Service child page
-7917,Service child page
-7851,Service child page
-7915,Service child page
-7914,Service child page
+1224,Service
+1287,Service
+1209,Service
+7917,Service
+7851,Service
+7915,Service
+7914,Service
 8647,FOI
 8580,FOI
 8584,FOI
@@ -946,14 +946,14 @@ Article ID,Type
 8585,FOI
 8586,FOI
 8587,FOI
-1234,Service child page
+1234,Service
 8589,FOI
 8591,FOI
 8590,FOI
 8592,FOI
 8595,FOI
 8594,FOI
-7500,Service child page
+7500,Service
 8593,FOI
 8596,FOI
 8597,FOI
@@ -1014,7 +1014,7 @@ Article ID,Type
 8650,FOI
 8651,FOI
 8649,FOI
-1144,Service child page
+1144,Service
 1309,
 8652,FOI
 8654,FOI
@@ -1030,13 +1030,13 @@ Article ID,Type
 7684,FOI
 7683,FOI
 7681,FOI
-1290,Service child page
-1308,Service child page
-1307,Service child page
-1306,Service child page
-1304,Service child page
-6919,Service child page
-1305,Service child page
+1290,Service
+1308,Service
+1307,Service
+1306,Service
+1304,Service
+6919,Service
+1305,Service
 1404,News article
 7338,News article
 1162,News article
@@ -1045,8 +1045,8 @@ Article ID,Type
 7682,FOI
 7680,FOI
 7679,FOI
-7385,Service child page
-7386,Service child page
+7385,Service
+7386,Service
 7673,FOI
 7671,FOI
 7678,FOI
@@ -1128,16 +1128,16 @@ Article ID,Type
 8136,FOI
 8106,FOI
 8104,FOI
-1310,Service child page
-1407,Service child page
-1405,Service child page
-1025,Service child page
-822,Service child page
-830,Service child page
-1292,Service child page
+1310,Service
+1407,Service
+1405,Service
+1025,Service
+822,Service
+830,Service
+1292,Service
 7286,Person
 7280,Person
-1020,Service child page
+1020,Service
 8103,FOI
 8102,FOI
 7427,News article
@@ -1151,7 +1151,7 @@ Article ID,Type
 8091,FOI
 8093,FOI
 8090,FOI
-7789,Service child page
+7789,Service
 8089,FOI
 8088,FOI
 8036,FOI
@@ -1186,29 +1186,29 @@ Article ID,Type
 8667,FOI
 8669,FOI
 8670,FOI
-831,Service child page
-7913,Service child page
-7909,Service child page
-7910,Service child page
-7912,Service child page
-868,Service child page
-7911,Service child page
-7699,Service child page
-519,Service child page
-1516,Service child page
+831,Service
+7913,Service
+7909,Service
+7910,Service
+7912,Service
+868,Service
+7911,Service
+7699,Service
+519,Service
+1516,Service
 301,Service
-7722,Service child page
+7722,Service
 1469,
 7377,Person
 7158,Person
 7157,Person
-7864,Service child page
-7869,Service child page
-7863,Service child page
-7862,Service child page
-7867,Service child page
-7868,Service child page
-7866,Service child page
+7864,Service
+7869,Service
+7863,Service
+7862,Service
+7867,Service
+7868,Service
+7866,Service
 8051,Person
 8050,Person
 8048,Person
@@ -1216,127 +1216,127 @@ Article ID,Type
 8056,Person
 8049,Person
 1032,Event
-8016,Service child page
+8016,Service
 8145,Direction
 8146,Direction
 8181,FOI
 8116,FOI
 8098,FOI
 8121,FOI
-7675,Service child page
-283,Service child page
-824,Service child page
-7596,corporate publication
-7720,corporate publication
-7591,corporate publication
-7590,corporate publication
-7589,corporate publication
-7588,corporate publication
-7719,corporate publication
-7587,corporate publication
-8281,Service child page
-7906,Service child page
-576,Service child page
-7904,Service child page
-1225,Service child page
-1127,Service child page
-1547,Service child page
-1548,Service child page
-269,Service child page
-7572,Service child page
-1007,Service child page
-947,Service child page
-1322,Service child page
-1378,Service child page
+7675,Service
+283,Service
+824,Service
+7596,Corporate publication
+7720,Corporate publication
+7591,Corporate publication
+7590,Corporate publication
+7589,Corporate publication
+7588,Corporate publication
+7719,Corporate publication
+7587,Corporate publication
+8281,Service
+7906,Service
+576,Service
+7904,Service
+1225,Service
+1127,Service
+1547,Service
+1548,Service
+269,Service
+7572,Service
+1007,Service
+947,Service
+1322,Service
+1378,Service
 8053,Person
 7289,Person
 7290,Person
 7291,Person
-7268,Service child page
-7270,Service child page
-8885,Service child page
-7696,Service child page
+7268,Service
+7270,Service
+8885,Service
+7696,Service
 7292,Person
-1186,Service child page
+1186,Service
 6851,
-938,corporate publication
-1142,corporate publication
-8021,corporate publication
-1218,corporate publication
+938,Corporate publication
+1142,Corporate publication
+8021,Corporate publication
+1218,Corporate publication
 252,
-1437,Service child page
+1437,Service
 1342,
 1254,
 1034,
 1414,Service
-6921,guidance?
+6921,Guidance
 8439,News article
-915,Service child page
-1062,Service child page
-913,Service child page
-8073,Service child page
-1024,Service child page
-7257,Service child page
-7881,Service child page
-7880,Service child page
-7879,Service child page
-7878,Service child page
-7877,Service child page
-846,Service child page
-1222,Service child page
-849,Service child page
-7727,Service child page
-1223,Service child page
-7356,Service child page
-7777,Service child page
-7304,Service child page
+915,Service
+1062,Service
+913,Service
+8073,Service
+1024,Service
+7257,Service
+7881,Service
+7880,Service
+7879,Service
+7878,Service
+7877,Service
+846,Service
+1222,Service
+849,Service
+7727,Service
+1223,Service
+7356,Service
+7777,Service
+7304,Service
 8552,News article
 782,Service
-7350,Service child page
-7349,Service child page
-7351,Service child page
-7348,Service child page
-7346,Service child page
-7344,Service child page
-7347,Service child page
-7343,Service child page
-7341,Service child page
-7339,Service child page
+7350,Service
+7349,Service
+7351,Service
+7348,Service
+7346,Service
+7344,Service
+7347,Service
+7343,Service
+7341,Service
+7339,Service
 8558,News article
-8271,Service child page
-1540,Service child page
-7358,Service child page
-1529,Service child page
-7228,Service child page
-8452,Service child page
-819,Service child page
-7354,Service child page
-8688,Service child page
-1152,Service child page
-827,Service child page
-825,Service child page
-826,Service child page
-823,Service child page
-843,Service child page
-853,Service child page
-821,Service child page
-7231,Service child page
+8271,Service
+1540,Service
+7358,Service
+1529,Service
+7228,Service
+8452,Service
+819,Service
+7354,Service
+8688,Service
+1152,Service
+827,Service
+825,Service
+826,Service
+823,Service
+843,Service
+853,Service
+821,Service
+7231,Service
 7997,
-1119,Service child page
-751,Service child page
-8152,data report?
+1119,Service
+751,Service
+8152,Data report
 8717,News article
-7203,corporate publication
-7201,corporate publication
-7202,corporate publication
-7200,corporate publication
-7199,corporate publication
-7196,corporate publication
-7197,corporate publication
-7198,corporate publication
-7204,corporate publication
-7195,corporate publication
-7189,corporate publication
+7203,Corporate publication
+7201,Corporate publication
+7202,Corporate publication
+7200,Corporate publication
+7199,Corporate publication
+7196,Corporate publication
+7197,Corporate publication
+7198,Corporate publication
+7204,Corporate publication
+7195,Corporate publication
+7189,Corporate publication
 7968,
 7969,
 7967,
@@ -1347,36 +1347,36 @@ Article ID,Type
 1455,Service
 1457,Service
 1466,Service
-7054,Service child page
-8343,Service child page
-7276,Service child page
-7274,Service child page
-7273,Service child page
-7053,Service child page
-7052,Service child page
-7051,Service child page
-7050,Service child page
-6923,Service child page
-6924,Service child page
-6922,Service child page
-8387,Service child page
-8862,Service child page
-929,Service child page
-1039,Service child page
-1047,Service child page
-1129,Service child page
-837,Service child page
-7989,corporate publication
-1063,Service child page
-7976,Service child page
-7223,deleted
+7054,Service
+8343,Service
+7276,Service
+7274,Service
+7273,Service
+7053,Service
+7052,Service
+7051,Service
+7050,Service
+6923,Service
+6924,Service
+6922,Service
+8387,Service
+8862,Service
+929,Service
+1039,Service
+1047,Service
+1129,Service
+837,Service
+7989,Corporate publication
+1063,Service
+7976,Service
+7223,
 804,
 803,
 8043,
 919,
 1197,
 1527,
-1447,service
+1447,Service
 1480,
 1410,
 507,
@@ -1464,7 +1464,7 @@ Article ID,Type
 1108,
 1117,
 762,
-1204,Board meeting/minutes/agenda
+1204,Board meeting minutes agenda
 795,Event
 794,Event
 7357,Event

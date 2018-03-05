@@ -43,6 +43,11 @@
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${general.jcrNodeName}" ]
+},{
+"name" : "website:type",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${general.type}" ]
 } ],
 "nodes" : [ <#assign firstNode = true>
 <#if general.sections??> <#if firstNode==false>,<#else><#assign firstNode=false></#if><#list general.sections as section>{

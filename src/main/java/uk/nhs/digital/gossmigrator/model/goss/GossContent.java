@@ -33,6 +33,7 @@ public class GossContent implements Comparable<GossContent> {
     private Long templateId;
     private Date displayEndDate;
     private String display;
+    private String status;
 
     //Content should be imported only if true
     private Boolean relevantContentFlag = false;
@@ -70,6 +71,7 @@ public class GossContent implements Comparable<GossContent> {
         templateId = getLong(gossJson, TEMPLATE_ID, id);
         display = getString(gossJson, DISPLAY, id);
         displayEndDate = GossExportHelper.getDate(gossJson, DISPLAY_END_DATE, id, GOSS_LONG_FORMAT);
+        status = getString(gossJson, STATUS, id);
         introduction = getString(gossJson, INTRO, id);
         jcrNodeName = TextHelper.toLowerCaseDashedValue(heading);
 
@@ -316,4 +318,9 @@ public class GossContent implements Comparable<GossContent> {
     public void setRelevantContentFlag(Boolean relevantContentFlag) {
         this.relevantContentFlag = relevantContentFlag;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
 }

@@ -15,6 +15,7 @@ public class Service extends HippoImportable {
 
     protected Service(GossServiceContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
+        setLive(gossContent);
         id = gossContent.getId();
 
         seoSummary = TextHelper.escapeForJson(gossContent.getSummary());

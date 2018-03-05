@@ -1,15 +1,14 @@
 package uk.nhs.digital.gossmigrator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import uk.nhs.digital.gossmigrator.config.Constants;
-import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 import freemarker.core.JSONOutputFormat;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
+import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -19,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
+import static uk.nhs.digital.gossmigrator.config.Config.*;
 import static uk.nhs.digital.gossmigrator.config.Constants.OUTPUT_FILE_TYPE_SUFFIX;
 
 public class ImportableFileWriter {
@@ -26,14 +26,17 @@ public class ImportableFileWriter {
 
     private static Configuration cfg;
 
-    void writeImportableFiles(final List<? extends HippoImportable> importableItems,
-                              final Path targetDir) {
-        LOGGER.info("Writing content to:{}", targetDir);
+    void writeImportableFiles(final List<? extends HippoImportable> importableItems) {
+        LOGGER.info("Writing content to:{}", CONTENT_TARGET_FOLDER);
 
         for (int i = 1; i <= importableItems.size(); i++) {
-
+            Path targetDir;
             final HippoImportable importableItem = importableItems.get(i - 1);
-
+            if(importableItem.isLive()){
+                targetDir = Paths.get(LIVE_CONTENT_TARGET_FOLDER);
+            }else{
+                targetDir = Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER);
+            }
             writeImportableFile(
                     importableItem,
                     getFileName(i, importableItem),
@@ -50,6 +53,9 @@ public class ImportableFileWriter {
         try {
 
             Path targetFilePath = Paths.get(targetDir.toString(), fileName);
+            if(!Files.exists(targetDir)){
+                Files.createDirectories(targetDir);
+            }
 
             final String itemTypeName = importableItem.getClass().getSimpleName().toLowerCase();
 

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import static uk.nhs.digital.gossmigrator.config.Config.CONTENT_TARGET_FOLDER;
+import static uk.nhs.digital.gossmigrator.config.Config.LIVE_CONTENT_TARGET_FOLDER;
+import static uk.nhs.digital.gossmigrator.config.Config.NON_LIVE_CONTENT_TARGET_FOLDER;
 import static uk.nhs.digital.gossmigrator.config.Constants.OUTPUT_FILE_TYPE_SUFFIX;
 
 public class ContentImporter {
@@ -29,6 +31,8 @@ public class ContentImporter {
 
     public void populateGossData(GossProcessedData gossData){
         FolderHelper.cleanFolder(Paths.get(CONTENT_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
+        FolderHelper.cleanFolder(Paths.get(LIVE_CONTENT_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
+        FolderHelper.cleanFolder(Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
         JSONObject rootJsonObject = readGossExport();
         gossData.setArticlesContentList(populateGossContent(rootJsonObject));
         gossData.setGossLinkMap(populateGossLinks(rootJsonObject));
@@ -121,7 +125,7 @@ public class ContentImporter {
     public void writeHippoContentImportables(List<HippoImportable> importableContentItems) {
         LOGGER.debug("Begin writeHippoContentImportables");
         ImportableFileWriter writer = new ImportableFileWriter();
-        writer.writeImportableFiles(importableContentItems, Paths.get(CONTENT_TARGET_FOLDER));
+        writer.writeImportableFiles(importableContentItems);
     }
 
 }

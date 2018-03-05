@@ -7,18 +7,22 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 public class General extends HippoImportable {
 
     private Long templateId;
-    private String type;
+    private String generalPath;
+    private String type = "";
 
     protected General(GossGeneralContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
+        setLive(gossContent);
         id = gossContent.getId();
         templateId = gossContent.getTemplateId();
-        type = gossContent.getDocumentType();
-
+        if(gossContent.getDocumentType() != null){
+            type = gossContent.getDocumentType().toLowerCase().replace(' ', '-');
+        }
         title = TextHelper.escapeForJson(gossContent.getHeading());
         seoSummary = TextHelper.escapeForJson(gossContent.getIntroduction());
         summary = TextHelper.escapeForJson(gossContent.getIntroduction());
         shortSummary = TextHelper.escapeForJson(gossContent.getIntroduction());
+
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.HUB);
         sections = parsedArticleText.getSections();

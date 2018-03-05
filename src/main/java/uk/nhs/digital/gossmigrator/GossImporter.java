@@ -20,7 +20,7 @@ public class GossImporter {
 
     public static GossProcessedData gossData = new GossProcessedData();
     public static HSSFWorkbook report = new HSSFWorkbook();
-    private static boolean skipAssets = false;
+    private static boolean skipAssets = true;
 
     public static void main(String[] args) throws Exception {
 

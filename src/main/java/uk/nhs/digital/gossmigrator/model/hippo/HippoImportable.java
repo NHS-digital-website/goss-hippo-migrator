@@ -7,8 +7,8 @@ import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static uk.nhs.digital.gossmigrator.misc.TextHelper.toLowerCaseDashedValue;
 import static org.apache.commons.lang3.builder.ToStringStyle.SHORT_PREFIX_STYLE;
+import static uk.nhs.digital.gossmigrator.misc.TextHelper.toLowerCaseDashedValue;
 
 public abstract class HippoImportable {
 
@@ -23,6 +23,7 @@ public abstract class HippoImportable {
     String shortSummary;
     List<Section> sections;
     HippoRichText component;
+    private boolean live = true;
 
     protected HippoImportable(final String localizedName, final String jcrPath, final String jcrNodeName) {
         this.localizedName = StringUtils.removeAll(localizedName, "\"");
@@ -102,5 +103,13 @@ public abstract class HippoImportable {
         return component;
     }
 
+    public boolean isLive() {
+        return live;
+    }
 
+    void setLive(GossContent gossContent) {
+        if (gossContent.getStatus() != null && !"Live".equals(gossContent.getStatus())) {
+            live = false;
+        }
+    }
 }

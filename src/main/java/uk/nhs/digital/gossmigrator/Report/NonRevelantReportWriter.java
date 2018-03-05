@@ -19,22 +19,20 @@ public class NonRevelantReportWriter {
         servicesRowhead.createCell(2).setCellValue("Template ID");
         servicesRowhead.createCell(3).setCellValue("Display");
         servicesRowhead.createCell(4).setCellValue("Display End Date");
+        servicesRowhead.createCell(5).setCellValue("Goss Status");
 
     }
 
     public static void addNonRelevantRow(GossContent content) {
         HSSFSheet sheet = report.getSheet("NonRelevant");
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
-        try {
-            row.createCell(0).setCellValue(content.getId());
-            row.createCell(1).setCellValue(content.getHeading());
-            row.createCell(2).setCellValue(content.getTemplateId());
-            row.createCell(3).setCellValue(content.getDisplay());
-            String displayEndDate = GossExportHelper.getDateString(content.getDisplayEndDate(), TEMPLATE_FORMAT);
-            row.createCell(4).setCellValue(displayEndDate);
-        }catch(Exception e){
-            // no-op
-        }
+        row.createCell(0).setCellValue(content.getId());
+        row.createCell(1).setCellValue(content.getHeading());
+        row.createCell(2).setCellValue(content.getTemplateId());
+        row.createCell(3).setCellValue(content.getDisplay());
+        String displayEndDate = GossExportHelper.getDateString(content.getDisplayEndDate(), TEMPLATE_FORMAT);
+        row.createCell(4).setCellValue(displayEndDate);
+        row.createCell(5).setCellValue(content.getStatus());
 
     }
 }
