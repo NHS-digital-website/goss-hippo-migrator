@@ -103,8 +103,7 @@ public class GossLinkHelper {
         GossContent content = GossImporter.gossData.getArticlesContentList().getById(linkedArticleId);
         if (content.getContentType() == ContentType.REDIRECT) {
             GossRedirectContent redirect = (GossRedirectContent) content;
-            if (redirect.getLink() != null && (gossContent.getContentType() == ContentType.SERVICE
-                    || gossContent.getContentType() == ContentType.HUB)) {
+            if (redirect.getLink() != null) {
                 // Its a link to an external article i.e. url
                 return redirect.getLink();
             }else if (redirect.getRelatedArticles().size() == 1) {
