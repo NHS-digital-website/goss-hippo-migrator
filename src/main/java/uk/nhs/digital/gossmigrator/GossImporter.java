@@ -20,7 +20,7 @@ public class GossImporter {
 
     public static GossProcessedData gossData = new GossProcessedData();
     public static HSSFWorkbook report = new HSSFWorkbook();
-    private static boolean skipAssets = true;
+    private static boolean skipAssets = false;
 
     public static void main(String[] args) throws Exception {
 
@@ -62,12 +62,6 @@ public class GossImporter {
 
         ReportWriter.generateReport();
 
-        if(!skipAssets) {
-            AssetImporter assetImporter = new AssetImporter();
-            assetImporter.createAssetHippoImportables();
-            assetImporter.writeHippoAssetImportables();
-        }
-
         SeriesImporter seriesImporter = new SeriesImporter();
         gossData.addSeriesContentList(seriesImporter.getSeriesContentList());
         gossData.setPublicationSeriesMap(seriesImporter.getPublicationKeyToSeriesIdMap());
@@ -87,6 +81,14 @@ public class GossImporter {
         HippoImportableFactory factory = new HippoImportableFactory();
         gossData.setImportableContentItems(factory.populateHippoContent(gossData));
         contentImporter.writeHippoContentImportables(gossData.getImportableContentItems());
+
+        // Assets need to be done after content as only import those referenced
+        // in rich text in content.
+        if(!skipAssets) {
+            AssetImporter assetImporter = new AssetImporter();
+            assetImporter.createAssetHippoImportables();
+            assetImporter.writeHippoAssetImportables();
+        }
 
         gossData.getContentTypeMap().logNeverReferenced();
 

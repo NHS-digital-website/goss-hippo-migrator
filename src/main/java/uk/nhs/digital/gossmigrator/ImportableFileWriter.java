@@ -7,6 +7,7 @@ import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
@@ -26,16 +27,20 @@ public class ImportableFileWriter {
 
     private static Configuration cfg;
 
-    void writeImportableFiles(final List<? extends HippoImportable> importableItems) {
-        LOGGER.info("Writing content to:{}", CONTENT_TARGET_FOLDER);
+    void writeImportableFiles(final List<? extends HippoImportable> importableItems, String outputFolder) {
+        LOGGER.info("Writing content to:{}", outputFolder);
 
         for (int i = 1; i <= importableItems.size(); i++) {
             Path targetDir;
             final HippoImportable importableItem = importableItems.get(i - 1);
-            if(importableItem.isLive()){
-                targetDir = Paths.get(LIVE_CONTENT_TARGET_FOLDER);
+            if(Config.CONTENT_TARGET_FOLDER.equals(outputFolder)) {
+                if (importableItem.isLive()) {
+                    targetDir = Paths.get(LIVE_CONTENT_TARGET_FOLDER);
+                } else {
+                    targetDir = Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER);
+                }
             }else{
-                targetDir = Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER);
+                targetDir = Paths.get(outputFolder);
             }
             writeImportableFile(
                     importableItem,

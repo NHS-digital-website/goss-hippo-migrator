@@ -21,11 +21,12 @@ public class Image extends HippoImportable implements AssetReportable {
     int width;
     int height;
 
-    public Image(String localizedName, String jcrPath, Path sourceFile) {
+    public Image(String localizedName, String jcrPath, Path sourceFile, Long mediaId) {
         super(localizedName, jcrPath, localizedName);
         this.filePath = "file:///" + sourceFile.toString();
         lastModifiedDate = "2018-01-19T10:07:03.592Z";
         sourceFilePath = sourceFile;
+        id = mediaId;
         Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType(getMimeType());
         if (!readers.hasNext()) {
             LOGGER.error("Could not create reader for Image:{}.", sourceFile);

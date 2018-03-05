@@ -125,7 +125,7 @@ public class ContentImporter {
     public void writeHippoContentImportables(List<HippoImportable> importableContentItems) {
         LOGGER.debug("Begin writeHippoContentImportables");
         ImportableFileWriter writer = new ImportableFileWriter();
-        writer.writeImportableFiles(importableContentItems);
+        writer.writeImportableFiles(importableContentItems, Config.CONTENT_TARGET_FOLDER);
     }
 
 }
