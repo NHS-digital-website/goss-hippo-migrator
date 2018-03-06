@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import static uk.nhs.digital.gossmigrator.config.Config.PropertiesEnum.*;
@@ -20,9 +21,8 @@ public class Config {
         JCR_ASSET_ROOT_PROP("jcr.asset.root", "Root jcr path to assets. e.g. /content/assets/", false, "/content/assets/"),
         JCR_SERVICE_DOC_ROOT_PROP("jcr.service.doc.root", "Root jcr path to services. e.g. /content/documents/corporate-website/service/", false, "/content/documents/corporate-website/services/"),
         ASSET_SOURCE_FOLDER_PROP("assets.source.folder", "File system folder holding assets to process.", true, ""),
-        ASSET_TARGET_FOLDER_PROP("assets.target.folder", "File system folder to hold created asset json hippo import files.", true, ""),
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
-        CONTENT_TARGET_FOLDER_PROP("content.target.folder", "File system folder to hold created content json hippo import files.", true, ""),
+        TARGET_FOLDER_PROP("target.folder", "File system folder to hold created content json hippo import files.", true, ""),
         JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/documents/corporate-website/", false, "/content/documents/corporate-website/publication-system/statistical/"),
         SPLIT_ASSET_PATH_ON("split.asset.path.on", "For file nodes in goss export there is a path.  " +
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media"),
@@ -30,6 +30,7 @@ public class Config {
         IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media"),
         CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true,""),
         JCR_GENERAL_ROOT_PROP("jcr.general.root", "JCR path to general root.", false, "/content/documents/corporate-website/general/"),
+        MAX_ASSETS_SIZE_PER_ZIP_MB_PROP("max.assets.size.per.zip", "Max size in Mb.", false, "1024"),
         JCR_DIRECT_ROOT_PROP("jcr.redirect.root", "JCR path to redirect root.", false, "/content/urlrewriter/rules/")
         ;
 
@@ -65,6 +66,7 @@ public class Config {
         }
     }
 
+    public static String TARGET_FOLDER_ROOT;
     public static String JCR_ASSET_ROOT;
     public static String JCR_SERVICE_DOC_ROOT;
     public static String JCR_GALLERY_ROOT;
@@ -85,7 +87,7 @@ public class Config {
     public static String GOSS_HIPPO_MAPPING_FILE;
     public static String GENERAL_TYPE_MAPPING_FILE;
     public static String NON_RELEVANT_TEMPLATE_IDS_FILE;
-
+    public static long MAX_ASSET_SIZE_MB_IN_ZIP;
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
@@ -93,11 +95,12 @@ public class Config {
         JCR_ASSET_ROOT = getConfig(JCR_ASSET_ROOT_PROP, propertiesMap);
         JCR_SERVICE_DOC_ROOT = getConfig(JCR_SERVICE_DOC_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER = getConfig(ASSET_SOURCE_FOLDER_PROP, propertiesMap);
-        ASSET_TARGET_FOLDER = getConfig(ASSET_TARGET_FOLDER_PROP, propertiesMap);
         GOSS_CONTENT_SOURCE_FILE = getConfig(GOSS_CONTENT_SOURCE_FILE_PROP, propertiesMap);
-        CONTENT_TARGET_FOLDER = getConfig(CONTENT_TARGET_FOLDER_PROP, propertiesMap);
-        LIVE_CONTENT_TARGET_FOLDER = getConfig(CONTENT_TARGET_FOLDER_PROP, propertiesMap).concat("Live/");
-        NON_LIVE_CONTENT_TARGET_FOLDER = getConfig(CONTENT_TARGET_FOLDER_PROP, propertiesMap).concat("Not Live/");
+        TARGET_FOLDER_ROOT = getConfig(TARGET_FOLDER_PROP, propertiesMap);
+        ASSET_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "assets").toString();
+        CONTENT_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "content").toString();
+        LIVE_CONTENT_TARGET_FOLDER = Paths.get(CONTENT_TARGET_FOLDER,"live").toString();
+        NON_LIVE_CONTENT_TARGET_FOLDER = Paths.get(CONTENT_TARGET_FOLDER, "notLive").toString();
         JCR_PUBLICATION_ROOT = getConfig(JCR_PUBLICATION_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT = getConfig(SPLIT_ASSET_PATH_ON, propertiesMap);
         JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP, propertiesMap);
@@ -109,6 +112,8 @@ public class Config {
         GENERAL_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(GENERAL_TYPE_FILE);
         NON_RELEVANT_TEMPLATE_IDS_FILE = CONFIG_FOLDER.concat(NON_RELEVANT_IDS_FILE);
         JCR_GENERAL_ROOT = getConfig(JCR_GENERAL_ROOT_PROP, propertiesMap);
+        String maxSize = getConfig(MAX_ASSETS_SIZE_PER_ZIP_MB_PROP, propertiesMap);
+        MAX_ASSET_SIZE_MB_IN_ZIP = Long.valueOf(maxSize);
         JCR_REDIRECT_ROOT = getConfig(JCR_DIRECT_ROOT_PROP, propertiesMap);
 
         // Check all properties in file are expected

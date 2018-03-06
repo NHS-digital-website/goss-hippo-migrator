@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
+import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossFile;
 import uk.nhs.digital.gossmigrator.model.goss.GossLink;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
@@ -162,7 +163,11 @@ public class HippoRichText {
                     // And a doc ref node with something like;
                     // "/content/documents/corporate-website/publication-system/published-upcoming-publication"
                     // in the HippoLinkRef collection as jcrpath and published-upcoming-publication as nodeName.
-                    String jcrUrl = GossImporter.gossData.getArticlesContentList().getById(new Long(referenceKey)).getJcrPath();
+                    GossContent linkedTo = GossImporter.gossData.getArticlesContentList().getById(new Long(referenceKey));
+                    String jcrUrl = null;
+                    if(linkedTo != null){
+                        jcrUrl = linkedTo.getJcrPath();
+                    }
                     if (null == jcrUrl) {
                         LOGGER.error("ArticleId:{}. Internal link to Article:{} could not be resolved.", gossArticleId, referenceKey);
                         break;

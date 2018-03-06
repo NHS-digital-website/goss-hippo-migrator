@@ -8,9 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
+import uk.nhs.digital.gossmigrator.config.Constants;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
+import uk.nhs.digital.gossmigrator.model.hippo.FileImportable;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.nio.file.Files;
@@ -26,6 +30,8 @@ public class ImportableFileWriter {
     private final static Logger LOGGER = LoggerFactory.getLogger(ImportableFileWriter.class);
 
     private static Configuration cfg;
+    private long assetBytesCopied = 0;
+    private Integer assetOutputFolder = 0;
 
     void writeImportableFiles(final List<? extends HippoImportable> importableItems, String outputFolder) {
         LOGGER.info("Writing content to:{}", outputFolder);
@@ -33,15 +39,39 @@ public class ImportableFileWriter {
         for (int i = 1; i <= importableItems.size(); i++) {
             Path targetDir;
             final HippoImportable importableItem = importableItems.get(i - 1);
-            if(Config.CONTENT_TARGET_FOLDER.equals(outputFolder)) {
+            if (Config.CONTENT_TARGET_FOLDER.equals(outputFolder)) {
                 if (importableItem.isLive()) {
-                    targetDir = Paths.get(LIVE_CONTENT_TARGET_FOLDER);
+                    targetDir = Paths.get(LIVE_CONTENT_TARGET_FOLDER, Constants.Output.JSON_DIR);
                 } else {
-                    targetDir = Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER);
+                    targetDir = Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER, Constants.Output.JSON_DIR);
                 }
-            }else{
+            } else if (importableItem instanceof FileImportable) {
+                // See if need to move to new output folder
+                FileImportable fileImportable = (FileImportable) importableItem;
+                if (assetBytesCopied + fileImportable.getFileSize() >
+                        Config.MAX_ASSET_SIZE_MB_IN_ZIP * 1024 * 1024) {
+                    assetOutputFolder++;
+                    assetBytesCopied = 0;
+                } else {
+                    assetBytesCopied = assetBytesCopied + fileImportable.getFileSize();
+                }
+
+                targetDir = Paths.get(outputFolder, assetOutputFolder.toString(), Constants.Output.JSON_DIR);
+                try {
+                    Path to = Paths.get(outputFolder, assetOutputFolder.toString(),
+                            Constants.Output.ASSET_DIR, fileImportable.getSourceFilePathRelative().toString());
+                    if(!to.toFile().getParentFile().exists()){
+                        Files.createDirectories(to.toFile().getParentFile().toPath());
+                    }
+                    Files.copy(fileImportable.getSourceFilePath(),to);
+                } catch (IOException e) {
+                    LOGGER.error("Failed copying file:{}", fileImportable.getSourceFilePath(), e);
+                }
+            } else {
+                LOGGER.error("Unexpected importable to write.  So far either content or assets.");
                 targetDir = Paths.get(outputFolder);
             }
+
             writeImportableFile(
                     importableItem,
                     getFileName(i, importableItem),
@@ -58,7 +88,7 @@ public class ImportableFileWriter {
         try {
 
             Path targetFilePath = Paths.get(targetDir.toString(), fileName);
-            if(!Files.exists(targetDir)){
+            if (!Files.exists(targetDir)) {
                 Files.createDirectories(targetDir);
             }
 
@@ -111,4 +141,7 @@ public class ImportableFileWriter {
         );
     }
 
+    public Integer getAssetOutputFolder() {
+        return assetOutputFolder;
+    }
 }

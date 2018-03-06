@@ -33,6 +33,7 @@ public class GossFile {
     private String mediaDirectory;
     private boolean notLiveLink = false;
     private List<String> warnings = new ArrayList<>();
+    private long size;
 
     public GossFile(JSONObject fileJson) {
         id = GossExportHelper.getIdOrError(fileJson, FILE_ID);
@@ -102,6 +103,7 @@ public class GossFile {
             LOGGER.error("Could not find file:{} when processing goss MediaId:{}", filePathOnDisk, id);
             warnings.add("Could not find file " + filePathOnDisk);
         } else {
+            size = Paths.get(filePathOnDisk).toFile().length();
             existsOnDisk = true;
         }
     }
@@ -142,5 +144,9 @@ public class GossFile {
 
     public String getFilePathOnDisk() {
         return filePathOnDisk;
+    }
+
+    public long getSize() {
+        return size;
     }
 }
