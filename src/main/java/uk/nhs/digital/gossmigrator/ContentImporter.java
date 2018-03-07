@@ -30,9 +30,6 @@ public class ContentImporter {
     private final static Logger LOGGER = LoggerFactory.getLogger(ContentImporter.class);
 
     public void populateGossData(GossProcessedData gossData){
-        FolderHelper.cleanFolder(Paths.get(CONTENT_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
-        FolderHelper.cleanFolder(Paths.get(LIVE_CONTENT_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
-        FolderHelper.cleanFolder(Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
         JSONObject rootJsonObject = readGossExport();
         gossData.setArticlesContentList(populateGossContent(rootJsonObject));
         gossData.setGossLinkMap(populateGossLinks(rootJsonObject));

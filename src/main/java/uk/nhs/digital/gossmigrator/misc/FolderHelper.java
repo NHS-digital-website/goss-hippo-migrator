@@ -1,5 +1,6 @@
 package uk.nhs.digital.gossmigrator.misc;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,15 @@ import java.util.zip.ZipOutputStream;
 public class FolderHelper {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(FolderHelper.class);
+
+    public static void cleanFolder(Path folder){
+        FileUtils.deleteQuietly(folder.toFile());
+        try {
+            Files.createDirectories(folder);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 
     /**
      * Remove .json files from folder or create folder if not exists.

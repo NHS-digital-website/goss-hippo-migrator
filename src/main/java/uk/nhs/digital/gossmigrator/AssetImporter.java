@@ -32,13 +32,13 @@ public class AssetImporter {
     private long totalFileSize = 0;
 
     public void createAssetHippoImportables() {
-        FolderHelper.cleanFolder(Paths.get(ASSET_TARGET_FOLDER), OUTPUT_FILE_TYPE_SUFFIX);
         if (!Paths.get(ASSET_SOURCE_FOLDER).toFile().exists()) {
             LOGGER.warn("Assets file path does not exist:{}", Paths.get(ASSET_SOURCE_FOLDER));
         } else {
             for (GossFile file : GossImporter.gossData.getGossFileMap().values()) {
                 if (file.getReferences().size() > 0) {
                     boolean hasImportedReference = false;
+
                     for(Long articleId : file.getReferences()){
                         GossContent article = GossImporter.gossData.getArticlesContentList().getById(articleId);
                         if(article.isRelevantContentFlag()){

@@ -26,6 +26,9 @@ public class GossRedirectContent extends GossContent {
             LOGGER.warn("Redirect:{} has no external or article link", id);
             warnings.add("Redirect has no internal or external link.");
         }
+        if(null != link && relatedArticles.size() > 0){
+            LOGGER.warn("Redirect:{} has both internal and external link.", id);
+        }
     }
 
 

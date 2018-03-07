@@ -65,6 +65,9 @@ public class GossImporter {
 
     private void run() {
 
+
+        cleanOutputFolders();
+
         ReportWriter.generateReport();
 
         SeriesImporter seriesImporter = new SeriesImporter();
@@ -103,6 +106,12 @@ public class GossImporter {
         FolderHelper.zipFolder(NON_LIVE_CONTENT_TARGET_FOLDER);
 
         ReportWriter.writeFile();
+    }
+
+    private void cleanOutputFolders() {
+        FolderHelper.cleanFolder(Paths.get(ASSET_TARGET_FOLDER));
+        FolderHelper.cleanFolder(Paths.get(LIVE_CONTENT_TARGET_FOLDER));
+        FolderHelper.cleanFolder(Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER));
     }
 
 }
