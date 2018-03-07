@@ -18,7 +18,7 @@ public class HippoImportableFactory {
         List<HippoImportable> importableContentItems = new ArrayList<>();
         for (GossContent gossContent : gossData.getArticlesContentList()) {
             if(gossContent.isRelevantContentFlag()){
-                importableContentItems.add(generateHippoImportable(gossData, gossContent));
+                importableContentItems.addAll(generateHippoImportable(gossData, gossContent));
             }else{
                 NonRevelantReportWriter.addNonRelevantRow(gossContent);
             }
@@ -27,7 +27,8 @@ public class HippoImportableFactory {
     }
 
 
-    private HippoImportable generateHippoImportable(GossProcessedData gossData, GossContent gossContent){
+    private List<HippoImportable> generateHippoImportable(GossProcessedData gossData, GossContent gossContent){
+        List<HippoImportable> importables = new ArrayList<>();
         HippoImportable hippoContent = null;
         switch (gossContent.getContentType()) {
             case SERVICE:
@@ -50,7 +51,8 @@ public class HippoImportableFactory {
                 GeneralReportWriter.addGeneralRow((General)hippoContent);
                 break;
             case REDIRECT:
-                // No-op
+                hippoContent = Redirect.getInstance((GossRedirectContent) gossContent);
+                RedirectReportWriter.addRedirectRow((Redirect) hippoContent);
                 break;
             case LIST_PAGE:
                 hippoContent = ListPage.getInstance((GossListPageContent) gossContent);
@@ -59,6 +61,14 @@ public class HippoImportableFactory {
             default:
                 LOGGER.error("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());
         }
-        return hippoContent;
+        importables.add(hippoContent);
+
+        if(gossContent.getFriendlyUrl() != null && !gossContent.getFriendlyUrl().isEmpty()){
+            Redirect friendlyUrlRedirect = Redirect.getFriendlyUrlInstance(gossContent);
+            RedirectReportWriter.addRedirectRow(friendlyUrlRedirect);
+            importables.add(friendlyUrlRedirect);
+        }
+
+        return importables;
     }
 }

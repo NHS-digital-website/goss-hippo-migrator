@@ -18,6 +18,8 @@ public class ReportWriter {
 
         NonRevelantReportWriter.createNonRelevantTab();
 
+        RedirectReportWriter.createRedirectTab();
+
         GeneralReportWriter.createGeneralTab();
 
         PublicationReportWriter.createPublicationTabs();
