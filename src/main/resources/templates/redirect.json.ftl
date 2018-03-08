@@ -1,7 +1,7 @@
 <#-- @ftlvariable name="redirect" type="uk.nhs.digital.gossmigrator.model.hippo.Redirect" -->
 {
 "name" : "${redirect.jcrNodeName}",
-"primaryType" : "urlrewriter:rule",
+"primaryType" : "urlrewriter:advancedrule",
 "mixinTypes" : [ "mix:referenceable" ],
 "properties" : [{
 "name" : "urlrewriter:ruleto",
@@ -12,7 +12,7 @@
 "name" : "urlrewriter:ruletype",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "permanent-redirect" ]
+"values" : [ "temporary-redirect" ]
 }, {
 "name" : "hippo:availability",
 "type" : "STRING",
@@ -28,12 +28,32 @@
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${redirect.description}" ]
+}, {
+"name" : "urlrewriter:isnotlast",
+"type" : "BOOLEAN",
+"multiple" : false,
+"values" : [ "true" ]
+}, {
+"name" : "urlrewriter:iswildcardtype",
+"type" : "BOOLEAN",
+"multiple" : false,
+"values" : [ "false" ]
+}, {
+"name" : "urlrewriter:qsappend",
+"type" : "BOOLEAN",
+"multiple" : false,
+"values" : [ "false" ]
+}, {
+"name" : "urlrewriter:casesensitive",
+"type" : "BOOLEAN",
+"multiple" : false,
+"values" : [ "false" ]
 },{
 "name" : "jcr:path",
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${redirect.jcrPath}" ]
-}, {
+},{
 "name" : "jcr:localizedName",
 "type" : "STRING",
 "multiple" : false,

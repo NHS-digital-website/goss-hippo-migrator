@@ -17,7 +17,6 @@ public class Redirect extends HippoImportable{
     private Redirect(GossRedirectContent redirectContent) {
         super(redirectContent);
         id = redirectContent.getId();
-        this.setJcrPath(Config.JCR_REDIRECT_ROOT.concat(TextHelper.toLowerCaseDashedValue(redirectContent.getHeading())));
         if(redirectContent.getLink() != null) {
             this.ruleTo = redirectContent.getLink().getAddress();
             this.description = redirectContent.getLink().getDescription();
@@ -30,12 +29,9 @@ public class Redirect extends HippoImportable{
     private Redirect(GossContent content) {
         super(content);
         id = content.getId();
-        this.setJcrPath(Config.JCR_REDIRECT_ROOT.concat(TextHelper.toLowerCaseDashedValue(content.getHeading())));
         String path = content.getJcrPath();
-
         Pattern r = Pattern.compile("/content/documents/corporate-website/(.*)/content");
         Matcher m = r.matcher(path);
-
         if (m.find()) {
             this.ruleTo = m.group(1);
         }
@@ -44,7 +40,9 @@ public class Redirect extends HippoImportable{
 
     public static Redirect getInstance(GossRedirectContent redirectContent){
         Redirect redirect = new Redirect(redirectContent);
-        redirect.ruleFrom = "/article/".concat(redirect.getId().toString()).concat("**");
+        redirect.ruleFrom = "^\\/article\\/".concat(redirect.getId().toString()).concat("(\\/.*)?$");
+        redirect.setJcrPath(Config.JCR_REDIRECT_ROOT.concat(TextHelper.toLowerCaseDashedValue(redirectContent.getHeading()))
+                .concat(redirectContent.getId().toString()));
         return redirect;
     }
 
@@ -55,7 +53,9 @@ public class Redirect extends HippoImportable{
         }else{
             redirect =  new Redirect(content);
         }
-        redirect.ruleFrom = "/".concat(content.getFriendlyUrl().concat("**"));
+        redirect.ruleFrom = "^\\/".concat(content.getFriendlyUrl().concat("$"));
+        redirect.setJcrPath(Config.JCR_REDIRECT_ROOT.concat(TextHelper.toLowerCaseDashedValue(content.getHeading()))
+                .concat(content.getId().toString()).concat("friendly"));
         return redirect;
     }
 
@@ -72,4 +72,3 @@ public class Redirect extends HippoImportable{
         return description;
     }
 }
-
