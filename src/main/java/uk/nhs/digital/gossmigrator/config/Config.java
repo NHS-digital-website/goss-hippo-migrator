@@ -76,7 +76,7 @@ public class Config {
     public static String LIVE_CONTENT_TARGET_FOLDER;
     public static String NON_LIVE_CONTENT_TARGET_FOLDER;
     public static String JCR_PUBLICATION_ROOT;
-    public static String JCR_DIRECT_ROOT;
+    public static String JCR_REDIRECT_ROOT;
     public static String METADATA_MAPPING_FILE;
     public static String ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT;
     public static String TAXONOMY_MAPPING_FILE;
@@ -109,7 +109,7 @@ public class Config {
         GENERAL_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(GENERAL_TYPE_FILE);
         NON_RELEVANT_TEMPLATE_IDS_FILE = CONFIG_FOLDER.concat(NON_RELEVANT_IDS_FILE);
         JCR_GENERAL_ROOT = getConfig(JCR_GENERAL_ROOT_PROP, propertiesMap);
-        JCR_DIRECT_ROOT = getConfig(JCR_DIRECT_ROOT_PROP, propertiesMap);
+        JCR_REDIRECT_ROOT = getConfig(JCR_DIRECT_ROOT_PROP, propertiesMap);
 
         // Check all properties in file are expected
         for(String property : propertiesMap.stringPropertyNames()){
