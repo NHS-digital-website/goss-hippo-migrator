@@ -79,6 +79,7 @@ public class GossContentList extends ArrayList<GossContent> {
                 Long seriesId = gossData.getPublicationSeriesMap().get(pubId);
                 if (seriesId != null) {
                     p.setParentId(seriesId);
+
                 } else {
                     LOGGER.warn("Publication:{}, {} has no series mapped.", p.getId(), pubId);
                     p.getWarnings().add("Publication:" + p.getId() + ", " + pubId + " has no series mapped.");
@@ -127,7 +128,7 @@ public class GossContentList extends ArrayList<GossContent> {
     }
 
     private void setJcrValuesBasedUponChildren(String parentPath, GossContent item) {
-        if (item.getChildren().size() > 0) {
+        if (item.getChildren().size() > 0 || item.getContentType() == PUBLICATION) {
             item.setJcrParentPath(Paths.get(parentPath, item.jcrNodeName).toString());
             item.setJcrNodeName("content");
         } else {
