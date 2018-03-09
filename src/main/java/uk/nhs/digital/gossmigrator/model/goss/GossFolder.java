@@ -11,7 +11,7 @@ public class GossFolder extends GossContent {
     public GossFolder(GossContent content) {
         Path parentPath = Paths.get(content.getJcrParentPath());
         depth = parentPath.getNameCount();
-        jcrParentPath = parentPath.subpath(0, depth - 2).toString();
+        jcrParentPath = parentPath.subpath(0, depth - 1).toString();
         jcrNodeName = parentPath.getName(depth - 1).toString();
         contentType = ContentType.FOLDER;
         id = 0L;
