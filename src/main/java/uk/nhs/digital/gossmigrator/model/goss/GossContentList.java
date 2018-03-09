@@ -57,6 +57,7 @@ public class GossContentList extends ArrayList<GossContent> {
                 generateJcrStructure(p);
             });
 
+            createFolders();
             Collections.sort(this);
         }
         sorted = true;
@@ -66,6 +67,18 @@ public class GossContentList extends ArrayList<GossContent> {
             LOGGER.info("Goss Id:{}, Parent:{}, Type:{}, Children Count:{}", i.getId(), i.getParentId()
                     , i.getContentType(), i.getChildren().size());
         }
+    }
+
+    private void createFolders() {
+        Set<GossFolder> folders = new HashSet<>();
+        for(GossContent content : this){
+            if(content.getChildren().size() > 0) {
+                GossFolder folder = new GossFolder(content);
+                folders.add(folder);
+            }
+        }
+        // Use super method, don't want these adding to map.
+        super.addAll(folders);
     }
 
     /**

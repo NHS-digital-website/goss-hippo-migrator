@@ -1,5 +1,9 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
+import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.*;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.GOSS_LONG_FORMAT;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,10 +18,6 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType;
 
 import java.nio.file.Paths;
 import java.util.*;
-
-import static uk.nhs.digital.gossmigrator.misc.GossExportHelper.*;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.GOSS_LONG_FORMAT;
-import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;
 
 public class GossContent implements Comparable<GossContent> {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossContent.class);
@@ -36,7 +36,7 @@ public class GossContent implements Comparable<GossContent> {
     private String status;
 
     //Content should be imported only if true
-    private Boolean relevantContentFlag = false;
+    Boolean relevantContentFlag = false;
     private List<GossContentMeta> metaList = new ArrayList<>();
     List<String> warnings = new ArrayList<>();
     GossContentExtra extra;
@@ -84,9 +84,9 @@ public class GossContent implements Comparable<GossContent> {
             processExtraNode(gossJson);
         }
 
-        if(contentType.isReadArticlesNode()){
+        if (contentType.isReadArticlesNode()) {
             JSONArray articlesJson = (JSONArray) gossJson.get(ARTICLES_ARRAY.getName());
-            for(Object article : articlesJson){
+            for (Object article : articlesJson) {
                 relatedArticles.add(GossExportHelper.getLong((JSONObject) article, ID, id));
             }
         }
@@ -139,9 +139,13 @@ public class GossContent implements Comparable<GossContent> {
 
     @Override
     public int compareTo(GossContent o) {
+        // Write folders first.
+        if (contentType == ContentType.FOLDER && o.contentType != ContentType.FOLDER) return -1;
+        if (contentType != ContentType.FOLDER && o.contentType == ContentType.FOLDER) return 1;
         if (o.getDepth() > depth) return -1;
         if (depth > o.getDepth()) return 1;
-        return o.getContentType().compareTo(this.contentType);
+        if (contentType != o.getContentType()) o.getContentType().compareTo(this.contentType);
+        return heading.compareTo(o.getHeading());
     }
 
     @Override
@@ -287,6 +291,7 @@ public class GossContent implements Comparable<GossContent> {
     public void setJcrNodeName(String jcrNodeName) {
         this.jcrNodeName = jcrNodeName;
     }
+
     public Long getTemplateId() {
         return templateId;
     }

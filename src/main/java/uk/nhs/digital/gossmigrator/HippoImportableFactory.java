@@ -58,6 +58,8 @@ public class HippoImportableFactory {
                 hippoContent = ListPage.getInstance((GossListPageContent) gossContent);
                 ListPageReportWriter.addRow((ListPage) hippoContent);
                 break;
+            case FOLDER:
+                hippoContent = Folder.getInstance((GossFolder) gossContent);
             default:
                 LOGGER.error("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());
         }

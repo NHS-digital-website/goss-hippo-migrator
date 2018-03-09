@@ -7,7 +7,8 @@ public enum ContentType {
     HUB("Hub", true, false),
     GENERAL("General", false, false),
     LIST_PAGE("List", true, true),
-    REDIRECT("Redirect", false, true);
+    REDIRECT("Redirect", false, true),
+    FOLDER("FOLDER", false, false);
 
     private String description;
     private boolean expectExtraNode;
