@@ -145,16 +145,6 @@ public class Publication extends HippoImportable {
         return title;
     }
 
-    // Summary is the content of the __DEFAULT node in the articletext from Goss
-    // TODO change when summary becomes rich text in template
-    @SuppressWarnings("unused") // Used in template
-    public String getSummary() {
-        if(null != summary){
-            return summary.getContent();
-        }
-        return "";
-    }
-
     @SuppressWarnings("unused") // Used in template
     public String getInformationType() {
         return informationType;
@@ -198,16 +188,6 @@ public class Publication extends HippoImportable {
     @SuppressWarnings("unused") // Used in template
     public List<String> getTaxonomyKeys() {
         return taxonomyKeys;
-    }
-
-    // TODO delete this when key facts become rich text in doc type.
-    @SuppressWarnings("unused") // Used in template
-    public String getKeyFactsString() {
-        if (null == keyFacts) {
-            return "";
-        } else {
-            return keyFacts.getContent();
-        }
     }
 
     @SuppressWarnings("unused") // Used in template

@@ -93,8 +93,36 @@
 "name" : "hippostd:content",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${publication.summary}" ]
-}]}
+"values" : [ "${publication.summary.content}" ]
+}],
+  "nodes" : [ <#list publication.summary.docReferences as refs> {
+  "name" : "${refs.nodeName}",
+  "primaryType" : "hippo:facetselect",
+  "mixinTypes" : [ ],
+  "properties" : [ {
+  "name" : "hippo:facets",
+  "type" : "STRING",
+  "multiple" : true,
+  "values" : [ ]
+  }, {
+  "name" : "hippo:values",
+  "type" : "STRING",
+  "multiple" : true,
+  "values" : [ ]
+  }, {
+  "name" : "hippo:docbase",
+  "type" : "STRING",
+  "multiple" : false,
+  "values" : [ "${refs.jcrPath}" ]
+  }, {
+  "name" : "hippo:modes",
+  "type" : "STRING",
+  "multiple" : true,
+  "values" : [ ]
+  } ],
+  "nodes" : [ ]
+  }<#sep>, </#sep> </#list>]
+}
 </#if><#if publication.keyFacts??>
 <#if firstNode == false> , <#else><#assign firstNode=false></#if>
 {
@@ -106,7 +134,34 @@
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${publication.keyFacts.content}" ]
-} ]
+}],
+"nodes" : [ <#list publication.keyFacts.docReferences as refs> {
+"name" : "${refs.nodeName}",
+"primaryType" : "hippo:facetselect",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippo:facets",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+}, {
+"name" : "hippo:values",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+}, {
+"name" : "hippo:docbase",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${refs.jcrPath}" ]
+}, {
+"name" : "hippo:modes",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+} ],
+"nodes" : [ ]
+}<#sep>, </#sep> </#list>]
 }
 </#if><#if publication.relatedLinks?has_content>
 <#if firstNode == false> , <#else><#assign firstNode=false></#if>
