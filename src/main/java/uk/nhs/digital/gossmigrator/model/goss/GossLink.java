@@ -34,4 +34,12 @@ public class GossLink {
     public String getDescription() {
         return description;
     }
+
+    public void setDisplayText(String displayText) {
+        this.displayText = displayText;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

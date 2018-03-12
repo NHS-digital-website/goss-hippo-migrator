@@ -31,12 +31,14 @@ public class GossRedirectContent extends GossContent {
         }
     }
 
-
     private void processLinksNode(JSONObject gossJson) {
         JSONArray linksJson = (JSONArray) gossJson.get(LINKS.getName());
         if (null != linksJson) {
             if (linksJson.size() == 1) {
                 link = new GossLink((JSONObject) linksJson.get(0));
+                // Redirects seem to use the redirect values rather than the links data.
+                link.setDisplayText(heading);
+                link.setDescription(summary);
             } else if (linksJson.size() > 1) {
                 LOGGER.warn("Redirect article:{} has {} links.  Expected 1.", id, linksJson.size());
                 warnings.add("Article:" + id + " is a redirect with " + linksJson.size() + " links.  Expected 1.");

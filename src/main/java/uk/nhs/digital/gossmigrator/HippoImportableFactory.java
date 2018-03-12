@@ -60,6 +60,7 @@ public class HippoImportableFactory {
                 break;
             case FOLDER:
                 hippoContent = Folder.getInstance((GossFolder) gossContent);
+                break;
             default:
                 LOGGER.error("Goss ID:{}, Unknown content type:{}", gossContent.getId(), gossContent.getContentType());
         }

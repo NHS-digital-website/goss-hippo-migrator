@@ -18,9 +18,9 @@ public class General extends HippoImportable {
             type = gossContent.getDocumentType().toLowerCase().replace(' ', '-');
         }
         title = TextHelper.escapeForJson(gossContent.getHeading());
-        seoSummary = TextHelper.escapeForJson(gossContent.getIntroduction());
+        seoSummary = TextHelper.escapeForJson(gossContent.getSummary());
         summary = TextHelper.escapeForJson(gossContent.getIntroduction());
-        shortSummary = TextHelper.escapeForJson(gossContent.getIntroduction());
+        shortSummary = TextHelper.escapeForJson(gossContent.getSummary());
 
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.HUB);

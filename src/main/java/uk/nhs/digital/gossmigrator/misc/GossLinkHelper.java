@@ -95,7 +95,7 @@ public class GossLinkHelper {
                 return getArticlePathFactoringInRedirects(redirect.getRelatedArticles().get(0));
             }
         } else {
-            return content.getJcrPath();
+            return content.isRelevantContentFlag() ? content.getJcrPath() : null;
         }
     }
 
