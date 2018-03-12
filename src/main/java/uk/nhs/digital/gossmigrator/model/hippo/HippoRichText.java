@@ -13,7 +13,6 @@ import uk.nhs.digital.gossmigrator.model.goss.GossFile;
 import uk.nhs.digital.gossmigrator.model.goss.GossLink;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
 
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -107,7 +106,7 @@ public class HippoRichText {
                 case DOCUMENT_LINK: {
                     // <span data-icm-arg2=\"298\" data-icm-arg2name=\"Clinical Audits and Registries calendar\" data-icm-arg4=\"CARMS calendar\" data-icm-arg6=\"_self\" data-icm-inlinetypeid=\"2\">Type=media;MediaID=298;Title=CARMS calendar;Target=_self;<\/span>
                     // Links to an Asset (not images!)
-                    GossFile fileLink = GossImporter.gossData.getGossFileMap().get(referenceKey);
+                    GossFile fileLink = GossImporter.digitalData.getGossFileMap().get(referenceKey);
                     if (null == fileLink) {
                         LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
                                 , referenceKey, gossArticleId);
@@ -124,7 +123,7 @@ public class HippoRichText {
                 case IMAGE: {
                     //Goss:<span data-icm-arg2=\"666\" data-icm-arg2name=\"biomedicine\" data-icm-arg4=\"standard\" data-icm-inlinetypeid=\"4\">Type=image;imageid=666;constraint=standard;<\/span>
                     //Hippo:<p><img data-type=“hippogallery:original” data-uuid=“3196cf43-76d7-4424-ba21-20ff24e53e0b” src=“binaries/content/gallery/publicationsystem/avatar.png/avatar.png/hippogallery:original” /></p>
-                    GossFile fileLink = GossImporter.gossData.getGossFileMap().get(referenceKey);
+                    GossFile fileLink = GossImporter.digitalData.getGossFileMap().get(referenceKey);
                     if (null == fileLink) {
                         LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
                                 , referenceKey, gossArticleId);
@@ -163,7 +162,7 @@ public class HippoRichText {
                     // And a doc ref node with something like;
                     // "/content/documents/corporate-website/publication-system/published-upcoming-publication"
                     // in the HippoLinkRef collection as jcrpath and published-upcoming-publication as nodeName.
-                    GossContent linkedTo = GossImporter.gossData.getArticlesContentList().getById(new Long(referenceKey));
+                    GossContent linkedTo = GossImporter.digitalData.getArticlesContentList().getById(new Long(referenceKey));
                     String jcrUrl = null;
                     if(linkedTo != null){
                         jcrUrl = linkedTo.getJcrPath();
@@ -185,7 +184,7 @@ public class HippoRichText {
                     // <p>An <a href=\"http://www.google.com\">external</a> link with external as the link (url type).</p>
 
                     // Get link.
-                    GossLink gossLink = GossImporter.gossData.getGossLinkMap().get(referenceKey);
+                    GossLink gossLink = GossImporter.digitalData.getGossLinkMap().get(referenceKey);
                     if (null == gossLink) {
                         LOGGER.error("ArticleId:{}. No link could be found for link id:{}.", gossArticleId, referenceKey);
                         break;  // Leave node unchanged.

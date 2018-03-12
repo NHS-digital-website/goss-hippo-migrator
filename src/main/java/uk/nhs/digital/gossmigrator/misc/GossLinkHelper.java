@@ -31,7 +31,7 @@ public class GossLinkHelper {
             }
             // Meta matches.
             if (extra.isIncludeMetaArticles()) {
-                for (Long match : GossImporter.gossData.getArticlesContentList()
+                for (Long match : GossImporter.digitalData.getArticlesContentList()
                         .getArticlesMatchingMeta(gossContent.getMetaList(), gossContent.getId())) {
                     addIfNotNull(included, getArticlePathFactoringInRedirects(match));
                 }
@@ -68,7 +68,7 @@ public class GossLinkHelper {
             }
             // Meta matches.
             if (extra.isIncludeMetaArticles()) {
-                for (Long match : GossImporter.gossData.getArticlesContentList()
+                for (Long match : GossImporter.digitalData.getArticlesContentList()
                         .getArticlesMatchingMeta(gossContent.getMetaList(), gossContent.getId())) {
                     addIfNotNull(links, getLinksFactoringInRedirects(match));
                 }
@@ -84,7 +84,7 @@ public class GossLinkHelper {
     }
 
     private String getArticlePathFactoringInRedirects(Long linkedArticleId) {
-        GossContent content = GossImporter.gossData.getArticlesContentList().getById(linkedArticleId);
+        GossContent content = GossImporter.digitalData.getArticlesContentList().getById(linkedArticleId);
         if (content.getContentType() == ContentType.REDIRECT) {
             GossRedirectContent redirect = (GossRedirectContent) content;
             if (redirect.getRelatedArticles().size() == 0) {
@@ -100,7 +100,7 @@ public class GossLinkHelper {
     }
 
     private GossLink getLinksFactoringInRedirects(Long linkedArticleId) {
-        GossContent content = GossImporter.gossData.getArticlesContentList().getById(linkedArticleId);
+        GossContent content = GossImporter.digitalData.getArticlesContentList().getById(linkedArticleId);
         if (content.getContentType() == ContentType.REDIRECT) {
             GossRedirectContent redirect = (GossRedirectContent) content;
             if (redirect.getLink() != null) {

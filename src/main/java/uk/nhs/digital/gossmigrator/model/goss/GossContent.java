@@ -42,7 +42,7 @@ public class GossContent implements Comparable<GossContent> {
     GossContentExtra extra;
     Date displayDate;
     List<Long> relatedArticles = new ArrayList<>();
-    String introduction;
+    private String introduction;
 
     // Non Goss sourced variables
     Integer depth;
@@ -243,10 +243,6 @@ public class GossContent implements Comparable<GossContent> {
         return Paths.get(jcrParentPath, jcrNodeName).toString();
     }
 
-    public String getJcrParentPath() {
-        return jcrParentPath;
-    }
-
     public Integer getDepth() {
         return depth;
     }
@@ -328,4 +324,7 @@ public class GossContent implements Comparable<GossContent> {
         return status;
     }
 
+    public String getJcrParentPath() {
+        return jcrParentPath;
+    }
 }

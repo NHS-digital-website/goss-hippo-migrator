@@ -12,17 +12,22 @@ public class RedirectReportWriter {
 
         HSSFSheet services = report.createSheet("Redirect");
         HSSFRow servicesRowhead = services.createRow(0);
-        servicesRowhead.createCell(0).setCellValue("Redirect ID");
-        servicesRowhead.createCell(1).setCellValue("From");
-        servicesRowhead.createCell(2).setCellValue("To");
+        servicesRowhead.createCell(0).setCellValue("Source");
+        servicesRowhead.createCell(1).setCellValue("Redirect ID");
+        servicesRowhead.createCell(2).setCellValue("From");
+        servicesRowhead.createCell(3).setCellValue("To");
 
     }
 
-    public static void addRedirectRow(Redirect redirect) {
+    public static void addRedirectRow(String source, Redirect redirect) {
         HSSFSheet sheet = report.getSheet("Redirect");
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
-        row.createCell(0).setCellValue(redirect.getId());
-        row.createCell(1).setCellValue(redirect.getRuleFrom());
+        row.createCell(0).setCellValue(source);
+        row.createCell(1).setCellValue(redirect.getId());
         row.createCell(2).setCellValue(redirect.getRuleFrom());
+        row.createCell(3).setCellValue(redirect.getRuleTo());
+        if(redirect.getRuleTo().isEmpty()){
+            WarningsReportWriter.addWarningRow("Redirect", redirect.getId(), redirect.getRuleFrom(), "Redirect rule To is empty");
+        }
     }
 }

@@ -10,7 +10,7 @@ import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static uk.nhs.digital.gossmigrator.GossImporter.gossData;
+import static uk.nhs.digital.gossmigrator.GossImporter.digitalData;
 import static uk.nhs.digital.gossmigrator.config.Config.JCR_GENERAL_ROOT;
 import static uk.nhs.digital.gossmigrator.config.Config.JCR_SERVICE_DOC_ROOT;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.*;
@@ -89,7 +89,7 @@ public class GossContentList extends ArrayList<GossContent> {
             if (p.getContentType() == PUBLICATION) {
                 // Parent should be a series
                 String pubId = p.getExtra().getPublicationId();
-                Long seriesId = gossData.getPublicationSeriesMap().get(pubId);
+                Long seriesId = digitalData.getPublicationSeriesMap().get(pubId);
                 if (seriesId != null) {
                     p.setParentId(seriesId);
 
@@ -230,7 +230,6 @@ public class GossContentList extends ArrayList<GossContent> {
                         lastNodeCategory = ContentType.GENERAL.name();
                     }
                 }
-                String label;
                 if ("content".equalsIgnoreCase(p.jcrNodeName)) {
                     output.append("\t\t").append(TextHelper.toLowerCaseDashedValue(p.heading))
                             .append("[").append(p.contentType.name()).append("][").append(p.id).append("]")

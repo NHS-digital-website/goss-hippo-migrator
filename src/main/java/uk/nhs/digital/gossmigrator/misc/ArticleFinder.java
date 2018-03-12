@@ -6,9 +6,8 @@ import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static uk.nhs.digital.gossmigrator.GossImporter.gossData;
+import static uk.nhs.digital.gossmigrator.GossImporter.digitalData;
 
 public class ArticleFinder {
     private final static Logger LOGGER = LoggerFactory.getLogger(ArticleFinder.class);
@@ -17,7 +16,7 @@ public class ArticleFinder {
 
         List<String> result = new ArrayList<>();
         for (Long id : articleId) {
-            GossContent article = gossData.getArticlesContentList().getById(id);
+            GossContent article = digitalData.getArticlesContentList().getById(id);
             if (null == article) {
                 LOGGER.error("Could not find article, id:{}, Context{}, Processing article:{}", id, context, parentId);
             } else {

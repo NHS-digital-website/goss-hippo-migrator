@@ -2,10 +2,8 @@ package uk.nhs.digital.gossmigrator.Report;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import uk.nhs.digital.gossmigrator.model.hippo.General;
 import uk.nhs.digital.gossmigrator.model.hippo.ListPage;
 
-import static uk.nhs.digital.gossmigrator.GossImporter.gossData;
 import static uk.nhs.digital.gossmigrator.GossImporter.report;
 
 public class ListPageReportWriter {

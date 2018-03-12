@@ -23,6 +23,7 @@ public class Config {
         ASSET_SOURCE_FOLDER_PROP("assets.source.folder", "File system folder holding assets to process.", true, ""),
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         TARGET_FOLDER_PROP("target.folder", "File system folder to hold created content json hippo import files.", true, ""),
+        REDIRECT_CONTENT_SOURCE_FILE_PROP("redirect.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/documents/corporate-website/", false, "/content/documents/corporate-website/publication-system/statistical/"),
         SPLIT_ASSET_PATH_ON("split.asset.path.on", "For file nodes in goss export there is a path.  " +
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media"),
@@ -74,6 +75,7 @@ public class Config {
     public static String ASSET_SOURCE_FOLDER;
     public static String ASSET_TARGET_FOLDER;
     public static String GOSS_CONTENT_SOURCE_FILE;
+    public static String REDIRECT_CONTENT_SOURCE_FILE;
     public static String CONTENT_TARGET_FOLDER;
     public static String LIVE_CONTENT_TARGET_FOLDER;
     public static String NON_LIVE_CONTENT_TARGET_FOLDER;
@@ -101,6 +103,7 @@ public class Config {
         CONTENT_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "content").toString();
         LIVE_CONTENT_TARGET_FOLDER = Paths.get(CONTENT_TARGET_FOLDER,"live").toString();
         NON_LIVE_CONTENT_TARGET_FOLDER = Paths.get(CONTENT_TARGET_FOLDER, "notLive").toString();
+        REDIRECT_CONTENT_SOURCE_FILE = getConfig(REDIRECT_CONTENT_SOURCE_FILE_PROP, propertiesMap);
         JCR_PUBLICATION_ROOT = getConfig(JCR_PUBLICATION_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT = getConfig(SPLIT_ASSET_PATH_ON, propertiesMap);
         JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP, propertiesMap);
@@ -115,6 +118,7 @@ public class Config {
         String maxSize = getConfig(MAX_ASSETS_SIZE_PER_ZIP_MB_PROP, propertiesMap);
         MAX_ASSET_SIZE_MB_IN_ZIP = Long.valueOf(maxSize);
         JCR_REDIRECT_ROOT = getConfig(JCR_DIRECT_ROOT_PROP, propertiesMap);
+
 
         // Check all properties in file are expected
         for(String property : propertiesMap.stringPropertyNames()){

@@ -30,7 +30,7 @@ public class Redirect extends HippoImportable{
         super(content);
         id = content.getId();
         String path = content.getJcrPath();
-        Pattern r = Pattern.compile("/content/documents/corporate-website/(.*)/content");
+        Pattern r = Pattern.compile("/content/documents/corporate-website/(.*)(/content)?");
         Matcher m = r.matcher(path);
         if (m.find()) {
             this.ruleTo = m.group(1);

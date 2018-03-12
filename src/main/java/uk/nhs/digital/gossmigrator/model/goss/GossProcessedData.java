@@ -1,10 +1,9 @@
 package uk.nhs.digital.gossmigrator.model.goss;
 
-import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
+import uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
 import uk.nhs.digital.gossmigrator.model.mapping.ContentTypeMap;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,8 +16,12 @@ public class GossProcessedData {
     private Map<Long, GossLink> gossLinkMap;
     private ContentTypeMap contentTypeMap;
     private Map<Long, String> generalDocumentTypeMap;
-
     private List<Long> ignoredTemplateIdsList;
+    private GossSourceFile type;
+
+    public GossProcessedData(GossSourceFile type) {
+        this.type = type;
+    }
 
     public Map<Long, GossFile> getGossFileMap() {
         return gossFileMap;
@@ -97,4 +100,9 @@ public class GossProcessedData {
     public void setIgnoredTemplateIdsList(List<Long> ignoredTemplateIdsList) {
         this.ignoredTemplateIdsList = ignoredTemplateIdsList;
     }
+
+    public GossSourceFile getType() {
+        return type;
+    }
 }
+

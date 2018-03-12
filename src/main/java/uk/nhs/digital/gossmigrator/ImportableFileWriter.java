@@ -77,6 +77,7 @@ public class ImportableFileWriter {
                     getFileName(i, importableItem),
                     targetDir
             );
+
         }
         LOGGER.info("Wrote {} files.", importableItems.size());
     }
@@ -106,6 +107,7 @@ public class ImportableFileWriter {
             final String importableFileContent = writer.toString();
 
             LOGGER.debug("Writing:{}", targetFilePath);
+
             Files.write(targetFilePath, importableFileContent.getBytes());
 
         } catch (final Exception e) {
@@ -130,6 +132,7 @@ public class ImportableFileWriter {
     }
 
     private static String getFileName(final int i, final HippoImportable importableItem) {
+
         return String.format(
                 "%06d%s_%06d_%s%s_%s" + OUTPUT_FILE_TYPE_SUFFIX,
                 i,

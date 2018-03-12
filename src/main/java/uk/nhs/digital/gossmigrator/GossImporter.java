@@ -12,6 +12,8 @@ import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
+
+import uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
 import java.io.File;
@@ -19,13 +21,17 @@ import java.io.FileReader;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.CONTENT;
+
+
 public class GossImporter {
     private final static Logger LOGGER = LoggerFactory.getLogger(GossImporter.class);
     public static MetadataMappingItems metadataMapping = new MetadataMappingItems();
 
-    public static GossProcessedData gossData = new GossProcessedData();
+    public static GossProcessedData digitalData = new GossProcessedData(GossSourceFile.DIGITAL);
+    private static GossProcessedData contentData = new GossProcessedData(CONTENT);
     public static HSSFWorkbook report = new HSSFWorkbook();
-    private static boolean skipAssets = false;
+    private static boolean skipAssets = true;
 
     public static void main(String[] args) throws Exception {
 
@@ -65,30 +71,24 @@ public class GossImporter {
 
     private void run() {
 
-
         cleanOutputFolders();
 
         ReportWriter.generateReport();
 
         SeriesImporter seriesImporter = new SeriesImporter();
-        gossData.addSeriesContentList(seriesImporter.getSeriesContentList());
-        gossData.setPublicationSeriesMap(seriesImporter.getPublicationKeyToSeriesIdMap());
+        digitalData.addSeriesContentList(seriesImporter.getSeriesContentList());
+        digitalData.setPublicationSeriesMap(seriesImporter.getPublicationKeyToSeriesIdMap());
 
         TaxonomyMapper mapper = new TaxonomyMapper();
-        gossData.setTaxonomyMap(mapper.generateTaxonomyMap());
+        digitalData.setTaxonomyMap(mapper.generateTaxonomyMap());
 
         DocumentTypeImporter typeImporter = new DocumentTypeImporter();
-        gossData.setContentTypeMap(typeImporter.populateContentTypes());
-        gossData.setGeneralDocumentTypeMap(typeImporter.populateGeneralContentTypes());
-        gossData.setIgnoredTemplateIdsList(typeImporter.populateIgnoredTemplateIds());
+        digitalData.setContentTypeMap(typeImporter.populateContentTypes());
+        digitalData.setGeneralDocumentTypeMap(typeImporter.populateGeneralContentTypes());
+        digitalData.setIgnoredTemplateIdsList(typeImporter.populateIgnoredTemplateIds());
 
-        ContentImporter contentImporter = new ContentImporter();
-        contentImporter.populateGossData(gossData);
-        gossData.getArticlesContentList().generateJcrStructure();
-
-        HippoImportableFactory factory = new HippoImportableFactory();
-        gossData.setImportableContentItems(factory.populateHippoContent(gossData));
-        contentImporter.writeHippoContentImportables(gossData.getImportableContentItems());
+        processGoss(digitalData);
+        processGoss(contentData);
 
         // Assets need to be done after content as only import those referenced
         // in rich text in content.
@@ -101,11 +101,23 @@ public class GossImporter {
             }
         }
 
-        gossData.getContentTypeMap().logNeverReferenced();
+        digitalData.getContentTypeMap().logNeverReferenced();
         FolderHelper.zipFolder(LIVE_CONTENT_TARGET_FOLDER);
         FolderHelper.zipFolder(NON_LIVE_CONTENT_TARGET_FOLDER);
 
         ReportWriter.writeFile();
+
+    }
+
+    private void processGoss(GossProcessedData data){
+        ContentImporter contentImporter = new ContentImporter();
+        contentImporter.populateGossData(data);
+        data.getArticlesContentList().generateJcrStructure();
+
+        HippoImportableFactory factory = new HippoImportableFactory();
+        data.setImportableContentItems(factory.populateHippoContent(data));
+        contentImporter.writeHippoContentImportables(data.getImportableContentItems());
+
     }
 
     private void cleanOutputFolders() {

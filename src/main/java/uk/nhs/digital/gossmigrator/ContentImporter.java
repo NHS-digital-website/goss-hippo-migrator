@@ -20,20 +20,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static uk.nhs.digital.gossmigrator.config.Config.CONTENT_TARGET_FOLDER;
-import static uk.nhs.digital.gossmigrator.config.Config.LIVE_CONTENT_TARGET_FOLDER;
-import static uk.nhs.digital.gossmigrator.config.Config.NON_LIVE_CONTENT_TARGET_FOLDER;
+import static uk.nhs.digital.gossmigrator.config.Config.*;
 import static uk.nhs.digital.gossmigrator.config.Constants.OUTPUT_FILE_TYPE_SUFFIX;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.CONTENT;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.DIGITAL;
 
 public class ContentImporter {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ContentImporter.class);
 
     public void populateGossData(GossProcessedData gossData){
-        JSONObject rootJsonObject = readGossExport();
-        gossData.setArticlesContentList(populateGossContent(rootJsonObject));
+        if(DIGITAL.equals(gossData.getType())){
+            JSONObject rootJsonObject = readGossExport(Config.GOSS_CONTENT_SOURCE_FILE);
+        gossData.setArticlesContentList(populateGossContent(gossData, rootJsonObject));
         gossData.setGossLinkMap(populateGossLinks(rootJsonObject));
         gossData.setGossFileMap(populateGossFiles(rootJsonObject));
+        }else if(CONTENT.equals(gossData.getType())){
+            JSONObject rootJsonObject = readGossExport(Config.REDIRECT_CONTENT_SOURCE_FILE);
+            gossData.setArticlesContentList(populateGossContent(gossData, rootJsonObject));
+        }
     }
 
     private Map<Long, GossFile> populateGossFiles(JSONObject rootJsonObject) {
@@ -68,17 +73,17 @@ public class ContentImporter {
         return gossLinkMap;
     }
 
-    private JSONObject readGossExport() {
-        LOGGER.info("Reading Goss content file:{}", Config.GOSS_CONTENT_SOURCE_FILE);
+    private JSONObject readGossExport(String sourceFile) {
+        LOGGER.info("Reading Goss content file:{}", sourceFile);
 
-        File f = new File(Config.GOSS_CONTENT_SOURCE_FILE);
+        File f = new File(sourceFile);
         if (!f.exists()) {
-            LOGGER.error("File " + Config.GOSS_CONTENT_SOURCE_FILE + " does not exist.");
-            throw new RuntimeException("File " + Config.GOSS_CONTENT_SOURCE_FILE + " does not exist.");
+            LOGGER.error("File " + sourceFile + " does not exist.");
+            throw new RuntimeException("File " + sourceFile + " does not exist.");
         }
         if (!f.isFile()) {
-            LOGGER.error("Not a file :" + Config.GOSS_CONTENT_SOURCE_FILE);
-            throw new RuntimeException("Not a file :" + Config.GOSS_CONTENT_SOURCE_FILE);
+            LOGGER.error("Not a file :" + sourceFile);
+            throw new RuntimeException("Not a file :" + sourceFile);
         }
 
         JSONParser jsonParser = new JSONParser();
@@ -89,7 +94,7 @@ public class ContentImporter {
 
         StringBuilder content = new StringBuilder();
         try {
-            for (String line : Files.readAllLines(Paths.get(Config.GOSS_CONTENT_SOURCE_FILE))) {
+            for (String line : Files.readAllLines(Paths.get(sourceFile))) {
                 content.append(line);
             }
         } catch (IOException e) {
@@ -108,16 +113,20 @@ public class ContentImporter {
         }
     }
 
-    private GossContentList populateGossContent(JSONObject rootJsonObject) {
+    private GossContentList populateGossContent(GossProcessedData data, JSONObject rootJsonObject) {
         LOGGER.debug("Begin populating GossContent objects.");
         JSONArray jsonArray = (JSONArray) rootJsonObject.get("articles");
         GossContentList gossContentList = new GossContentList();
         long count = 0;
         for (Object childJsonObject : jsonArray) {
-            gossContentList.add(GossContentFactory.generateGossContent((JSONObject) childJsonObject, ++count));
+            GossContent content = GossContentFactory.generateGossContent(data, (JSONObject) childJsonObject, ++count);
+            if(content != null){
+                gossContentList.add(content);
+            }
         }
-        return GossContentFilter.setRelevantGossContentFlag(gossContentList);
+        return GossContentFilter.setRelevantGossContentFlag(data, gossContentList);
     }
+
 
     public void writeHippoContentImportables(List<HippoImportable> importableContentItems) {
         LOGGER.debug("Begin writeHippoContentImportables");
