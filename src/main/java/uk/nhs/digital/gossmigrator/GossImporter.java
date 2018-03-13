@@ -29,7 +29,7 @@ public class GossImporter {
     public static GossProcessedData digitalData = new GossProcessedData(GossSourceFile.DIGITAL);
     private static GossProcessedData contentData = new GossProcessedData(CONTENT);
     public static HSSFWorkbook report = new HSSFWorkbook();
-    private static boolean skipAssets = true;
+    private static boolean skipAssets = false;
 
     public static void main(String[] args) throws Exception {
 
