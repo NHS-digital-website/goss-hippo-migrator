@@ -32,7 +32,9 @@ public class Config {
         CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true,""),
         JCR_GENERAL_ROOT_PROP("jcr.general.root", "JCR path to general root.", false, "/content/documents/corporate-website/general/"),
         MAX_ASSETS_SIZE_PER_ZIP_MB_PROP("max.assets.size.per.zip", "Max size in Mb.", false, "1024"),
-        JCR_DIRECT_ROOT_PROP("jcr.redirect.root", "JCR path to redirect root.", false, "/content/urlrewriter/rules/")
+        JCR_DIRECT_ROOT_PROP("jcr.redirect.root", "JCR path to redirect root.", false, "/content/urlrewriter/rules/"),
+        SKIP_DIGITAL_PROP("skip.digital","If digital export should be skipped.",false,"false"),
+        SKIP_CONTENT_PROP("skip.content","If content export should be skipped.",false,"false")
         ;
 
         final String key;
@@ -67,7 +69,7 @@ public class Config {
         }
     }
 
-    public static String TARGET_FOLDER_ROOT;
+    private static String TARGET_FOLDER_ROOT;
     public static String JCR_ASSET_ROOT;
     public static String JCR_SERVICE_DOC_ROOT;
     public static String JCR_GALLERY_ROOT;
@@ -90,6 +92,8 @@ public class Config {
     public static String GENERAL_TYPE_MAPPING_FILE;
     public static String NON_RELEVANT_TEMPLATE_IDS_FILE;
     public static long MAX_ASSET_SIZE_MB_IN_ZIP;
+    public static Boolean SKIP_DIGITAL;
+    public static Boolean SKIP_CONTENT;
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
@@ -118,7 +122,8 @@ public class Config {
         String maxSize = getConfig(MAX_ASSETS_SIZE_PER_ZIP_MB_PROP, propertiesMap);
         MAX_ASSET_SIZE_MB_IN_ZIP = Long.valueOf(maxSize);
         JCR_REDIRECT_ROOT = getConfig(JCR_DIRECT_ROOT_PROP, propertiesMap);
-
+        SKIP_DIGITAL = Boolean.parseBoolean(getConfig(SKIP_DIGITAL_PROP, propertiesMap));
+        SKIP_CONTENT = Boolean.parseBoolean(getConfig(SKIP_CONTENT_PROP, propertiesMap));
 
         // Check all properties in file are expected
         for(String property : propertiesMap.stringPropertyNames()){

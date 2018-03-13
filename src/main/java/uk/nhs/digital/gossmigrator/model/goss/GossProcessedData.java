@@ -104,5 +104,6 @@ public class GossProcessedData {
     public GossSourceFile getType() {
         return type;
     }
+
 }
 

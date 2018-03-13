@@ -1,9 +1,5 @@
 package uk.nhs.digital.gossmigrator;
 
-import static uk.nhs.digital.gossmigrator.config.Config.ASSET_TARGET_FOLDER;
-import static uk.nhs.digital.gossmigrator.config.Config.LIVE_CONTENT_TARGET_FOLDER;
-import static uk.nhs.digital.gossmigrator.config.Config.NON_LIVE_CONTENT_TARGET_FOLDER;
-
 import org.apache.commons.cli.*;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
@@ -21,7 +17,9 @@ import java.io.FileReader;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import static uk.nhs.digital.gossmigrator.config.Config.*;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.CONTENT;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.DIGITAL;
 
 
 public class GossImporter {
@@ -54,7 +52,7 @@ public class GossImporter {
             properties.load(new FileReader(propertiesFile));
             Config.parsePropertiesFile(properties);
 
-            if(cmd.hasOption("skipAssets")){
+            if(cmd.hasOption("skipAssets") || SKIP_DIGITAL){
                 skipAssets = true;
             }
 
@@ -116,8 +114,11 @@ public class GossImporter {
 
         HippoImportableFactory factory = new HippoImportableFactory();
         data.setImportableContentItems(factory.populateHippoContent(data));
-        contentImporter.writeHippoContentImportables(data.getImportableContentItems());
 
+        if((DIGITAL.equals(data.getType()) && !SKIP_DIGITAL)
+                || (CONTENT.equals(data.getType()) && !SKIP_CONTENT)){
+            contentImporter.writeHippoContentImportables(data.getImportableContentItems());
+        }
     }
 
     private void cleanOutputFolders() {

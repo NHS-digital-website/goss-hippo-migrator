@@ -54,7 +54,9 @@ public class HippoImportableFactory {
                 break;
             case REDIRECT:
                 hippoContent = Redirect.getInstance((GossRedirectContent) gossContent);
-                RedirectReportWriter.addRedirectRow(gossData.getType().getDescription(), (Redirect) hippoContent);
+                if(!((Redirect)hippoContent).getRuleTo().isEmpty()){
+                    RedirectReportWriter.addRedirectRow(gossData.getType().getDescription(), (Redirect) hippoContent);
+                }
                 break;
             case LIST_PAGE:
                 hippoContent = ListPage.getInstance((GossListPageContent) gossContent);
@@ -72,9 +74,9 @@ public class HippoImportableFactory {
 
         if(gossContent.getFriendlyUrl() != null && !gossContent.getFriendlyUrl().isEmpty()){
             Redirect friendlyUrlRedirect = Redirect.getFriendlyUrlInstance(gossContent);
-            RedirectReportWriter.addRedirectRow(gossData.getType().getDescription(), friendlyUrlRedirect);
             if(!friendlyUrlRedirect.getRuleTo().isEmpty()){
                 importables.add(friendlyUrlRedirect);
+                RedirectReportWriter.addRedirectRow(gossData.getType().getDescription(), friendlyUrlRedirect);
             }
         }
 
