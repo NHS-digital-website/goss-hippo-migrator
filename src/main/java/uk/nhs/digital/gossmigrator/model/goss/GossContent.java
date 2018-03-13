@@ -118,12 +118,6 @@ public class GossContent implements Comparable<GossContent> {
         for (Object metaObject : metaJson) {
             JSONObject meta = (JSONObject) metaObject;
             String metaGroup = GossExportHelper.getString(meta, GossExportFieldNames.META_DATA_GROUP, id);
-            GossMetaType gossMetaType = GossMetaType.getByGroup(metaGroup);
-            if (null == gossMetaType) {
-                LOGGER.warn("Unexpected goss meta group:{}. Article id:{}."
-                        , metaGroup, id);
-                warnings.add("Unexpected goss meta group: " + metaGroup);
-            }
             String gossMetaValue = getString(meta, GossExportFieldNames.META_DATA_VALUE, id);
             String gossMetaName = getString(meta, GossExportFieldNames.META_DATA_VALUE, id);
 

@@ -41,10 +41,19 @@ public class AssetImporter {
                             break;
                         }
                     }
-                    if(hasImportedReference) {
+                    if (hasImportedReference) {
                         if (file.getSize() > 1024 * 1024 * 10) {
-                            LOGGER.warn("MediaId:{}, File {} > 10Mb. Is:{}Mb",file.getId(), file.getFilePathOnDisk(), file.getSize() / (1024 * 1024));
-                        }else {
+                            StringBuilder refs = new StringBuilder();
+                            boolean first = true;
+                            for (Long ref : file.getReferences()) {
+                                if (!first) {
+                                    refs.append(", ");
+                                }
+                                refs.append(ref);
+                                first = false;
+                            }
+                            LOGGER.warn("MediaId:{}, File {} > 10Mb. Is:{}Mb, Referenced by Articles[{}]", file.getId(), file.getFilePathOnDisk(), file.getSize() / (1024 * 1024), refs.toString());
+                        } else {
                             totalFileSize = totalFileSize + file.getSize();
                             createAsset(file);
                         }
@@ -52,8 +61,8 @@ public class AssetImporter {
                 }
             }
         }
-        LOGGER.info("Total asset size: {}Mb", totalFileSize / (1024*1024));
-        System.out.println("Total file size:" + totalFileSize / (1024*1024) + "Mb.");
+        LOGGER.info("Total asset size: {}Mb", totalFileSize / (1024 * 1024));
+        System.out.println("Total file size:" + totalFileSize / (1024 * 1024) + "Mb.");
     }
 
     private void createAsset(GossFile file) {
@@ -67,7 +76,7 @@ public class AssetImporter {
             a = new Asset(file.getFileName()
                     , file.getJcrPath(), Paths.get(file.getFilePathOnDisk()), file);
         } else {
-            LOGGER.warn("Unsupported file type {}", file.getFileName());
+            LOGGER.warn("Unsupported file type {}.  This is probably fine.", file.getFileName());
             a = new Asset(file.getFileName()
                     , file.getJcrPath(), Paths.get(file.getFilePathOnDisk()), file);
         }

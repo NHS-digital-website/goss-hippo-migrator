@@ -19,7 +19,7 @@ public class Config {
 
     enum PropertiesEnum {
         JCR_ASSET_ROOT_PROP("jcr.asset.root", "Root jcr path to assets. e.g. /content/assets/", false, "/content/assets/goss-legacy/"),
-        JCR_SERVICE_DOC_ROOT_PROP("jcr.service.doc.root", "Root jcr path to services. e.g. /content/documents/corporate-website/service/", false, "/content/documents/corporate-website/services/"),
+        JCR_SERVICE_DOC_ROOT_PROP("jcr.service.doc.root", "Root jcr path to services. e.g. /content/documents/corporate-website/service/", false, "/content/documents/corporate-website/systems-and-services/"),
         ASSET_SOURCE_FOLDER_PROP("assets.source.folder", "File system folder holding assets to process.", true, ""),
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         TARGET_FOLDER_PROP("target.folder", "File system folder to hold created content json hippo import files.", true, ""),
@@ -30,7 +30,7 @@ public class Config {
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/goss-legacy/"),
         IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media"),
         CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true,""),
-        JCR_GENERAL_ROOT_PROP("jcr.general.root", "JCR path to general root.", false, "/content/documents/corporate-website/general/"),
+        JCR_GENERAL_ROOT_PROP("jcr.general.root", "JCR path to general root.", false, "/content/documents/corporate-website/"),
         MAX_ASSETS_SIZE_PER_ZIP_MB_PROP("max.assets.size.per.zip", "Max size in Mb.", false, "1024"),
         JCR_DIRECT_ROOT_PROP("jcr.redirect.root", "JCR path to redirect root.", false, "/content/urlrewriter/rules/"),
         SKIP_DIGITAL_PROP("skip.digital","If digital export should be skipped.",false,"false"),

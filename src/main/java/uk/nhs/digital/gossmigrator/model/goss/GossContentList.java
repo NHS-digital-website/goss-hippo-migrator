@@ -72,7 +72,7 @@ public class GossContentList extends ArrayList<GossContent> {
     private void createFolders() {
         Set<GossFolder> folders = new HashSet<>();
         for(GossContent content : this){
-            if(content.getChildren().size() > 0) {
+            if(content.getChildren().size() > 0 || content.getContentType() == PUBLICATION) {
                 GossFolder folder = new GossFolder(content);
                 folders.add(folder);
             }
