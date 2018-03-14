@@ -128,10 +128,10 @@ public class ContentImporter {
     }
 
 
-    public void writeHippoContentImportables(List<HippoImportable> importableContentItems) {
+    public void writeHippoContentImportables(List<HippoImportable> importableContentItems, boolean isDigital) {
         LOGGER.debug("Begin writeHippoContentImportables");
         ImportableFileWriter writer = new ImportableFileWriter();
-        writer.writeImportableFiles(importableContentItems, Config.CONTENT_TARGET_FOLDER);
+        writer.writeImportableFiles(importableContentItems, Config.CONTENT_TARGET_FOLDER, isDigital);
     }
 
 }

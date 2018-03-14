@@ -86,7 +86,7 @@ public class AssetImporter {
 
     public int writeHippoAssetImportables() {
         ImportableFileWriter writer = new ImportableFileWriter();
-        writer.writeImportableFiles(importableAssetItems, Config.ASSET_TARGET_FOLDER);
+        writer.writeImportableFiles(importableAssetItems, Config.ASSET_TARGET_FOLDER, true);
         return writer.getAssetOutputFolder();
     }
 

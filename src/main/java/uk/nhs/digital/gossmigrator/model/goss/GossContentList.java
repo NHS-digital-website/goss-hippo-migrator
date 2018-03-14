@@ -72,7 +72,8 @@ public class GossContentList extends ArrayList<GossContent> {
     private void createFolders() {
         Set<GossFolder> folders = new HashSet<>();
         for(GossContent content : this){
-            if(content.getChildren().size() > 0 || content.getContentType() == PUBLICATION) {
+            if(content.getDepth() > 0
+                    && (content.getChildren().size() > 0 || content.getContentType() == PUBLICATION)) {
                 GossFolder folder = new GossFolder(content);
                 folders.add(folder);
             }
@@ -186,7 +187,7 @@ public class GossContentList extends ArrayList<GossContent> {
         if (null == parent) {
             // p1 should never be null with real data.
             LOGGER.error("Invalid article parent id:{} for article:{}", p.getParentId(), p.getId());
-            p.setDepth(1);
+            p.setDepth(0);
             p.setJcrParentPath(JCR_GENERAL_ROOT);
             return;
         }

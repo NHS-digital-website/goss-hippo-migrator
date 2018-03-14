@@ -1,14 +1,14 @@
 package uk.nhs.digital.gossmigrator.config;
 
+import static uk.nhs.digital.gossmigrator.config.Config.PropertiesEnum.*;
+import static uk.nhs.digital.gossmigrator.config.Constants.*;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Paths;
 import java.util.Properties;
-
-import static uk.nhs.digital.gossmigrator.config.Config.PropertiesEnum.*;
-import static uk.nhs.digital.gossmigrator.config.Constants.*;
 
 /**
  * Config from properties file.
@@ -29,13 +29,12 @@ public class Config {
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media"),
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/goss-legacy/"),
         IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media"),
-        CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true,""),
+        CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true, ""),
         JCR_GENERAL_ROOT_PROP("jcr.general.root", "JCR path to general root.", false, "/content/documents/corporate-website/"),
         MAX_ASSETS_SIZE_PER_ZIP_MB_PROP("max.assets.size.per.zip", "Max size in Mb.", false, "1024"),
         JCR_DIRECT_ROOT_PROP("jcr.redirect.root", "JCR path to redirect root.", false, "/content/urlrewriter/rules/"),
-        SKIP_DIGITAL_PROP("skip.digital","If digital export should be skipped.",false,"false"),
-        SKIP_CONTENT_PROP("skip.content","If content export should be skipped.",false,"false")
-        ;
+        SKIP_DIGITAL_PROP("skip.digital", "If digital export should be skipped.", false, "false"),
+        SKIP_CONTENT_PROP("skip.content", "If content export should be skipped.", false, "false");
 
         final String key;
         final String help;
@@ -49,9 +48,9 @@ public class Config {
             this.defaultValue = defaultValue;
         }
 
-        static boolean hasKey(String key){
-            for(PropertiesEnum property : PropertiesEnum.values()){
-                if(property.key.equals(key)){
+        static boolean hasKey(String key) {
+            for (PropertiesEnum property : PropertiesEnum.values()) {
+                if (property.key.equals(key)) {
                     return true;
                 }
             }
@@ -81,6 +80,10 @@ public class Config {
     public static String CONTENT_TARGET_FOLDER;
     public static String LIVE_CONTENT_TARGET_FOLDER;
     public static String NON_LIVE_CONTENT_TARGET_FOLDER;
+    public static String FOLDERS_TARGET_FOLDER;
+    public static String URLREWRITE_DIGITAL_TARGET_FOLDER;
+    public static String URLREWRITE_CONTENT_TARGET_FOLDER;
+    public static String S3_TARGET_FOLDER;
     public static String JCR_PUBLICATION_ROOT;
     public static String JCR_REDIRECT_ROOT;
     public static String METADATA_MAPPING_FILE;
@@ -105,17 +108,21 @@ public class Config {
         TARGET_FOLDER_ROOT = getConfig(TARGET_FOLDER_PROP, propertiesMap);
         ASSET_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "assets").toString();
         CONTENT_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "content").toString();
-        LIVE_CONTENT_TARGET_FOLDER = Paths.get(CONTENT_TARGET_FOLDER,"live").toString();
+        LIVE_CONTENT_TARGET_FOLDER = Paths.get(CONTENT_TARGET_FOLDER, "live").toString();
         NON_LIVE_CONTENT_TARGET_FOLDER = Paths.get(CONTENT_TARGET_FOLDER, "notLive").toString();
         REDIRECT_CONTENT_SOURCE_FILE = getConfig(REDIRECT_CONTENT_SOURCE_FILE_PROP, propertiesMap);
+        FOLDERS_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "folders").toString();
+        URLREWRITE_CONTENT_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "urls", "content").toString();
+        URLREWRITE_DIGITAL_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "urls", "digital").toString();
+        S3_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "s3", "legacy").toString();
         JCR_PUBLICATION_ROOT = getConfig(JCR_PUBLICATION_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT = getConfig(SPLIT_ASSET_PATH_ON, propertiesMap);
         JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP, propertiesMap);
         IGNORE_MEDIA_WITH_PATH_PART = getConfig(IGNORE_MEDIA_WITH_PATH_PART_PROP, propertiesMap);
         GOSS_HIPPO_MAPPING_FILE = CONFIG_FOLDER.concat(PUB_SERIES_FILE);
-        METADATA_MAPPING_FILE =  CONFIG_FOLDER.concat(METADATA_FILE);
-        DOCUMENT_TYPE_MAPPING_FILE =  CONFIG_FOLDER.concat(DOC_TYPE_FILE);
-        TAXONOMY_MAPPING_FILE =  CONFIG_FOLDER.concat(TAXONOMY_FILE);
+        METADATA_MAPPING_FILE = CONFIG_FOLDER.concat(METADATA_FILE);
+        DOCUMENT_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(DOC_TYPE_FILE);
+        TAXONOMY_MAPPING_FILE = CONFIG_FOLDER.concat(TAXONOMY_FILE);
         GENERAL_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(GENERAL_TYPE_FILE);
         NON_RELEVANT_TEMPLATE_IDS_FILE = CONFIG_FOLDER.concat(NON_RELEVANT_IDS_FILE);
         JCR_GENERAL_ROOT = getConfig(JCR_GENERAL_ROOT_PROP, propertiesMap);
@@ -126,8 +133,8 @@ public class Config {
         SKIP_CONTENT = Boolean.parseBoolean(getConfig(SKIP_CONTENT_PROP, propertiesMap));
 
         // Check all properties in file are expected
-        for(String property : propertiesMap.stringPropertyNames()){
-            if(!PropertiesEnum.hasKey(property)){
+        for (String property : propertiesMap.stringPropertyNames()) {
+            if (!PropertiesEnum.hasKey(property)) {
                 LOGGER.warn("Unexpected property:{}.  This is unused and can be safely deleted from properties file.", property);
             }
         }

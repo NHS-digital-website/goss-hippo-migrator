@@ -12,7 +12,7 @@ public interface Constants {
     String TAXONOMY_FILE = "TaxonomyMapping.csv";
     String NON_RELEVANT_IDS_FILE = "NonRelevantTemplateIDs.csv";
 
-    public interface Output{
+    interface Output{
         String ZIP_FILE_NAME = "import-package.zip";
         String JSON_DIR = "exim";
         String ASSET_DIR = "attachments";

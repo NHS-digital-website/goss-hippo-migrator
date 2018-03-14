@@ -11,7 +11,9 @@ import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.config.Constants;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.hippo.FileImportable;
+import uk.nhs.digital.gossmigrator.model.hippo.Folder;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
+import uk.nhs.digital.gossmigrator.model.hippo.Redirect;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.util.List;
 
 import static uk.nhs.digital.gossmigrator.config.Config.*;
 import static uk.nhs.digital.gossmigrator.config.Constants.OUTPUT_FILE_TYPE_SUFFIX;
+import static uk.nhs.digital.gossmigrator.config.Constants.Output.JSON_DIR;
 
 public class ImportableFileWriter {
     private final static Logger LOGGER = LoggerFactory.getLogger(ImportableFileWriter.class);
@@ -33,17 +36,25 @@ public class ImportableFileWriter {
     private long assetBytesCopied = 0;
     private Integer assetOutputFolder = 0;
 
-    void writeImportableFiles(final List<? extends HippoImportable> importableItems, String outputFolder) {
+    void writeImportableFiles(final List<? extends HippoImportable> importableItems, String outputFolder, boolean isDigital) {
         LOGGER.info("Writing content to:{}", outputFolder);
 
         for (int i = 1; i <= importableItems.size(); i++) {
             Path targetDir;
             final HippoImportable importableItem = importableItems.get(i - 1);
             if (Config.CONTENT_TARGET_FOLDER.equals(outputFolder)) {
-                if (importableItem.isLive()) {
-                    targetDir = Paths.get(LIVE_CONTENT_TARGET_FOLDER, Constants.Output.JSON_DIR);
+                if(importableItem instanceof Folder){
+                    targetDir = Paths.get(FOLDERS_TARGET_FOLDER, JSON_DIR);
+                } else if(importableItem instanceof Redirect){
+                  if(isDigital){
+                      targetDir = Paths.get(URLREWRITE_DIGITAL_TARGET_FOLDER, JSON_DIR);
+                  }else{
+                      targetDir = Paths.get(URLREWRITE_CONTENT_TARGET_FOLDER, JSON_DIR);
+                  }
+                } else if (importableItem.isLive()) {
+                    targetDir = Paths.get(LIVE_CONTENT_TARGET_FOLDER, JSON_DIR);
                 } else {
-                    targetDir = Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER, Constants.Output.JSON_DIR);
+                    targetDir = Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER, JSON_DIR);
                 }
             } else if (importableItem instanceof FileImportable) {
                 // See if need to move to new output folder
@@ -56,7 +67,7 @@ public class ImportableFileWriter {
                     assetBytesCopied = assetBytesCopied + fileImportable.getFileSize();
                 }
 
-                targetDir = Paths.get(outputFolder, assetOutputFolder.toString(), Constants.Output.JSON_DIR);
+                targetDir = Paths.get(outputFolder, assetOutputFolder.toString(), JSON_DIR);
                 try {
                     Path to = Paths.get(outputFolder, assetOutputFolder.toString(),
                             Constants.Output.ASSET_DIR, fileImportable.getSourceFilePathRelative().toString());

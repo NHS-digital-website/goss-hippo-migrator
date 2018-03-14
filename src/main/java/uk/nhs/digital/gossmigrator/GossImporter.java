@@ -85,8 +85,8 @@ public class GossImporter {
         digitalData.setGeneralDocumentTypeMap(typeImporter.populateGeneralContentTypes());
         digitalData.setIgnoredTemplateIdsList(typeImporter.populateIgnoredTemplateIds());
 
-        processGoss(digitalData);
-        processGoss(contentData);
+        processGoss(digitalData, true);
+        processGoss(contentData, false);
 
         // Assets need to be done after content as only import those referenced
         // in rich text in content.
@@ -102,12 +102,14 @@ public class GossImporter {
         digitalData.getContentTypeMap().logNeverReferenced();
         FolderHelper.zipFolder(LIVE_CONTENT_TARGET_FOLDER);
         FolderHelper.zipFolder(NON_LIVE_CONTENT_TARGET_FOLDER);
-
+        FolderHelper.zipFolder(FOLDERS_TARGET_FOLDER);
+        FolderHelper.zipFolder(URLREWRITE_CONTENT_TARGET_FOLDER);
+        FolderHelper.zipFolder(URLREWRITE_DIGITAL_TARGET_FOLDER);
         ReportWriter.writeFile();
 
     }
 
-    private void processGoss(GossProcessedData data){
+    private void processGoss(GossProcessedData data, boolean isDigital){
         ContentImporter contentImporter = new ContentImporter();
         contentImporter.populateGossData(data);
         data.getArticlesContentList().generateJcrStructure();
@@ -117,7 +119,7 @@ public class GossImporter {
 
         if((DIGITAL.equals(data.getType()) && !SKIP_DIGITAL)
                 || (CONTENT.equals(data.getType()) && !SKIP_CONTENT)){
-            contentImporter.writeHippoContentImportables(data.getImportableContentItems());
+            contentImporter.writeHippoContentImportables(data.getImportableContentItems(), isDigital);
         }
     }
 
@@ -125,6 +127,9 @@ public class GossImporter {
         FolderHelper.cleanFolder(Paths.get(ASSET_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(LIVE_CONTENT_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER));
+        FolderHelper.cleanFolder(Paths.get(FOLDERS_TARGET_FOLDER));
+        FolderHelper.cleanFolder(Paths.get(URLREWRITE_CONTENT_TARGET_FOLDER));
+        FolderHelper.cleanFolder(Paths.get(URLREWRITE_DIGITAL_TARGET_FOLDER));
     }
 
 }
