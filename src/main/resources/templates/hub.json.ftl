@@ -3,7 +3,12 @@
 "name" : "${hub.jcrNodeName}",
 "primaryType" : "website:hub",
 "mixinTypes" : [ "mix:versionable", "mix:referenceable" ],
-"properties" : [ {
+"properties" : [  {
+"name" : "website:gossid",
+"type" : "LONG",
+"multiple" : false,
+"values" : [ "${hub.stringId}" ]
+},{
 "name" : "hippotranslation:locale",
 "type" : "STRING",
 "multiple" : false,

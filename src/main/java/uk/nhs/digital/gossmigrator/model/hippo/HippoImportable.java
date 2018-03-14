@@ -112,4 +112,11 @@ public abstract class HippoImportable {
             live = false;
         }
     }
+
+    @SuppressWarnings("unused")
+    public String getStringId(){
+        return id.toString();
+    }
+
+
 }

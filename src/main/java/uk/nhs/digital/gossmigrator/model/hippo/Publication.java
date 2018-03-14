@@ -4,10 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
-import uk.nhs.digital.gossmigrator.model.goss.*;
+import uk.nhs.digital.gossmigrator.model.goss.GossContentMeta;
+import uk.nhs.digital.gossmigrator.model.goss.GossFile;
+import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
+import uk.nhs.digital.gossmigrator.model.goss.GossPublicationContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
-import java.nio.file.Paths;
 import java.util.*;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLATE_FORMAT;
@@ -215,8 +217,8 @@ public class Publication extends HippoImportable {
         return warnings;
     }
 
-
-    private String getPublicationId() {
+    @SuppressWarnings("unused")
+    public String getPublicationId() {
         return publicationId;
     }
 

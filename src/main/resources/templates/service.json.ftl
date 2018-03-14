@@ -4,6 +4,11 @@
 "primaryType" : "website:service",
 "mixinTypes" : [ "mix:referenceable" ],
 "properties" : [ {
+"name" : "website:gossid",
+"type" : "LONG",
+"multiple" : false,
+"values" : [ "${service.stringId}" ]
+},{
 "name" : "hippotranslation:locale",
 "type" : "STRING",
 "multiple" : false,

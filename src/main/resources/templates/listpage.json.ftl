@@ -4,6 +4,11 @@
   "primaryType" : "website:componentlist",
   "mixinTypes" : [ "mix:referenceable" ],
   "properties" : [ {
+  "name" : "website:gossid",
+  "type" : "LONG",
+  "multiple" : false,
+  "values" : [ "${listpage.stringId}" ]
+  },{
     "name" : "website:seosummary",
     "type" : "STRING",
     "multiple" : false,

@@ -4,6 +4,11 @@
 "primaryType" : "website:general",
 "mixinTypes" : [ "mix:versionable", "mix:referenceable" ],
 "properties" : [ {
+"name" : "website:gossid",
+"type" : "LONG",
+"multiple" : false,
+"values" : [ "${general.stringId}" ]
+},{
 "name" : "website:seosummary",
 "type" : "STRING",
 "multiple" : false,
