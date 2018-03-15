@@ -8,12 +8,15 @@ import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.misc.LoopFinder;
+import uk.nhs.digital.gossmigrator.model.goss.GossFile;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
@@ -92,10 +95,11 @@ public class GossImporter {
         writeImportables(digitalData);
         writeImportables(contentData);
 
-        // Assets need to be done after content as only import those referenced
+        // Assets need to be done after digital content as only import those referenced
         // in rich text in content.
         AssetImporter assetImporter = new AssetImporter();
         if(!skipAssets) {
+            copyS3RequiredFiles();
             assetImporter.createAssetHippoImportables();
             int folders = assetImporter.writeHippoAssetImportables();
             for(int i = 0; i <= folders; i++){
@@ -111,6 +115,19 @@ public class GossImporter {
         FolderHelper.zipFolder(URLREWRITE_DIGITAL_TARGET_FOLDER);
         ReportWriter.writeFile();
 
+    }
+
+    private void copyS3RequiredFiles() {
+        for(GossFile file : digitalData.getGossFileMap().values()){
+            if(file.getS3references().size() > 0){
+                try {
+                    Files.createDirectories(Paths.get(Config.S3_TARGET_FOLDER, file.getRelativeFilePathWithoutFileName()));
+                    Files.copy(Paths.get(file.getFilePathOnDisk()), Paths.get(Config.S3_TARGET_FOLDER, file.getRelativeFilePath()));
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage(), e);
+                }
+            }
+        }
     }
 
     private void processGoss(GossProcessedData data){
@@ -142,5 +159,6 @@ public class GossImporter {
         FolderHelper.cleanFolder(Paths.get(FOLDERS_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(URLREWRITE_CONTENT_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(URLREWRITE_DIGITAL_TARGET_FOLDER));
+        FolderHelper.cleanFolder(Paths.get(S3_TARGET_FOLDER));
     }
 }

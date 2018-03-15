@@ -26,13 +26,13 @@ public class ContentImporter {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ContentImporter.class);
 
-    public void populateGossData(GossProcessedData gossData){
-        if(DIGITAL.equals(gossData.getType())){
+    public void populateGossData(GossProcessedData gossData) {
+        if (DIGITAL.equals(gossData.getType())) {
             JSONObject rootJsonObject = readGossExport(Config.GOSS_CONTENT_SOURCE_FILE);
-        gossData.setArticlesContentList(populateGossContent(gossData, rootJsonObject));
-        gossData.setGossLinkMap(populateGossLinks(rootJsonObject));
-        gossData.setGossFileMap(populateGossFiles(rootJsonObject));
-        }else if(CONTENT.equals(gossData.getType())){
+            gossData.setArticlesContentList(populateGossContent(gossData, rootJsonObject));
+            gossData.setGossLinkMap(populateGossLinks(rootJsonObject));
+            gossData.setGossFileMap(populateGossFiles(rootJsonObject));
+        } else if (CONTENT.equals(gossData.getType())) {
             JSONObject rootJsonObject = readGossExport(Config.REDIRECT_CONTENT_SOURCE_FILE);
             gossData.setArticlesContentList(populateGossContent(gossData, rootJsonObject));
         }
@@ -42,14 +42,14 @@ public class ContentImporter {
         Map<Long, GossFile> gossFileMap = new HashMap<>();
         LOGGER.debug("Begin populating GossLink objects.");
         JSONArray jsonArray = (JSONArray) rootJsonObject.get("media");
-        if(null != jsonArray) {
+        if (null != jsonArray) {
             for (Object childJsonObject : jsonArray) {
                 GossFile file = new GossFile((JSONObject) childJsonObject);
-                if(!file.isNotLiveLink()) {
+                if (!file.isNotLiveLink()) {
                     gossFileMap.put(file.getId(), file);
                 }
             }
-        }else{
+        } else {
             LOGGER.error("Could not read 'media' node.");
         }
         return gossFileMap;
@@ -59,12 +59,12 @@ public class ContentImporter {
         Map<Long, GossLink> gossLinkMap = new HashMap<>();
         LOGGER.debug("Begin populating GossLink objects.");
         JSONArray jsonArray = (JSONArray) rootJsonObject.get("links");
-        if(null != jsonArray) {
+        if (null != jsonArray) {
             for (Object childJsonObject : jsonArray) {
                 GossLink link = new GossLink((JSONObject) childJsonObject);
                 gossLinkMap.put(link.getId(), link);
             }
-        }else{
+        } else {
             LOGGER.error("Could not read 'links' node.");
         }
         return gossLinkMap;
@@ -117,7 +117,7 @@ public class ContentImporter {
         long count = 0;
         for (Object childJsonObject : jsonArray) {
             GossContent content = GossContentFactory.generateGossContent(data, (JSONObject) childJsonObject, ++count);
-            if(content != null){
+            if (content != null) {
                 gossContentList.add(content);
             }
         }

@@ -48,7 +48,6 @@ public abstract class HippoImportable {
         return localizedName;
     }
 
-
     @SuppressWarnings("unused") // Used by template.
     public String getJcrNodeName() {
         return jcrNodeName;

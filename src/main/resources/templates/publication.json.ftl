@@ -218,7 +218,7 @@
 <#list publication.files as file>
 {
 "name" : "publicationsystem:Attachments-v3",
-"primaryType" : "publicationsystem:attachment",
+"primaryType" : "publicationsystem:extattachment",
 "mixinTypes" : [ ],
 "properties" : [ {
 "name" : "publicationsystem:displayName",
@@ -228,34 +228,45 @@
 } ],
 "nodes" : [ {
 "name" : "publicationsystem:attachmentResource",
-"primaryType" : "publicationsystem:resource",
+"primaryType" : "externalstorage:resource",
 "mixinTypes" : [ ],
 "properties" : [ {
 "name" : "jcr:encoding",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${file.jrcEncoding}" ]
+"values" : [ "UTF-8" ]
 }, {
 "name" : "jcr:lastModified",
 "type" : "DATE",
 "multiple" : false,
-"values" : [ "${file.lastModified}" ]
-}, {
-"name" : "jcr:data",
-"type" : "BINARY",
-"multiple" : false,
-"values" : [ "${file.data}" ]
+"values" : [ "${file.lastModifiedDate}" ]
 }, {
 "name" : "jcr:mimeType",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "text/csv" ]
+"values" : [ "${file.mimeType}" ]
 }, {
 "name" : "hippo:filename",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${file.fileName}" ]
-} ],
+"values" : [ "hippo:resource" ]
+}, {
+"name" : "externalstorage:reference",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${file.s3ExternalStorageRef}" ]
+}, {
+"name" : "externalstorage:size",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${file.fileSize}" ]
+}, {
+"name" : "externalstorage:url",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${file.s3Url}" ]
+}
+],
 "nodes" : [ ]
 } ]
 }<#sep>, </#sep></#list></#if>

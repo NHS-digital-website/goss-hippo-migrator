@@ -22,7 +22,7 @@ public class GossFile {
     private String pathInGossExport;
     private String jcrPath;
     private String filePathOnDisk;
-    // Expecting to use next in reporting.
+    private String relativeFilePath;
 
     private Set<Long> references = new HashSet<>();
     // Expecting to use next in reporting.
@@ -34,6 +34,7 @@ public class GossFile {
     private boolean notLiveLink = false;
     private List<String> warnings = new ArrayList<>();
     private long size;
+    private Set<Long> s3references = new HashSet<>();
 
     public GossFile(JSONObject fileJson) {
         id = GossExportHelper.getIdOrError(fileJson, FILE_ID);
@@ -49,13 +50,6 @@ public class GossFile {
             break;
         }
 
-        // Skip any media not with live path.  The export has 2 links for most files.
-        if (pathInGossExport.contains(Config.IGNORE_MEDIA_WITH_PATH_PART)) {
-            LOGGER.info("Ignoring Goss Media Link:, {}", id, pathInGossExport);
-            notLiveLink = true;
-            return;
-        }
-
         mediaDirectory = GossExportHelper.getString(fileJson, MEDIA_DIRECTORY, id);
         setPathOnDiskAndJcrPath();
 
@@ -64,7 +58,9 @@ public class GossFile {
 
     private void setPathOnDiskAndJcrPath() {
         String fileSourceFolder = Config.ASSET_SOURCE_FOLDER;
-        String rootFolder = Config.ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT;
+        // There is a live and pre-prod root folder.
+        // The pre-prod one is used for unpublished publications.
+        String[] rootFolders = Config.ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT.split(",");
 
         // Split goss path on node that starts to match what is stored on local disk.
         // e.g. goss might be /inetpub/export/content/media/folder1/folder2/a.pdf
@@ -76,24 +72,29 @@ public class GossFile {
         fileName = p.getFileName().toString();
         boolean foundRootPath = false;
         for (Path part : p) {
-            if (part.toString().equals(rootFolder)) {
-                foundRootPath = true;
-                break;
+            for(String s : rootFolders) {
+                if (part.toString().equals(s)) {
+                    foundRootPath = true;
+                    break;
+                }
             }
             rootPartId++;
+            if(foundRootPath) break;
         }
+
         // Strip off prefix.
         if (foundRootPath) {
-            p = p.subpath(rootPartId + 1, p.getNameCount());
-         //   p = p.subpath(0, p.getNameCount() - 1);
+            p = p.subpath(rootPartId, p.getNameCount());
         } else {
             p = Paths.get(mediaDirectory, p.toString());
         }
 
+        relativeFilePath = p.toString().toLowerCase();
+
         if (GossExportHelper.isImage(fileName)) {
-            jcrPath = Paths.get(Config.JCR_GALLERY_ROOT, p.toString().toLowerCase()).toString();
+            jcrPath = Paths.get(Config.JCR_GALLERY_ROOT, relativeFilePath).toString();
         } else {
-            jcrPath = Paths.get(Config.JCR_ASSET_ROOT, p.toString().toLowerCase()).toString();
+            jcrPath = Paths.get(Config.JCR_ASSET_ROOT, relativeFilePath).toString();
         }
 
         // Check source file exists
@@ -113,12 +114,19 @@ public class GossFile {
         return id;
     }
 
-    public String getJcrPath(Long articleId) {
+    public void addReference(Long articleId){
         references.add(articleId);
-        return jcrPath;
+    }
+
+    public void addS3Reference(Long articleId){
+        s3references.add(articleId);
     }
 
     public String getJcrPath() {
+        if(references.size() == 0){
+            LOGGER.error("Using a file with no article references.  " +
+                    "It will not be imported as an asset unless reference added. Media id:{}", id);
+        }
         return jcrPath;
     }
 
@@ -148,5 +156,17 @@ public class GossFile {
 
     public long getSize() {
         return size;
+    }
+
+    public Set<Long> getS3references() {
+        return s3references;
+    }
+
+    public String getRelativeFilePath() {
+        return relativeFilePath;
+    }
+
+    public String getRelativeFilePathWithoutFileName(){
+        return Paths.get(relativeFilePath).subpath(0, Paths.get(relativeFilePath).getNameCount() - 1).toString();
     }
 }

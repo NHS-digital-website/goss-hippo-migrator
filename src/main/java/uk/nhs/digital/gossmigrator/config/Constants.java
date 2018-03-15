@@ -16,5 +16,6 @@ public interface Constants {
         String ZIP_FILE_NAME = "import-package.zip";
         String JSON_DIR = "exim";
         String ASSET_DIR = "attachments";
+        String S3_ROOT_FOLDER = "legacy";
     }
 }

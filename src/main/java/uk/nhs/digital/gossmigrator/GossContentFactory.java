@@ -14,7 +14,7 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.DIGITA
 public class GossContentFactory {
 
     /*
-     * Factory method to populate Publications and Services.
+     * Factory method to populate Goss content.
      */
     public static GossContent generateGossContent(GossProcessedData data, JSONObject gossJson, long gossExportFileLine){
         GossContent content = null;

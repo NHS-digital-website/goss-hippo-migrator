@@ -22,7 +22,7 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.GossMetaType.*;
 
 public class GossPublicationContent extends GossContent {
 
-    private List<GossFile> files = new ArrayList<>();
+    private List<Long> files = new ArrayList<>();
 
     private GossPublicationContent(JSONObject gossJson, long gossExportFileLine) {
         super(gossJson, gossExportFileLine, ContentType.PUBLICATION);
@@ -31,8 +31,7 @@ public class GossPublicationContent extends GossContent {
         JSONArray filesJson = (JSONArray) gossJson.get(MEDIA.getName());
         if (null != filesJson) {
             for (Object fileObject : filesJson) {
-                GossFile file = new GossFile((JSONObject) fileObject);
-                files.add(file);
+                files.add(GossExportHelper.getIdOrError((JSONObject) fileObject, FILE_ID));
             }
         }
     }
@@ -77,7 +76,7 @@ public class GossPublicationContent extends GossContent {
         return displayDate;
     }
 
-    public List<GossFile> getFiles() {
+    public List<Long> getFiles() {
         return files;
     }
 

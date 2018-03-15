@@ -121,7 +121,8 @@ public class HippoRichText {
                         String docName = "Linkref" + referenceKey + "-" + i;
                         Element newLink = new Element("a").text(linkText).attr("href", docName);
                         link.replaceWith(newLink);
-                        docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
+                        fileLink.addReference(gossArticleId);
+                        docReferences.add(new HippoLinkRef(fileLink.getJcrPath(), docName));
                     }
                     break;
                 }
@@ -140,7 +141,8 @@ public class HippoRichText {
                                 .attr("src", docName + "/{_document}/hippogallery:original");
                         link.replaceWith(newLink);
 
-                        docReferences.add(new HippoLinkRef(fileLink.getJcrPath(gossArticleId), docName));
+                        fileLink.addReference(gossArticleId);
+                        docReferences.add(new HippoLinkRef(fileLink.getJcrPath(), docName));
                     }
                     break;
                 }

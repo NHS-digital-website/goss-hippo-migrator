@@ -18,6 +18,7 @@ public class Config {
 
 
     enum PropertiesEnum {
+        S3_ROOT_URL_PROP("s3.root.url", "e.g. https://files.dev.a.b/afolder/bfolder/", true, ""),
         JCR_ASSET_ROOT_PROP("jcr.asset.root", "Root jcr path to assets. e.g. /content/assets/", false, "/content/assets/goss-legacy/"),
         JCR_SERVICE_DOC_ROOT_PROP("jcr.service.doc.root", "Root jcr path to services. e.g. /content/documents/corporate-website/service/", false, "/content/documents/corporate-website/systems-and-services/"),
         ASSET_SOURCE_FOLDER_PROP("assets.source.folder", "File system folder holding assets to process.", true, ""),
@@ -26,9 +27,8 @@ public class Config {
         REDIRECT_CONTENT_SOURCE_FILE_PROP("redirect.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/documents/corporate-website/", false, "/content/documents/corporate-website/publication-system/statistical/"),
         SPLIT_ASSET_PATH_ON("split.asset.path.on", "For file nodes in goss export there is a path.  " +
-                "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media"),
+                "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media,pre-prod-media"),
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/goss-legacy/"),
-        IGNORE_MEDIA_WITH_PATH_PART_PROP("ignore.assets.with.path.containing", "If media path contains this ignore it.", false, "pre-prod-media"),
         CONFIG_FOLDER_PROP("config.folder", "Folder containing mamppings and properties files", true, ""),
         JCR_GENERAL_ROOT_PROP("jcr.general.root", "JCR path to general root.", false, "/content/documents/corporate-website/"),
         MAX_ASSETS_SIZE_PER_ZIP_MB_PROP("max.assets.size.per.zip", "Max size in Mb.", false, "1024"),
@@ -68,7 +68,6 @@ public class Config {
         }
     }
 
-    private static String TARGET_FOLDER_ROOT;
     public static String JCR_ASSET_ROOT;
     public static String JCR_SERVICE_DOC_ROOT;
     public static String JCR_GALLERY_ROOT;
@@ -89,7 +88,6 @@ public class Config {
     public static String METADATA_MAPPING_FILE;
     public static String ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT;
     public static String TAXONOMY_MAPPING_FILE;
-    public static String IGNORE_MEDIA_WITH_PATH_PART;
     public static String DOCUMENT_TYPE_MAPPING_FILE;
     public static String GOSS_HIPPO_MAPPING_FILE;
     public static String GENERAL_TYPE_MAPPING_FILE;
@@ -97,15 +95,17 @@ public class Config {
     public static long MAX_ASSET_SIZE_MB_IN_ZIP;
     public static Boolean SKIP_DIGITAL;
     public static Boolean SKIP_CONTENT;
+    public static String S3_ROOT_URL;
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
         String CONFIG_FOLDER = getConfig(CONFIG_FOLDER_PROP, propertiesMap);
+        String TARGET_FOLDER_ROOT = getConfig(TARGET_FOLDER_PROP, propertiesMap);
+
         JCR_ASSET_ROOT = getConfig(JCR_ASSET_ROOT_PROP, propertiesMap);
         JCR_SERVICE_DOC_ROOT = getConfig(JCR_SERVICE_DOC_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER = getConfig(ASSET_SOURCE_FOLDER_PROP, propertiesMap);
         GOSS_CONTENT_SOURCE_FILE = getConfig(GOSS_CONTENT_SOURCE_FILE_PROP, propertiesMap);
-        TARGET_FOLDER_ROOT = getConfig(TARGET_FOLDER_PROP, propertiesMap);
         ASSET_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "assets").toString();
         CONTENT_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "content").toString();
         LIVE_CONTENT_TARGET_FOLDER = Paths.get(CONTENT_TARGET_FOLDER, "live").toString();
@@ -114,11 +114,10 @@ public class Config {
         FOLDERS_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "folders").toString();
         URLREWRITE_CONTENT_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "urls", "content").toString();
         URLREWRITE_DIGITAL_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "urls", "digital").toString();
-        S3_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "s3", "legacy").toString();
+        S3_TARGET_FOLDER = Paths.get(TARGET_FOLDER_ROOT, "s3").toString();
         JCR_PUBLICATION_ROOT = getConfig(JCR_PUBLICATION_ROOT_PROP, propertiesMap);
         ASSET_SOURCE_FOLDER_IN_GOSS_EXPORT = getConfig(SPLIT_ASSET_PATH_ON, propertiesMap);
         JCR_GALLERY_ROOT = getConfig(JCR_GALLERY_ROOT_PROP, propertiesMap);
-        IGNORE_MEDIA_WITH_PATH_PART = getConfig(IGNORE_MEDIA_WITH_PATH_PART_PROP, propertiesMap);
         GOSS_HIPPO_MAPPING_FILE = CONFIG_FOLDER.concat(PUB_SERIES_FILE);
         METADATA_MAPPING_FILE = CONFIG_FOLDER.concat(METADATA_FILE);
         DOCUMENT_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(DOC_TYPE_FILE);
@@ -131,6 +130,7 @@ public class Config {
         JCR_REDIRECT_ROOT = getConfig(JCR_DIRECT_ROOT_PROP, propertiesMap);
         SKIP_DIGITAL = Boolean.parseBoolean(getConfig(SKIP_DIGITAL_PROP, propertiesMap));
         SKIP_CONTENT = Boolean.parseBoolean(getConfig(SKIP_CONTENT_PROP, propertiesMap));
+        S3_ROOT_URL = getConfig(S3_ROOT_URL_PROP, propertiesMap);
 
         // Check all properties in file are expected
         for (String property : propertiesMap.stringPropertyNames()) {

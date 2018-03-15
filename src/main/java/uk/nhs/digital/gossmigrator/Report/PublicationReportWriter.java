@@ -2,7 +2,7 @@ package uk.nhs.digital.gossmigrator.Report;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
-import uk.nhs.digital.gossmigrator.model.hippo.HippoFile;
+import uk.nhs.digital.gossmigrator.model.hippo.S3File;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoLink;
 import uk.nhs.digital.gossmigrator.model.hippo.Publication;
 
@@ -65,20 +65,20 @@ public class PublicationReportWriter {
         row.createCell(4).setCellValue("Success");
     }
 
-    public static void addPublicationFileRow(Long publicationId, HippoFile file){
+    public static void addPublicationFileRow(Long publicationId, S3File file){
 
         HSSFSheet sheet = report.getSheet("Publication Files");
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
         row.createCell(0).setCellValue(publicationId);
         row.createCell(1).setCellValue(file.getId());
-        row.createCell(2).setCellValue(file.getFileName());
+        row.createCell(2).setCellValue(file.getLocalizedName());
         row.createCell(3).setCellValue(file.getMimeType());
         if(file.getWarnings().isEmpty()){
             row.createCell(4).setCellValue("Success");
         }else{
             row.createCell(4).setCellValue("Warnings");
             for(String warning: file.getWarnings()){
-                WarningsReportWriter.addWarningRow("File", file.getId(), file.getFileName(), warning);
+                WarningsReportWriter.addWarningRow("File", file.getId(), file.getLocalizedName(), warning);
             }
         }
     }

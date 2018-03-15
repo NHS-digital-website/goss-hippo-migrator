@@ -18,7 +18,7 @@ public class ArticleFinder {
         for (Long id : articleId) {
             GossContent article = digitalData.getArticlesContentList().getById(id);
             if (null == article) {
-                LOGGER.error("Could not find article, id:{}, Context{}, Processing article:{}", id, context, parentId);
+                LOGGER.error("Could not find article, id:{}, Context {}, Processing article:{}", id, context, parentId);
             } else {
                 result.add(article.getJcrPath());
             }

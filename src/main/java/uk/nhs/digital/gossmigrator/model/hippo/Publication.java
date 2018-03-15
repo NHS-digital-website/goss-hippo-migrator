@@ -2,6 +2,7 @@ package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
 import uk.nhs.digital.gossmigrator.misc.GeoCoverageHelper;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
@@ -11,6 +12,7 @@ import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 import uk.nhs.digital.gossmigrator.model.goss.GossPublicationContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
+import java.nio.file.Paths;
 import java.util.*;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLATE_FORMAT;
@@ -29,7 +31,7 @@ public class Publication extends HippoImportable {
     private final String granuality;
     private List<HippoLink> relatedLinks;
     private List<HippoLink> resourceLinks;
-    private List<HippoFile> files = new ArrayList<>();
+    private List<S3File> files = new ArrayList<>();
     private String publicationId;
     private List<String> geoCoverageList;
 
@@ -98,22 +100,22 @@ public class Publication extends HippoImportable {
         for (GossContentMeta metaData : metadataList) {
             String gossValue = metaData.getValue();
             List<String> hippoValues = gossData.getTaxonomyMap().get(gossValue);
-                for (String hippoValue : hippoValues) {
-                    if (hippoValue != null && !hippoValue.isEmpty()) {
-                        List<String> valueList = new ArrayList<>();
-                        String[] values = hippoValue.split("-");
-                        for (String s : values) {
-                            valueList.add(s.toLowerCase().replace(' ', '-'));
-                        }
-
-                        hippoUniqueKeys.add(valueList.get(valueList.size() - 1));
-                        fullTaxonomy.addAll(valueList);
-                    } else {
-                        LOGGER.warn("No matching taxonomy found.  ArticleId:{}. GossCategory:{}."
-                                , id, gossValue);
-                        warnings.add("No matching taxonomy found. Goss Category: " + gossValue);
+            for (String hippoValue : hippoValues) {
+                if (hippoValue != null && !hippoValue.isEmpty()) {
+                    List<String> valueList = new ArrayList<>();
+                    String[] values = hippoValue.split("-");
+                    for (String s : values) {
+                        valueList.add(s.toLowerCase().replace(' ', '-'));
                     }
+
+                    hippoUniqueKeys.add(valueList.get(valueList.size() - 1));
+                    fullTaxonomy.addAll(valueList);
+                } else {
+                    LOGGER.warn("No matching taxonomy found.  ArticleId:{}. GossCategory:{}."
+                            , id, gossValue);
+                    warnings.add("No matching taxonomy found. Goss Category: " + gossValue);
                 }
+            }
         }
         taxonomyKeys.addAll(hippoUniqueKeys);
     }
@@ -128,18 +130,20 @@ public class Publication extends HippoImportable {
         this.relatedLinks = parsedArticleLinks.getRelatedLinks();
         this.resourceLinks = parsedArticleLinks.getResourceLinks();
 
-        for(HippoLink link : relatedLinks){
+        for (HippoLink link : relatedLinks) {
             PublicationReportWriter.addPublicationLinkRow(this.getId(), "Related Link", link);
         }
-        for(HippoLink link : resourceLinks){
+        for (HippoLink link : resourceLinks) {
             PublicationReportWriter.addPublicationLinkRow(this.getId(), "Resource Link", link);
         }
 
-        List<GossFile> gossFiles = gossContent.getFiles();
-        for(GossFile gossFile: gossFiles){
-            HippoFile hippoFile = new HippoFile(gossContent,gossFile);
-            files.add(hippoFile);
-            PublicationReportWriter.addPublicationFileRow(this.getId(), hippoFile);
+        for (Long mediaId : gossContent.getFiles()) {
+            GossFile mediaFile = GossImporter.digitalData.getGossFileMap().get(mediaId);
+            mediaFile.addS3Reference(id);
+
+            S3File s3File = new S3File(mediaFile);
+            files.add(s3File);
+            PublicationReportWriter.addPublicationFileRow(this.getId(), s3File);
         }
     }
 
@@ -204,10 +208,8 @@ public class Publication extends HippoImportable {
         return resourceLinks;
     }
 
-    public List<HippoFile> getFiles() {
-        // TODO put files back when know RPS solution!
-        //return files;
-        return null;
+    public List<S3File> getFiles() {
+        return files;
     }
 
     public List<String> getWarnings() {
