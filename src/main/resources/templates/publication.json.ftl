@@ -93,7 +93,7 @@
 ],
 "nodes" : [
 <#assign firstNode = true>
-<#if publication.summary??>
+<#if publication.publicationSummary??>
 <#if firstNode==false> , <#else><#assign firstNode=false></#if>
 {
 "name" : "publicationsystem:Summary",
@@ -103,9 +103,9 @@
 "name" : "hippostd:content",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${publication.summary.content}" ]
+"values" : [ "${publication.publicationSummary.content}" ]
 }],
-  "nodes" : [ <#list publication.summary.docReferences as refs> {
+  "nodes" : [ <#list publication.publicationSummary.docReferences as refs> {
   "name" : "${refs.nodeName}",
   "primaryType" : "hippo:facetselect",
   "mixinTypes" : [ ],

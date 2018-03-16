@@ -17,7 +17,7 @@ import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLA
 public class Publication extends HippoImportable {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Publication.class);
-    private HippoRichText summary;
+    private HippoRichText publicationSummary;
     private final String informationType;
     private final HippoRichText keyFacts;
     private final String coverageStart;
@@ -59,7 +59,7 @@ public class Publication extends HippoImportable {
 
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.PUBLICATION);
         keyFacts = parsedArticleText.getKeyFacts();
-        summary = parsedArticleText.getDefaultNode();
+        publicationSummary = parsedArticleText.getDefaultNode();
         geographicCoverage = gossContent.getGeographicalData();
         granuality = gossContent.getGranularity();
         informationType = gossContent.getInformationTypes();
@@ -222,4 +222,8 @@ public class Publication extends HippoImportable {
         return publicationId;
     }
 
+    @SuppressWarnings("unused") // Used in template
+    public HippoRichText getPublicationSummary() {
+        return publicationSummary;
+    }
 }

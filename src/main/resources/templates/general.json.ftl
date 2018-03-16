@@ -47,7 +47,7 @@
 "name" : "jcr:localizedName",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "${general.jcrNodeName}" ]
+"values" : [ "${general.localizedName}" ]
 },{
 "name" : "website:type",
 "type" : "STRING",
