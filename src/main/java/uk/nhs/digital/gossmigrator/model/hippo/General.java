@@ -29,7 +29,7 @@ public class General extends HippoImportable {
     }
 
     /*
-     * Factory method to generate a Service instance
+     * Factory method to generate an instance
      */
     public static General getInstance(GossGeneralContent gossContent) {
         return new General(gossContent);

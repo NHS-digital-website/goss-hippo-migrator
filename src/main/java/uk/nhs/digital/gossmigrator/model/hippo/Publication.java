@@ -12,7 +12,6 @@ import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 import uk.nhs.digital.gossmigrator.model.goss.GossPublicationContent;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 
-import java.nio.file.Paths;
 import java.util.*;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.DateFormatEnum.TEMPLATE_FORMAT;
