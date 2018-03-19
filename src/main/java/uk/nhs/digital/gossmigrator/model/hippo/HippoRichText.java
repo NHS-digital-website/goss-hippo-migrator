@@ -13,7 +13,10 @@ import uk.nhs.digital.gossmigrator.model.goss.GossFile;
 import uk.nhs.digital.gossmigrator.model.goss.GossLink;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossInternalLinkType;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * POJO to populate hippo rich text elements in hippo EXIM templates.
@@ -86,7 +89,7 @@ public class HippoRichText {
             i++;
             String linkTypeId = link.attributes().get("data-icm-inlinetypeid");
             String referenceId = link.attributes().get("data-icm-arg2");
-            String linkText = link.attributes().get("data-icm-arg2name");
+            String linkText = link.attributes().get("data-icm-arg4");
             Long referenceKey = null;
             if (null != referenceId) {
                 if (StringUtils.isNumeric(referenceId)) {
