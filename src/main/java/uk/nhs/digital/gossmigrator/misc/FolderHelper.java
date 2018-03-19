@@ -105,4 +105,16 @@ public class FolderHelper {
             }
         }
     }
+
+    public static void makeDummyDataBinFile(String parentDirectory){
+        Path folderToCreate = Paths.get(parentDirectory, "attachments");
+        Path fileToCreate = Paths.get(parentDirectory,"attachments", "data.bin");
+        byte[] emptyContent = "".getBytes();
+        try {
+            Files.createDirectories(folderToCreate);
+            Files.write(fileToCreate, emptyContent);
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 }

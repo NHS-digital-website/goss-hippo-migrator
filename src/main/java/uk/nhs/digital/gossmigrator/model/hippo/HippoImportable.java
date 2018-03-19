@@ -116,6 +116,4 @@ public abstract class HippoImportable {
     public String getStringId(){
         return id.toString();
     }
-
-
 }

@@ -236,6 +236,11 @@
 "multiple" : false,
 "values" : [ "UTF-8" ]
 }, {
+"name": "jcr:data",
+"type": "BINARY",
+"multiple": false,
+"values": ["file://{IMPORT_PACKAGE_ATTACHMENTS_LOCATION}//data.bin"]
+}, {
 "name" : "jcr:lastModified",
 "type" : "DATE",
 "multiple" : false,
@@ -249,7 +254,7 @@
 "name" : "hippo:filename",
 "type" : "STRING",
 "multiple" : false,
-"values" : [ "hippo:resource" ]
+"values" : [ "${file.fileName}" ]
 }, {
 "name" : "externalstorage:reference",
 "type" : "STRING",
@@ -257,9 +262,9 @@
 "values" : [ "${file.s3ExternalStorageRef}" ]
 }, {
 "name" : "externalstorage:size",
-"type" : "STRING",
+"type" : "LONG",
 "multiple" : false,
-"values" : [ "${file.fileSize}" ]
+"values" : [ "${file.fileSize?c}" ]
 }, {
 "name" : "externalstorage:url",
 "type" : "STRING",

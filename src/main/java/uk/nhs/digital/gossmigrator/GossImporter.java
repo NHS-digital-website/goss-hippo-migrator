@@ -76,6 +76,10 @@ public class GossImporter {
 
         cleanOutputFolders();
 
+        // Need an empty file in each content folder for publication external assets to work.
+        FolderHelper.makeDummyDataBinFile(Config.LIVE_CONTENT_TARGET_FOLDER);
+        FolderHelper.makeDummyDataBinFile(Config.NON_LIVE_CONTENT_TARGET_FOLDER);
+
         ReportWriter.generateReport();
 
         SeriesImporter seriesImporter = new SeriesImporter();

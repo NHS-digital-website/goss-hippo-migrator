@@ -33,4 +33,9 @@ public class S3File extends FileImportable {
     public String getDisplayName() {
         return displayName;
     }
+
+    @SuppressWarnings("unused") // Used in template
+    public String getFileName(){
+        return Paths.get(getS3ExternalStorageRef()).getFileName().toString();
+    }
 }
