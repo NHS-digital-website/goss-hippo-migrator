@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
+import uk.nhs.digital.gossmigrator.misc.LoopFinder;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile;
@@ -27,9 +28,10 @@ public class GossImporter {
     public static MetadataMappingItems metadataMapping = new MetadataMappingItems();
 
     public static GossProcessedData digitalData = new GossProcessedData(GossSourceFile.DIGITAL);
-    private static GossProcessedData contentData = new GossProcessedData(CONTENT);
+    public static GossProcessedData contentData = new GossProcessedData(CONTENT);
     public static HSSFWorkbook report = new HSSFWorkbook();
-    private static boolean skipAssets = false;
+    private static boolean skipAssets = true;
+    private ContentImporter contentImporter = new ContentImporter();
 
     public static void main(String[] args) throws Exception {
 
@@ -85,8 +87,10 @@ public class GossImporter {
         digitalData.setGeneralDocumentTypeMap(typeImporter.populateGeneralContentTypes());
         digitalData.setIgnoredTemplateIdsList(typeImporter.populateIgnoredTemplateIds());
 
-        processGoss(digitalData, true);
-        processGoss(contentData, false);
+        processGoss(digitalData);
+        processGoss(contentData);
+        writeImportables(digitalData);
+        writeImportables(contentData);
 
         // Assets need to be done after content as only import those referenced
         // in rich text in content.
@@ -109,16 +113,24 @@ public class GossImporter {
 
     }
 
-    private void processGoss(GossProcessedData data, boolean isDigital){
-        ContentImporter contentImporter = new ContentImporter();
+    private void processGoss(GossProcessedData data){
         contentImporter.populateGossData(data);
         data.getArticlesContentList().generateJcrStructure();
 
         HippoImportableFactory factory = new HippoImportableFactory();
         data.setImportableContentItems(factory.populateHippoContent(data));
 
+    }
+
+    private void writeImportables(GossProcessedData data){
+        data = LoopFinder.removeRedirectLoops(data);
+
         if((DIGITAL.equals(data.getType()) && !SKIP_DIGITAL)
                 || (CONTENT.equals(data.getType()) && !SKIP_CONTENT)){
+            boolean isDigital = false;
+            if (DIGITAL.equals(data.getType())) {
+                isDigital = true;
+            }
             contentImporter.writeHippoContentImportables(data.getImportableContentItems(), isDigital);
         }
     }
