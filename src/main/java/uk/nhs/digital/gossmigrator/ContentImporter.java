@@ -7,7 +7,6 @@ import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
-import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.misc.GossContentFilter;
 import uk.nhs.digital.gossmigrator.model.goss.*;
 import uk.nhs.digital.gossmigrator.model.hippo.HippoImportable;
@@ -20,8 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static uk.nhs.digital.gossmigrator.config.Config.*;
-import static uk.nhs.digital.gossmigrator.config.Constants.OUTPUT_FILE_TYPE_SUFFIX;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.CONTENT;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.DIGITAL;
 

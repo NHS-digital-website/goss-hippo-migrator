@@ -143,5 +143,4 @@ public class GossImporter {
         FolderHelper.cleanFolder(Paths.get(URLREWRITE_CONTENT_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(URLREWRITE_DIGITAL_TARGET_FOLDER));
     }
-
 }

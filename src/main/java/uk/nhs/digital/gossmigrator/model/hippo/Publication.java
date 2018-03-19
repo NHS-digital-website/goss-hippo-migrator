@@ -31,6 +31,7 @@ public class Publication extends HippoImportable {
     private List<HippoLink> resourceLinks;
     private List<HippoFile> files = new ArrayList<>();
     private String publicationId;
+    private GeoCoverage geoCoverage = new GeoCoverage();
 
     public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
@@ -61,6 +62,10 @@ public class Publication extends HippoImportable {
         keyFacts = parsedArticleText.getKeyFacts();
         publicationSummary = parsedArticleText.getDefaultNode();
         geographicCoverage = gossContent.getGeographicalData();
+
+        //TODO complete geoCoverage mapping
+        geoCoverage.setCoverage(gossContent.getGeographicalData());
+
         granuality = gossContent.getGranularity();
         informationType = gossContent.getInformationTypes();
 
@@ -225,5 +230,10 @@ public class Publication extends HippoImportable {
     @SuppressWarnings("unused") // Used in template
     public HippoRichText getPublicationSummary() {
         return publicationSummary;
+    }
+
+    @SuppressWarnings("unused") // Used in template
+    public GeoCoverage getGeoCoverage() {
+        return geoCoverage;
     }
 }
