@@ -58,7 +58,7 @@ public class Publication extends HippoImportable {
         Date startDate = gossContent.getExtra().getCoverageStart();
         coverageStart = GossExportHelper.getDateString(startDate, TEMPLATE_FORMAT);
 
-        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.PUBLICATION);
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getTemplateId(), gossContent.getText(), ContentType.PUBLICATION);
         keyFacts = parsedArticleText.getKeyFacts();
         publicationSummary = parsedArticleText.getDefaultNode();
         geographicCoverage = gossContent.getGeographicalData();
@@ -127,7 +127,7 @@ public class Publication extends HippoImportable {
      * @param gossContent, the goss extract with the publication to be processed
      */
     private void setFilesAndLinks(GossPublicationContent gossContent){
-        ParsedArticleLinks parsedArticleLinks = new ParsedArticleLinks(id, gossContent.getText());
+        ParsedArticleLinks parsedArticleLinks = new ParsedArticleLinks(id, gossContent.getTemplateId(), gossContent.getText());
         this.relatedLinks = parsedArticleLinks.getRelatedLinks();
         this.resourceLinks = parsedArticleLinks.getResourceLinks();
 

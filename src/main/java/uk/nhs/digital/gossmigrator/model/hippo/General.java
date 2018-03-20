@@ -23,7 +23,7 @@ public class General extends HippoImportable {
         shortSummary = TextHelper.escapeForJson(gossContent.getSummary());
 
 
-        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.HUB);
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getTemplateId(), gossContent.getText(), ContentType.HUB);
         sections = parsedArticleText.getSections();
         component = parsedArticleText.getComponent();
     }

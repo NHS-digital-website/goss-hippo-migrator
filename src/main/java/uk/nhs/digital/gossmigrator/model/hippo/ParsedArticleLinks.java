@@ -15,8 +15,8 @@ public class ParsedArticleLinks extends ParsedArticle{
     private List<HippoLink> relatedLinks;
     private List<HippoLink> resourceLinks;
 
-    ParsedArticleLinks(long gossId, String gossArticleText) {
-        super(gossId, gossArticleText);
+    ParsedArticleLinks(long gossId, long templateId, String gossArticleText) {
+        super(gossId, templateId, gossArticleText);
 
         resourceLinks = extractLinks(RESOURCE_LINKS, body);
         relatedLinks = extractLinks(RELATED_LINKS, body);

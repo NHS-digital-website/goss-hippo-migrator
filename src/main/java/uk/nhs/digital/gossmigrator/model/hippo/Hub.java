@@ -26,7 +26,7 @@ public class Hub extends HippoImportable {
         summary = TextHelper.escapeForJson(gossContent.getIntroduction());
         shortSummary = TextHelper.escapeForJson(gossContent.getSummary());
 
-        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.HUB);
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getTemplateId(), gossContent.getText(), ContentType.HUB);
         body = parsedArticleText.getDefaultNode();
         componentPaths = ArticleFinder.findArticlePathsByArticleId(
                 gossContent.getExtra().getComponentIds(), "Getting components.", id);

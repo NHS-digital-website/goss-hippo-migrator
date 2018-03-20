@@ -9,7 +9,6 @@ import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.misc.LoopFinder;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
-
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
 
@@ -30,6 +29,7 @@ public class GossImporter {
     public static GossProcessedData digitalData = new GossProcessedData(GossSourceFile.DIGITAL);
     public static GossProcessedData contentData = new GossProcessedData(CONTENT);
     public static HSSFWorkbook report = new HSSFWorkbook();
+    public static HSSFWorkbook iframeReport = new HSSFWorkbook();
     private static boolean skipAssets = true;
     private ContentImporter contentImporter = new ContentImporter();
 

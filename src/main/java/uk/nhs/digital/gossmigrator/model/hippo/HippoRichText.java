@@ -6,6 +6,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
+import uk.nhs.digital.gossmigrator.Report.IframeReport;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossFile;
@@ -26,10 +27,12 @@ public class HippoRichText {
 
     private String content;
     private long gossArticleId;
+    private long templateId;
     private Set<HippoLinkRef> docReferences = new HashSet<>();
 
-    HippoRichText(String html, long gossArticleId) {
+    HippoRichText(String html, long gossArticleId, long templateId) {
         this.gossArticleId = gossArticleId;
+        this.templateId = templateId;
         this.content = parseContent(html);
     }
 
@@ -152,6 +155,7 @@ public class HippoRichText {
                     for (Element iframe : iframes) {
                         if (iframe.attr("frameborder") != null) {
                             iframe.attr("frameborder", "0");
+                            IframeReport.addIframeRow(gossArticleId, templateId, iframe.toString(), iframe.attr("src"));
                         }
                     }
                     link.remove();
@@ -202,4 +206,5 @@ public class HippoRichText {
         }
         return source;
     }
+
 }

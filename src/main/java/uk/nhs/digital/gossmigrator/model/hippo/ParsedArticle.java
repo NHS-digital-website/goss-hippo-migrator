@@ -8,11 +8,13 @@ import org.jsoup.nodes.Element;
 class ParsedArticle {
 
     long gossId;
+    long templateId;
     Element body;
 
-    ParsedArticle(long gossId, String gossArticleText) {
+    ParsedArticle(long gossId, long templateId, String gossArticleText) {
 
         this.gossId = gossId;
+        this.templateId = templateId;
 
 
         gossArticleText = StringUtils.replace(gossArticleText, "<!--Changing the preceding comment will unlock the text block-->", "");

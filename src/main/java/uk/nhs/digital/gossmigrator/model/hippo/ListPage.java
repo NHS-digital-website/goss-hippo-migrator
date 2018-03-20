@@ -20,7 +20,7 @@ public class ListPage extends HippoImportable {
         seoSummary = TextHelper.escapeForJson(gossContent.getSummary());
         summary = TextHelper.escapeForJson(gossContent.getIntroduction());
         shortSummary = TextHelper.escapeForJson(gossContent.getSummary());
-        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.SERVICE);
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getTemplateId(), gossContent.getText(), ContentType.SERVICE);
         body = parsedArticleText.getDefaultNode();
         internalLinks = gossContent.getInternalArticles();
         externalLinks = gossContent.getExternalArticles();

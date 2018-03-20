@@ -39,8 +39,8 @@ public class ParsedArticleText extends ParsedArticle {
      * @param gossArticleText ARTICLETEXT String.
      * @param contentType, type of content to be parsed
      */
-    ParsedArticleText(long gossId, String gossArticleText, ContentType contentType) {
-        super(gossId, gossArticleText);
+    ParsedArticleText(long gossId, long templateId, String gossArticleText, ContentType contentType) {
+        super(gossId, templateId, gossArticleText);
 
         this.contentType = contentType;
 
@@ -59,7 +59,7 @@ public class ParsedArticleText extends ParsedArticle {
         Element gossDefaultNode = body.selectFirst("#" + section.getId());
         HippoRichText result = null;
         if (gossDefaultNode != null) {
-            result = new HippoRichText(gossDefaultNode.html(), gossId);
+            result = new HippoRichText(gossDefaultNode.html(), gossId, templateId);
         }
         return result;
     }
@@ -126,7 +126,7 @@ public class ParsedArticleText extends ParsedArticle {
 
 
         if (haveIntro) {
-            return new HippoRichText(result.toString(), gossId);
+            return new HippoRichText(result.toString(), gossId, templateId);
         }
         return null;
     }
@@ -149,7 +149,7 @@ public class ParsedArticleText extends ParsedArticle {
                 if (!"p".equals(topTask.tagName())) {
                     LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p' (it is {}). This is not expected.", gossId, topTask.tagName());
                 }
-                topTasks.add(new HippoRichText(topTask.outerHtml(), gossId));
+                topTasks.add(new HippoRichText(topTask.outerHtml(), gossId, templateId));
             }
         }
 
@@ -225,7 +225,7 @@ public class ParsedArticleText extends ParsedArticle {
         }
 
         return haveSection ? new Section(title, SectionTypes.DEFAULT.getTypeName()
-                , new HippoRichText(content.toString(), gossId)) : null;
+                , new HippoRichText(content.toString(), gossId, templateId)) : null;
     }
 
     /**

@@ -27,7 +27,7 @@ public class Service extends HippoImportable {
         summary = TextHelper.escapeForJson(gossContent.getIntroduction());
         shortSummary = TextHelper.escapeForJson(gossContent.getSummary());
 
-        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getText(), ContentType.SERVICE);
+        ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getTemplateId(), gossContent.getText(), ContentType.SERVICE);
         introduction = parsedArticleText.getIntroduction();
         sections = parsedArticleText.getSections();
         topTasks = parsedArticleText.getTopTasks();
