@@ -3,6 +3,7 @@ package uk.nhs.digital.gossmigrator.model.hippo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.Report.PublicationReportWriter;
+import uk.nhs.digital.gossmigrator.misc.GeoCoverageHelper;
 import uk.nhs.digital.gossmigrator.misc.GossExportHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossContentMeta;
 import uk.nhs.digital.gossmigrator.model.goss.GossFile;
@@ -25,13 +26,12 @@ public class Publication extends HippoImportable {
     private String publicationDate;
     private List<String> taxonomyKeys = new ArrayList<>();
     private List<String> fullTaxonomy = new ArrayList<>();
-    private final String geographicCoverage;
     private final String granuality;
     private List<HippoLink> relatedLinks;
     private List<HippoLink> resourceLinks;
     private List<HippoFile> files = new ArrayList<>();
     private String publicationId;
-    private GeoCoverage geoCoverage = new GeoCoverage();
+    private List<String> geoCoverageList;
 
     public Publication(GossPublicationContent gossContent) {
         super(gossContent.getHeading(), gossContent.getJcrPath(), gossContent.getJcrNodeName());
@@ -61,10 +61,7 @@ public class Publication extends HippoImportable {
         ParsedArticleText parsedArticleText = new ParsedArticleText(gossContent.getId(), gossContent.getTemplateId(), gossContent.getText(), ContentType.PUBLICATION);
         keyFacts = parsedArticleText.getKeyFacts();
         publicationSummary = parsedArticleText.getDefaultNode();
-        geographicCoverage = gossContent.getGeographicalData();
-
-        //TODO complete geoCoverage mapping
-        geoCoverage.setCoverage(gossContent.getGeographicalData());
+        geoCoverageList = new GeoCoverageHelper().getGeoCoverageList(gossContent.getGeographicalData());
 
         granuality = gossContent.getGranularity();
         informationType = gossContent.getInformationTypes();
@@ -158,11 +155,6 @@ public class Publication extends HippoImportable {
     }
 
     @SuppressWarnings("unused") // Used in template
-    public String getGeographicCoverage() {
-        return geographicCoverage;
-    }
-
-    @SuppressWarnings("unused") // Used in template
     public String getGranuality() {
         return granuality;
     }
@@ -233,7 +225,7 @@ public class Publication extends HippoImportable {
     }
 
     @SuppressWarnings("unused") // Used in template
-    public GeoCoverage getGeoCoverage() {
-        return geoCoverage;
+    public List<String> getGeoCoverageList() {
+        return geoCoverageList;
     }
 }

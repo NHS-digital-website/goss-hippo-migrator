@@ -49,11 +49,6 @@
 "multiple" : true,
 "values" : [ ${publication.granuality} ]
 }, {
-"name" : "publicationsystem:GeographicCoverage",
-"type" : "STRING",
-"multiple" : false,
-"values" : [ ${publication.geographicCoverage} ]
-}, {
 "name" : "publicationsystem:PubliclyAccessible",
 "type" : "BOOLEAN",
 "multiple" : false,
@@ -89,6 +84,11 @@
 "type" : "STRING",
 "multiple" : true,
 "values" : [ <#list publication.fullTaxonomy as key>"${key}"<#sep>, </#sep></#list> ]
+}</#if><#if publication.geoCoverageList?has_content>, {
+"name" : "publicationsystem:GeographicCoverage",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ <#list publication.geoCoverageList as geoCoverage>"${geoCoverage}"<#sep>, </#sep></#list> ]
 }</#if>
 ],
 "nodes" : [
