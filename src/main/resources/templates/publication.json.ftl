@@ -3,17 +3,17 @@
 "name" : "${publication.jcrNodeName}",
 "primaryType" : "publicationsystem:legacypublication",
 "mixinTypes" : [ "mix:versionable", "mix:referenceable", "hippotaxonomy:classifiable" ],
-"properties" : [ <#-- PUT BACK IN WHEN DW-157 MERGED IN HIPPO{
+"properties" : [ {
 "name" : "publicationsystem:gossid",
 "type" : "LONG",
 "multiple" : false,
 "values" : [ "${publication.stringId}" ]
-},{
+}, {
 "name" : "publicationsystem:publicationid",
 "type" : "STRING",
 "multiple" : false,
 "values" : [ "${publication.publicationId}" ]
-},--> {
+}, {
 "name" : "common:FacetType",
 "type" : "STRING",
 "multiple" : false,

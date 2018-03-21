@@ -20,7 +20,7 @@ public class Config {
     enum PropertiesEnum {
         S3_ROOT_URL_PROP("s3.root.url", "e.g. https://files.dev.a.b/afolder/bfolder/", true, ""),
         JCR_ASSET_ROOT_PROP("jcr.asset.root", "Root jcr path to assets. e.g. /content/assets/", false, "/content/assets/goss-legacy/"),
-        JCR_SERVICE_DOC_ROOT_PROP("jcr.service.doc.root", "Root jcr path to services. e.g. /content/documents/corporate-website/service/", false, "/content/documents/corporate-website/systems-and-services/"),
+        JCR_SERVICE_DOC_ROOT_PROP("jcr.service.doc.root", "Root jcr path to services. e.g. /content/documents/corporate-website/service/", false, "/content/documents/corporate-website/services/"),
         ASSET_SOURCE_FOLDER_PROP("assets.source.folder", "File system folder holding assets to process.", true, ""),
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         TARGET_FOLDER_PROP("target.folder", "File system folder to hold created content json hippo import files.", true, ""),

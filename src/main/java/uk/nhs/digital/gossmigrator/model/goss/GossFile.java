@@ -2,6 +2,7 @@ package uk.nhs.digital.gossmigrator.model.goss;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossExportFieldNames.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,7 +132,7 @@ public class GossFile {
     }
 
     public String getDisplayText() {
-        return displayText;
+        return StringUtils.removeAll(displayText, "\t");
     }
 
     public String getFileName() {
