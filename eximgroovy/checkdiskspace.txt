@@ -1,0 +1,78 @@
+/*
+
+Example properties;
+{"importPackageUrl": "file:///home/paul/testout/Live/import-package.zip"}
+*/
+package org.hippoecm.frontend.plugins.cms.admin.updater
+
+import org.apache.commons.lang.text.StrSubstitutor
+import org.apache.commons.vfs2.FileObject
+import org.apache.commons.vfs2.VFS
+import org.onehippo.forge.content.exim.core.impl.DefaultBinaryImportTask
+import org.onehippo.forge.content.exim.core.DocumentManager
+import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentManagerImpl
+import org.onehippo.forge.content.exim.core.util.ContentPathUtils
+import org.onehippo.forge.content.exim.core.util.HippoBinaryNodeUtils
+import org.onehippo.repository.update.BaseNodeUpdateVisitor
+
+import javax.jcr.Node
+import javax.jcr.Session
+
+import uk.nhs.digital.ps.migration.MigratorImportHelper
+
+class ImportingAssetOrImageSetFromFileUpdateVisitor extends BaseNodeUpdateVisitor {
+
+    DocumentManager documentManager
+    DefaultBinaryImportTask importTask
+    String importPackageUrl
+    Session session
+
+    MigratorImportHelper migratorImportHelper
+
+    void initialize(Session session) {
+        this.session = session
+        // importPackageUrl = StrSubstitutor.replaceSystemProperties(parametersMap.get("importPackageUrl"))
+
+        documentManager = new WorkflowDocumentManagerImpl(session)
+        importTask = new DefaultBinaryImportTask(documentManager)
+        importTask.setLogger(log)
+        importTask.start()
+
+        migratorImportHelper = new MigratorImportHelper(log)
+    }
+
+    boolean doUpdate(Node node) {
+        def contentNode
+        def binaryPrimaryTypeName
+        def binaryFolderPrimaryTypeName
+        def binaryFolderFolderTypes
+        def binaryFolderGalleryTypes
+        def binaryLocation
+        def binaryFolderPath
+        def binaryName
+        def updatedBinaryLocation
+
+        log.info "Temporary disk space available before download: ${migratorImportHelper.getUsableSpace()}"
+
+
+        return true
+    }
+
+    boolean undoUpdate(Node node) {
+        throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
+    }
+
+    void destroy() {
+        importTask.stop()
+        importTask.logSummary()
+    }
+
+    private FileObject[] findImportFiles(final String nesstarAttachmentsLocation) {
+
+        final FileObject nesstarAttachmentsLocationFileObject = VFS.getManager().resolveFile(nesstarAttachmentsLocation)
+
+        final FileObject[] files = importTask.findFilesByNamePattern(nesstarAttachmentsLocationFileObject, "^.+\\.json\$", 1, 10)
+
+        return files == null ? [] : files;
+    }
+}

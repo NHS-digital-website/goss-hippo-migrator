@@ -183,14 +183,6 @@ public class GossContent implements Comparable<GossContent> {
         return csvList.toString();
     }
 
-    String getValuesAsCsvList(List<GossContentMeta> sourceList, int maxExpectedValues, String context) {
-        if (sourceList.size() > maxExpectedValues) {
-            LOGGER.warn("More than expected number of meta items.  ArticleId:{}. Expected max:{}, got:{}, context:{}"
-                    , id, maxExpectedValues, sourceList.size(), context);
-        }
-        return getValuesAsCsvList(sourceList, maxExpectedValues);
-    }
-
     /**
      * This is the raw string from the database containing each text area.
      * Each text area is separated into textbody tags with the ID property referencing its name.

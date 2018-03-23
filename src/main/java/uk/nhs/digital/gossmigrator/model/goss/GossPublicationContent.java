@@ -55,7 +55,7 @@ public class GossPublicationContent extends GossContent {
     }
 
     public String getGeographicalData() {
-        return getValuesAsCsvList(getMetaByGroup(GEOGRAPHICAL), 1, GEOGRAPHICAL.toString());
+        return getValuesAsCsvList(getMetaByGroup(GEOGRAPHICAL));
     }
 
     public String getInformationTypes() {

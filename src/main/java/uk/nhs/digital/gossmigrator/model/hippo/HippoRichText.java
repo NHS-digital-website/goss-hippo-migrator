@@ -91,7 +91,10 @@ public class HippoRichText {
             i++;
             String linkTypeId = link.attributes().get("data-icm-inlinetypeid");
             String referenceId = link.attributes().get("data-icm-arg2");
-            String linkText = link.attributes().get("data-icm-arg4");
+            String arg2Name = link.attributes().get("data-icm-arg2name");
+            String arg4 = link.attributes().get("data-icm-arg4");
+
+            String linkText = StringUtils.isEmpty(arg4) ? arg2Name : arg4;
             Long referenceKey = null;
             if (null != referenceId) {
                 if (StringUtils.isNumeric(referenceId)) {
@@ -136,7 +139,7 @@ public class HippoRichText {
                     } else {
                         String docName = "Linkref" + referenceKey + "-" + i;
                         Element newLink = new Element("img")
-                                .attr("alt", linkText)
+                                .attr("alt", arg2Name)
                                 .attr("data-type", "hippogallery:original")
                                 .attr("src", docName + "/{_document}/hippogallery:original");
                         link.replaceWith(newLink);
@@ -178,6 +181,8 @@ public class HippoRichText {
                     if (null == jcrUrl) {
                         LOGGER.error("ArticleId:{}. Internal link to Article:{} could not be resolved.", gossArticleId, referenceKey);
                         break;
+                    } else if(StringUtils.isEmpty(linkText)){
+                        LOGGER.error("ArticleId:{}. Internal link to Article:{} had empty link text node.", gossArticleId, referenceKey);
                     } else {
                         // Create replacement node.
                         String docName = "Linkref" + referenceKey + "-" + i;
