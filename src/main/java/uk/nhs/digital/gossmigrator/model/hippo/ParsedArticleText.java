@@ -5,6 +5,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
 import uk.nhs.digital.gossmigrator.model.hippo.enums.SectionTypes;
@@ -45,17 +46,23 @@ public class ParsedArticleText extends ParsedArticle {
         this.contentType = contentType;
 
         checkSections(body);
-        defaultNode = extracRichTextElement(INTRO_AND_SECTIONS);
+        defaultNode = extractRichTextElement(INTRO_AND_SECTIONS);
         introduction = extractIntroduction();
-        sections = extractSections();
+        if(null != introduction && !StringUtils.isEmpty(introduction.getContent())
+                && ContentType.SERVICE != contentType && ContentType.PUBLICATION != contentType
+                && GossImporter.processingDigital){
+            sections = new ArrayList<>();
+            sections.add(new Section("Content", SectionTypes.DEFAULT.getTypeName(), introduction));
+        }
+        extractSections();
         topTasks = extractTopTasks();
-        component = extracRichTextElement(COMPONENT);
-        contactDetails = extracRichTextElement(CONTACT_INFO);
-        keyFacts = extracRichTextElement(FACTS);
+        component = extractRichTextElement(COMPONENT);
+        contactDetails = extractRichTextElement(CONTACT_INFO);
+        keyFacts = extractRichTextElement(FACTS);
         LOGGER.debug(toString());
     }
 
-    private HippoRichText extracRichTextElement(ArticleTextSection section) {
+    private HippoRichText extractRichTextElement(ArticleTextSection section) {
         Element gossDefaultNode = body.selectFirst("#" + section.getId());
         HippoRichText result = null;
         if (gossDefaultNode != null) {
@@ -163,26 +170,22 @@ public class ParsedArticleText extends ParsedArticle {
      * Anything before first h2 is the introduction and should have already been dealt with
      * and removed from tree.
      *
-     * @return A list of Sections.
      */
-    private List<Section> extractSections() {
+    private void extractSections() {
         Element gossSectionsNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
-        List<Section> sections = null;
 
         if(gossSectionsNode != null){
             promoteH3s(gossSectionsNode);
 
-            boolean haveSections = false;
             Section section;
 
             while (true) {
                 section = extractSection(gossSectionsNode);
                 if (section != null) {
-                    if (!haveSections) {
+                    if (null == sections) {
                         sections = new ArrayList<>();
                     }
                     sections.add(section);
-                    haveSections = true;
                 } else {
                     // Finished with __DEFAULT node
                     gossSectionsNode.remove();
@@ -190,8 +193,6 @@ public class ParsedArticleText extends ParsedArticle {
                 }
             }
         }
-
-        return sections;
     }
 
     /**
