@@ -57,15 +57,16 @@ public class HippoRichText {
     }
 
     private String escapeChars(String source) {
-        String replaced = source.replaceAll("\"", "\\\\\"");
-
-        // Looks like the chosen html/xml library adds carriage return line feeds.
-        replaced = replaced.replaceAll("\n", "").replaceAll("\r", "");
-        // TODO Article 8548 has invalid html.  Will be fixed in source doc.
-        // For now fix with below.
-        replaced = replaced.replaceAll("D:\\\\&gt", "D:&gt");
-        // TODO Article 7881 similar problem
-        replaced = replaced.replaceAll("C:\\\\&gt", "C:&gt");
+        String replaced = source.replaceAll("\"", "\\\\\"")
+                // Looks like the chosen html/xml library adds carriage return line feeds.
+                .replaceAll("\n", "").replaceAll("\r", "")
+                // DW-198 Some links were rendered without a space before them.
+                .replaceAll("([\\w])(<a )", "$1&nbsp;$2")
+                // Article 8548 has invalid html.  Will be fixed in source doc.
+                // For now fix with below.
+                .replaceAll("D:\\\\&gt", "D:&gt")
+                // Article 7881 similar problem
+                .replaceAll("C:\\\\&gt", "C:&gt");
         return replaced;
     }
 
@@ -87,7 +88,6 @@ public class HippoRichText {
         List<Element> links = source.select("span[data-icm-arg2]");
         int i = 0;
         for (Element link : links) {
-            // External links.
             i++;
             String linkTypeId = link.attributes().get("data-icm-inlinetypeid");
             String referenceId = link.attributes().get("data-icm-arg2");
@@ -173,15 +173,15 @@ public class HippoRichText {
                     // And a doc ref node with something like;
                     // "/content/documents/corporate-website/publication-system/published-upcoming-publication"
                     // in the HippoLinkRef collection as jcrpath and published-upcoming-publication as nodeName.
-                    GossContent linkedTo = GossImporter.digitalData.getArticlesContentList().getById(new Long(referenceKey));
+                    GossContent linkedTo = GossImporter.digitalData.getArticlesContentList().getById(referenceKey);
                     String jcrUrl = null;
-                    if(linkedTo != null){
+                    if (linkedTo != null) {
                         jcrUrl = linkedTo.getJcrPath();
                     }
                     if (null == jcrUrl) {
                         LOGGER.error("ArticleId:{}. Internal link to Article:{} could not be resolved.", gossArticleId, referenceKey);
                         break;
-                    } else if(StringUtils.isEmpty(linkText)){
+                    } else if (StringUtils.isEmpty(linkText)) {
                         LOGGER.error("ArticleId:{}. Internal link to Article:{} had empty link text node.", gossArticleId, referenceKey);
                     } else {
                         // Create replacement node.

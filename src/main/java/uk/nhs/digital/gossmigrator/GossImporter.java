@@ -35,6 +35,7 @@ public class GossImporter {
     public static HSSFWorkbook iframeReport = new HSSFWorkbook();
     private static boolean skipAssets = true;
     private ContentImporter contentImporter = new ContentImporter();
+    public static boolean processingDigital;
 
     public static void main(String[] args) throws Exception {
 
@@ -81,6 +82,7 @@ public class GossImporter {
         FolderHelper.makeDummyDataBinFile(Config.NON_LIVE_CONTENT_TARGET_FOLDER);
 
         ReportWriter.generateReport();
+        processingDigital = true;
 
         SeriesImporter seriesImporter = new SeriesImporter();
         digitalData.addSeriesContentList(seriesImporter.getSeriesContentList());
@@ -95,9 +97,14 @@ public class GossImporter {
         digitalData.setIgnoredTemplateIdsList(typeImporter.populateIgnoredTemplateIds());
 
         processGoss(digitalData);
+        processingDigital = false;
         processGoss(contentData);
+        processingDigital = true;
         writeImportables(digitalData);
+        processingDigital = false;
         writeImportables(contentData);
+
+        processingDigital = true;
 
         // Assets need to be done after digital content as only import those referenced
         // in rich text in content.

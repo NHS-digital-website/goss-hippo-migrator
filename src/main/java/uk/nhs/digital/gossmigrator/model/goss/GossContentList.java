@@ -3,6 +3,7 @@ package uk.nhs.digital.gossmigrator.model.goss;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.enums.ContentType;
@@ -47,7 +48,7 @@ public class GossContentList extends ArrayList<GossContent> {
 
             // 1 Any publications get linked to their mapped series.
             linkPublications();
-            // 2 Any services without another service in their ancesters get mapeed to root services node
+            // 2 Any services without another service in their ancestors get mapped to root services node
             moveServices();
             // 3 Anything else links to its parent, need to know if we have children though..
             populateChildren();
@@ -61,18 +62,15 @@ public class GossContentList extends ArrayList<GossContent> {
             Collections.sort(this);
         }
         sorted = true;
-        printJcrStructure();
-
-        for (GossContent i : this) {
-            LOGGER.info("Goss Id:{}, Parent:{}, Type:{}, Children Count:{}", i.getId(), i.getParentId()
-                    , i.getContentType(), i.getChildren().size());
+        if (Config.PRINT_JCR_STRUCTURE && GossImporter.processingDigital) {
+            printJcrStructure();
         }
     }
 
     private void createFolders() {
         Set<GossFolder> folders = new HashSet<>();
-        for(GossContent content : this){
-            if(content.getDepth() > 0
+        for (GossContent content : this) {
+            if (content.getDepth() > 0
                     && (content.getChildren().size() > 0 || content.getContentType() == PUBLICATION)) {
                 GossFolder folder = new GossFolder(content);
                 folders.add(folder);
@@ -115,7 +113,7 @@ public class GossContentList extends ArrayList<GossContent> {
                     p.setDepth(1);
                     p.setParentId(p.id);
                 } else {
-                    LOGGER.warn("Unexpected nested services.");
+                    LOGGER.warn("Unexpected nested services, Article {} has a service as an ancestor.", p.id);
                 }
             }
         }
@@ -171,7 +169,6 @@ public class GossContentList extends ArrayList<GossContent> {
                 return;
             } else {
                 LOGGER.error("Article:{}, has no parent.", p.id);
-
             }
         }
 
@@ -186,7 +183,9 @@ public class GossContentList extends ArrayList<GossContent> {
 
         if (null == parent) {
             // p1 should never be null with real data.
-            LOGGER.error("Invalid article parent id:{} for article:{}", p.getParentId(), p.getId());
+            if(GossImporter.processingDigital) {
+                LOGGER.error("Invalid article parent id:{} for article:{}", p.getParentId(), p.getId());
+            }
             p.setDepth(0);
             p.setJcrParentPath(JCR_GENERAL_ROOT);
             return;

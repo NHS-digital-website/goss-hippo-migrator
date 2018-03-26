@@ -34,7 +34,8 @@ public class Config {
         MAX_ASSETS_SIZE_PER_ZIP_MB_PROP("max.assets.size.per.zip", "Max size in Mb.", false, "1024"),
         JCR_DIRECT_ROOT_PROP("jcr.redirect.root", "JCR path to redirect root.", false, "/content/urlrewriter/rules/"),
         SKIP_DIGITAL_PROP("skip.digital", "If digital export should be skipped.", false, "false"),
-        SKIP_CONTENT_PROP("skip.content", "If content export should be skipped.", false, "false");
+        SKIP_CONTENT_PROP("skip.content", "If content export should be skipped.", false, "false"),
+        PRINT_JCR_STRUCTURE_PROP("print.jcr.structure", "", false, "false");
 
         final String key;
         final String help;
@@ -96,6 +97,7 @@ public class Config {
     public static Boolean SKIP_DIGITAL;
     public static Boolean SKIP_CONTENT;
     public static String S3_ROOT_URL;
+    public static Boolean PRINT_JCR_STRUCTURE;
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
@@ -130,6 +132,7 @@ public class Config {
         JCR_REDIRECT_ROOT = getConfig(JCR_DIRECT_ROOT_PROP, propertiesMap);
         SKIP_DIGITAL = Boolean.parseBoolean(getConfig(SKIP_DIGITAL_PROP, propertiesMap));
         SKIP_CONTENT = Boolean.parseBoolean(getConfig(SKIP_CONTENT_PROP, propertiesMap));
+        PRINT_JCR_STRUCTURE = Boolean.parseBoolean(getConfig(PRINT_JCR_STRUCTURE_PROP, propertiesMap));
         S3_ROOT_URL = getConfig(S3_ROOT_URL_PROP, propertiesMap);
 
         // Check all properties in file are expected
