@@ -6,6 +6,7 @@ import uk.nhs.digital.gossmigrator.model.mapping.ContentTypeMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GossProcessedData {
 
@@ -18,6 +19,7 @@ public class GossProcessedData {
     private Map<Long, String> generalDocumentTypeMap;
     private List<Long> ignoredTemplateIdsList;
     private GossSourceFile type;
+    private Set<String> validTaxonomyKeys;
 
     public GossProcessedData(GossSourceFile type) {
         this.type = type;
@@ -105,5 +107,12 @@ public class GossProcessedData {
         return type;
     }
 
+    public void setValidTaxonomyKeys(Set<String> validTaxonomyKeys) {
+        this.validTaxonomyKeys = validTaxonomyKeys;
+    }
+
+    public Set<String> getValidTaxonomyKeys() {
+        return validTaxonomyKeys;
+    }
 }
 

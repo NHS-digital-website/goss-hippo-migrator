@@ -79,11 +79,6 @@
 "type" : "STRING",
 "multiple" : true,
 "values" : [ <#list publication.taxonomyKeys as key>"${key}"<#sep>, </#sep></#list> ]
-}, {
-"name" : "common:FullTaxonomy",
-"type" : "STRING",
-"multiple" : true,
-"values" : [ <#list publication.fullTaxonomy as key>"${key}"<#sep>, </#sep></#list> ]
 }</#if><#if publication.geoCoverageList?has_content>, {
 "name" : "publicationsystem:GeographicCoverage",
 "type" : "STRING",

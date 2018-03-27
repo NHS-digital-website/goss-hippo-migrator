@@ -14,9 +14,7 @@ import uk.nhs.digital.gossmigrator.model.mapping.enums.MappingType;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,6 +77,9 @@ public class CSVReader<T> {
                     case TEMPLATE_ID:
                         target = (T) processTemplateIdMapping((List<Long>)target, record);
                         break;
+                    case VALID_TAXONOMY_KEYS:
+                        target = (T) processTaxonomyValidKey((Set<String>)target, record);
+                        break;
                 }
             }
         }
@@ -92,19 +93,22 @@ public class CSVReader<T> {
         String additionalTaxononomy2 = StringUtils.trim(record.get(3));
 
         List<String> taxonomies = new ArrayList<>();
-        taxonomies.add(hippoTaxonomy);
-        if(additionalTaxononomy1 != null && !additionalTaxononomy1.isEmpty()){
-            taxonomies.add(additionalTaxononomy1);
+        taxonomies.add(formatTaxonomyKey(hippoTaxonomy));
+        if(!StringUtils.isEmpty(additionalTaxononomy1)){
+            taxonomies.add(formatTaxonomyKey(additionalTaxononomy1));
         }
-        if(additionalTaxononomy2 != null && !additionalTaxononomy2.isEmpty()){
-            taxonomies.add(additionalTaxononomy2);
+        if(!StringUtils.isEmpty(additionalTaxononomy2)){
+            taxonomies.add(formatTaxonomyKey(additionalTaxononomy2));
         }
         for (String taxonomy: taxonomies){
-
             CSVMappingReportWriter.addTaxonomyRow(gossTaxonomy, taxonomy);
         }
         target.put(gossTaxonomy, taxonomies);
         return target;
+    }
+
+    private String formatTaxonomyKey(String key){
+        return StringUtils.replaceAll(key, "[\\s\\(\\),\\/0-9]", "-").toLowerCase();
     }
 
     private MetadataMappingItem processMetadataMapping(MetadataMappingItem target, CSVRecord record){
@@ -145,6 +149,11 @@ public class CSVReader<T> {
     private List<Long> processTemplateIdMapping(List<Long> target, CSVRecord record){
         Long templateID = Long.parseLong(record.get(1));
         target.add(templateID);
+        return target;
+    }
+
+    private Set<String> processTaxonomyValidKey(Set<String> target, CSVRecord record){
+        target.add(record.get(0));
         return target;
     }
 

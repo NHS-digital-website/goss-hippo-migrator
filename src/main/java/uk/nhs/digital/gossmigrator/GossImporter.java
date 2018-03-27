@@ -1,24 +1,30 @@
 package uk.nhs.digital.gossmigrator;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.csv.CSVParser;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.Report.ReportWriter;
 import uk.nhs.digital.gossmigrator.config.Config;
+import uk.nhs.digital.gossmigrator.misc.CSVReader;
 import uk.nhs.digital.gossmigrator.misc.FolderHelper;
 import uk.nhs.digital.gossmigrator.misc.LoopFinder;
 import uk.nhs.digital.gossmigrator.model.goss.GossFile;
 import uk.nhs.digital.gossmigrator.model.goss.GossProcessedData;
 import uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile;
+import uk.nhs.digital.gossmigrator.model.mapping.ContentTypeMap;
 import uk.nhs.digital.gossmigrator.model.mapping.MetadataMappingItems;
+import uk.nhs.digital.gossmigrator.model.mapping.enums.MappingType;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import static uk.nhs.digital.gossmigrator.config.Config.*;
 import static uk.nhs.digital.gossmigrator.model.goss.enums.GossSourceFile.CONTENT;
@@ -92,6 +98,7 @@ public class GossImporter {
         digitalData.setTaxonomyMap(mapper.generateTaxonomyMap());
 
         DocumentTypeImporter typeImporter = new DocumentTypeImporter();
+
         digitalData.setContentTypeMap(typeImporter.populateContentTypes());
         digitalData.setGeneralDocumentTypeMap(typeImporter.populateGeneralContentTypes());
         digitalData.setIgnoredTemplateIdsList(typeImporter.populateIgnoredTemplateIds());

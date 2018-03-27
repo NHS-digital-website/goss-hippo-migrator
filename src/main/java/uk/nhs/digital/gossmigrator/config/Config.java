@@ -25,7 +25,7 @@ public class Config {
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         TARGET_FOLDER_PROP("target.folder", "File system folder to hold created content json hippo import files.", true, ""),
         REDIRECT_CONTENT_SOURCE_FILE_PROP("redirect.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
-        JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/documents/corporate-website/", false, "/content/documents/corporate-website/publication-system/statistical/"),
+        JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/documents/corporate-website/", false, "/content/documents/corporate-website/data-and-information/publication-system/statistical/"),
         SPLIT_ASSET_PATH_ON("split.asset.path.on", "For file nodes in goss export there is a path.  " +
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media,pre-prod-media"),
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/goss-legacy/"),
@@ -98,6 +98,7 @@ public class Config {
     public static Boolean SKIP_CONTENT;
     public static String S3_ROOT_URL;
     public static Boolean PRINT_JCR_STRUCTURE;
+    public static String TAXONOMY_KEYS_FILE;
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
@@ -123,6 +124,7 @@ public class Config {
         GOSS_HIPPO_MAPPING_FILE = CONFIG_FOLDER.concat(PUB_SERIES_FILE);
         METADATA_MAPPING_FILE = CONFIG_FOLDER.concat(METADATA_FILE);
         DOCUMENT_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(DOC_TYPE_FILE);
+        TAXONOMY_KEYS_FILE = CONFIG_FOLDER.concat("ValidTaxonomyKeys.csv");
         TAXONOMY_MAPPING_FILE = CONFIG_FOLDER.concat(TAXONOMY_FILE);
         GENERAL_TYPE_MAPPING_FILE = CONFIG_FOLDER.concat(GENERAL_TYPE_FILE);
         NON_RELEVANT_TEMPLATE_IDS_FILE = CONFIG_FOLDER.concat(NON_RELEVANT_IDS_FILE);
