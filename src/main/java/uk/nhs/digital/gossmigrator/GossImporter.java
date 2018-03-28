@@ -90,25 +90,32 @@ public class GossImporter {
         ReportWriter.generateReport();
         processingDigital = true;
 
+        LOGGER.info("Mapping publications to series.");
         SeriesImporter seriesImporter = new SeriesImporter();
         digitalData.addSeriesContentList(seriesImporter.getSeriesContentList());
         digitalData.setPublicationSeriesMap(seriesImporter.getPublicationKeyToSeriesIdMap());
 
+        LOGGER.info("Reading taxonomy.");
         TaxonomyMapper mapper = new TaxonomyMapper();
         digitalData.setTaxonomyMap(mapper.generateTaxonomyMap());
 
+        LOGGER.info("Reading document types");
         DocumentTypeImporter typeImporter = new DocumentTypeImporter();
 
         digitalData.setContentTypeMap(typeImporter.populateContentTypes());
         digitalData.setGeneralDocumentTypeMap(typeImporter.populateGeneralContentTypes());
         digitalData.setIgnoredTemplateIdsList(typeImporter.populateIgnoredTemplateIds());
 
+        LOGGER.info("Begin processing Digital.");
         processGoss(digitalData);
         processingDigital = false;
+        LOGGER.info("Begin processing Content.");
         processGoss(contentData);
         processingDigital = true;
+        LOGGER.info("Writing Digital.");
         writeImportables(digitalData);
         processingDigital = false;
+        LOGGER.info("Writing Contnet.");
         writeImportables(contentData);
 
         processingDigital = true;
@@ -117,20 +124,29 @@ public class GossImporter {
         // in rich text in content.
         AssetImporter assetImporter = new AssetImporter();
         if(!skipAssets) {
+            LOGGER.info("Copying S3 required files.");
             copyS3RequiredFiles();
+            LOGGER.info("Writing Asset importables.");
             assetImporter.createAssetHippoImportables();
             int folders = assetImporter.writeHippoAssetImportables();
             for(int i = 0; i <= folders; i++){
+                LOGGER.info("Zipping asset folder {}.", i);
                 FolderHelper.zipFolder(Paths.get(ASSET_TARGET_FOLDER, Integer.toString(i)).toString());
             }
         }
 
         digitalData.getContentTypeMap().logNeverReferenced();
+        LOGGER.info("Zipping live json.");
         FolderHelper.zipFolder(LIVE_CONTENT_TARGET_FOLDER);
+        LOGGER.info("Zipping not live json.");
         FolderHelper.zipFolder(NON_LIVE_CONTENT_TARGET_FOLDER);
+        LOGGER.info("Zipping folders json.");
         FolderHelper.zipFolder(FOLDERS_TARGET_FOLDER);
+        LOGGER.info("Zipping content rewrites.");
         FolderHelper.zipFolder(URLREWRITE_CONTENT_TARGET_FOLDER);
+        LOGGER.info("Zipping digital rewrites.");
         FolderHelper.zipFolder(URLREWRITE_DIGITAL_TARGET_FOLDER);
+        LOGGER.info("Writing import report.");
         ReportWriter.writeFile();
 
     }
@@ -149,10 +165,13 @@ public class GossImporter {
     }
 
     private void processGoss(GossProcessedData data){
+        LOGGER.info("Reading goss export.");
         contentImporter.populateGossData(data);
+        LOGGER.info("Generating Jcr structure.");
         data.getArticlesContentList().generateJcrStructure();
 
         HippoImportableFactory factory = new HippoImportableFactory();
+        LOGGER.info("Creating Hippo importable objects.");
         data.setImportableContentItems(factory.populateHippoContent(data));
 
     }
@@ -171,6 +190,7 @@ public class GossImporter {
     }
 
     private void cleanOutputFolders() {
+        LOGGER.info("Preparing output folders.");
         FolderHelper.cleanFolder(Paths.get(ASSET_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(LIVE_CONTENT_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(NON_LIVE_CONTENT_TARGET_FOLDER));

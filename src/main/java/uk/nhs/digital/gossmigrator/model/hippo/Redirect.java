@@ -17,30 +17,31 @@ public class Redirect extends HippoImportable {
     private Long redirectToId;
     private String fromFriendlyUrl;
     private String type;
+    private static Pattern r = Pattern.compile("/content/documents/corporate-website/(.*)(/content)?");
 
     private Redirect(GossRedirectContent redirectContent) {
         super(redirectContent);
         id = redirectContent.getId();
-        if (redirectContent.getLink() != null) {
+        // Some redirects have both article and external link.
+        // Seems Goss uses the article link in preference.
+        if (redirectContent.getRelatedArticles() != null && redirectContent.getRelatedArticles().size() > 0) {
+            redirectToId = redirectContent.getRelatedArticles().get(0);
+            this.ruleTo = "/article/".concat(redirectToId.toString());
+            this.description = redirectContent.getHeading();
+        } else if (redirectContent.getLink() != null) {
             this.ruleTo = redirectContent.getLink().getAddress();
             this.description = redirectContent.getLink().getDescription();
-            Pattern r = Pattern.compile("/content/documents/corporate-website/(.*)(/content)?");
             Matcher m = r.matcher(ruleTo);
             if (m.find()) {
                 this.ruleTo = m.group(1);
             }
-        } else if (redirectContent.getRelatedArticles() != null && redirectContent.getRelatedArticles().size() > 0) {
-            redirectToId = redirectContent.getRelatedArticles().get(0);
-            this.ruleTo = "/article/".concat(redirectToId.toString());
-            this.description = redirectContent.getHeading();
-            }
+        }
     }
 
     private Redirect(GossContent content) {
         super(content);
         id = content.getId();
         String path = content.getJcrPath();
-        Pattern r = Pattern.compile("/content/documents/corporate-website/(.*)(/content)?");
         Matcher m = r.matcher(path);
         if (m.find()) {
             this.ruleTo = m.group(1);
@@ -79,7 +80,7 @@ public class Redirect extends HippoImportable {
             redirect = (Redirect) GossImporter.digitalData.getImportableContentItems().stream().filter(
                     item -> item instanceof Redirect && (item.getId()).equals(redirectToId))
                     .findFirst().orElse(null);
-            if(redirect == null){
+            if (redirect == null) {
                 redirect = (Redirect) GossImporter.contentData.getImportableContentItems().stream().filter(
                         item -> item instanceof Redirect && (item.getId()).equals(redirectToId))
                         .findFirst().orElse(null);
@@ -88,10 +89,10 @@ public class Redirect extends HippoImportable {
             redirect = (Redirect) GossImporter.digitalData.getImportableContentItems().stream().filter(
                     item -> item instanceof Redirect && ruleTo.equals(((Redirect) item).getFromFriendlyUrl()))
                     .findFirst().orElse(null);
-            if(redirect == null){
-            redirect = (Redirect) GossImporter.contentData.getImportableContentItems().stream().filter(
-                    item -> item instanceof Redirect && ruleTo.equals(((Redirect) item).getFromFriendlyUrl()))
-                    .findFirst().orElse(null);
+            if (redirect == null) {
+                redirect = (Redirect) GossImporter.contentData.getImportableContentItems().stream().filter(
+                        item -> item instanceof Redirect && ruleTo.equals(((Redirect) item).getFromFriendlyUrl()))
+                        .findFirst().orElse(null);
             }
         }
         return redirect;
@@ -120,8 +121,8 @@ public class Redirect extends HippoImportable {
         return (otherRedirect != null
                 && otherRedirect instanceof Redirect
                 && ((type.equals("ID")
-                        && id.equals(((Redirect) otherRedirect).getId())
-                    || (type.equals("FRIENDLY")
-                        && fromFriendlyUrl.equals(((Redirect) otherRedirect).getFromFriendlyUrl())))));
+                && id.equals(((Redirect) otherRedirect).getId())
+                || (type.equals("FRIENDLY")
+                && fromFriendlyUrl.equals(((Redirect) otherRedirect).getFromFriendlyUrl())))));
     }
 }

@@ -101,7 +101,7 @@ public class GossFile {
         // Check source file exists
         filePathOnDisk = Paths.get(fileSourceFolder, p.toString()).toString();
 
-        if (!Paths.get(filePathOnDisk).toFile().exists()) {
+        if (!Paths.get(filePathOnDisk).toFile().exists() && !fileName.equals("Goss_logo.jpg")) {
             LOGGER.error("Could not find file:{} when processing goss MediaId:{}", filePathOnDisk, id);
             warnings.add("Could not find file " + filePathOnDisk);
         } else {
