@@ -42,6 +42,10 @@ public class MetadataMappingItems extends HashMap<String, MetadataMappingItem> {
     }
 
     public String getHippoValue(GossContentMeta gossContentMeta) {
+        if("GP practices, dental practices, pharmacies and clinics".equals(gossContentMeta.getValue())){
+            // Special case/bodge  DW-204.
+            return "GP practices\",\"Dental practices\",\"Pharmacies and clinics";
+        }
         if (null == get(getKey(gossContentMeta.getGroup(), gossContentMeta.getValue()))) {
             LOGGER.error("No hippo static data mapping for goss values:Group:{}, Value:{}",
                     gossContentMeta.getGroup(), gossContentMeta.getValue());

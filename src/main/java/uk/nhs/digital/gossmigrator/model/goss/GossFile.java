@@ -41,8 +41,8 @@ public class GossFile {
         id = GossExportHelper.getIdOrError(fileJson, FILE_ID);
         JSONObject fileObject = (JSONObject) fileJson.get("Files");
         if (fileObject.size() > 1) {
-            LOGGER.warn("Goss File MediaId:{} has more than one file node.  Using first file path.", id);
-            warnings.add("Goss File has more than one file node.");
+            LOGGER.debug("Goss File MediaId:{} has more than one file node.  Using first file path.", id);
+            warnings.add("Goss File has more than one file node. MediaId:" + id);
         }
 
         // Take first path
