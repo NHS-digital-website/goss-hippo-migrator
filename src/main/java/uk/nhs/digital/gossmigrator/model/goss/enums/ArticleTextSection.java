@@ -1,24 +1,30 @@
 package uk.nhs.digital.gossmigrator.model.goss.enums;
 
 public enum ArticleTextSection {
-    TOPTASKS("UPPERBODY"),
-    CONTACT_INFO("CTA"),
-    INTRO_AND_SECTIONS("__DEFAULT"),
-    COMPONENT("COMPONENT"),
-    FACTS("FACTS"),
-    RESOURCE_LINKS("RESOURCELINKS"),
-    RELATED_LINKS("LINKS"),
-    NEWSFLASH("NEWSFLASH")
+    TOPTASKS("UPPERBODY", "Upper"),
+    CONTACT_INFO("CTA", "CTA"),
+    INTRO_AND_SECTIONS("__DEFAULT", "Default"),
+    COMPONENT("COMPONENT", "Component"),
+    FACTS("FACTS", "Facts"),
+    RESOURCE_LINKS("RESOURCELINKS", "ResourceLinks"),
+    RELATED_LINKS("LINKS", "RelatedLinks"),
+    NEWSFLASH("NEWSFLASH", "Newsflash")
     ;
 
     private String id;
+    private String ref;
 
-    ArticleTextSection(String id) {
+    ArticleTextSection(String id, String ref) {
         this.id = id;
+        this.ref = ref;
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getRef() {
+        return ref;
     }
 
     @Override

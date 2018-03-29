@@ -29,12 +29,20 @@ public class HippoRichText {
     private long gossArticleId;
     private long templateId;
     private Set<HippoLinkRef> docReferences = new HashSet<>();
+    private String refPrefix;
 
-    HippoRichText(String html, long gossArticleId, long templateId) {
+    HippoRichText(String html, long gossArticleId, long templateId, String refPrefix) {
+        this.refPrefix = refPrefix + "LinkRef";
         this.gossArticleId = gossArticleId;
         this.templateId = templateId;
         this.content = parseContent(html);
     }
+
+    HippoRichText(String html, long gossArticleId, long templateId) {
+        this(html, gossArticleId, templateId, "");
+    }
+
+
 
     public String getContent() {
         return content;
@@ -57,7 +65,7 @@ public class HippoRichText {
     }
 
     private String escapeChars(String source) {
-        String replaced = source.replaceAll("\"", "\\\\\"")
+        return source.replaceAll("\"", "\\\\\"")
                 // Looks like the chosen html/xml library adds carriage return line feeds.
                 .replaceAll("\n", "").replaceAll("\r", "")
                 // DW-198 Some links were rendered without a space before them.
@@ -67,7 +75,6 @@ public class HippoRichText {
                 .replaceAll("D:\\\\&gt", "D:&gt")
                 // Article 7881 similar problem
                 .replaceAll("C:\\\\&gt", "C:&gt");
-        return replaced;
     }
 
     /**
@@ -121,7 +128,7 @@ public class HippoRichText {
                     } else if (GossExportHelper.isImage(fileLink.getFileName())) {
                         LOGGER.warn("Article:{}, Link{} is an asset link to an image.", gossArticleId, referenceKey);
                     } else {
-                        String docName = "Linkref" + referenceKey + "-" + i;
+                        String docName = refPrefix + referenceKey + "-" + i;
                         Element newLink = new Element("a").text(linkText).attr("href", docName);
                         link.replaceWith(newLink);
                         fileLink.addReference(gossArticleId);
@@ -137,7 +144,7 @@ public class HippoRichText {
                         LOGGER.error("Media Id:{}. Referenced by Article:{} does not exist."
                                 , referenceKey, gossArticleId);
                     } else {
-                        String docName = "Linkref" + referenceKey + "-" + i;
+                        String docName = refPrefix + referenceKey + "-" + i;
                         Element newLink = new Element("img")
                                 .attr("alt", arg2Name)
                                 .attr("data-type", "hippogallery:original")
@@ -185,7 +192,7 @@ public class HippoRichText {
                         LOGGER.error("ArticleId:{}. Internal link to Article:{} had empty link text node.", gossArticleId, referenceKey);
                     } else {
                         // Create replacement node.
-                        String docName = "Linkref" + referenceKey + "-" + i;
+                        String docName = refPrefix + referenceKey + "-" + i;
                         Element newLink = new Element("a").text(linkText).attr("href", docName);
                         link.replaceWith(newLink);
                         docReferences.add(new HippoLinkRef(jcrUrl, docName));
@@ -212,6 +219,10 @@ public class HippoRichText {
 
         }
         return source;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
 }

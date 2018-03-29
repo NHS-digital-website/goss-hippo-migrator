@@ -45,8 +45,13 @@ public class ContentImporter {
         Map<Long, GossFile> gossFileMap = new HashMap<>();
         LOGGER.debug("Begin populating GossLink objects.");
         JSONArray jsonArray = (JSONArray) rootJsonObject.get("media");
+        int i = 0;
         if (null != jsonArray) {
             for (Object childJsonObject : jsonArray) {
+                i++;
+                if(i % 1000 == 0){
+                    LOGGER.info("Done {} of {}", i, jsonArray.size());
+                }
                 GossFile file = new GossFile((JSONObject) childJsonObject);
                 if (!file.isNotLiveLink()) {
                     gossFileMap.put(file.getId(), file);

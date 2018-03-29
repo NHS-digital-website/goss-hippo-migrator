@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static uk.nhs.digital.gossmigrator.model.goss.enums.ArticleTextSection.*;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.GENERAL;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.HUB;
+import static uk.nhs.digital.gossmigrator.model.goss.enums.ContentType.SERVICE;
 
 /**
  * Parses the Goss extract ARTICLETEXT.
@@ -31,6 +34,8 @@ public class ParsedArticleText extends ParsedArticle {
     private ContentType contentType;
     private HippoRichText keyFacts;
     private HippoRichText component;
+    private boolean addTopTasksToDefaultNode = false;
+    private boolean addTopTasksToSections = false;
 
     /**
      * Parses ARTICLETEXT node from Goss export.
@@ -38,7 +43,7 @@ public class ParsedArticleText extends ParsedArticle {
      *
      * @param gossId          ARTICLEID value for logging.
      * @param gossArticleText ARTICLETEXT String.
-     * @param contentType, type of content to be parsed
+     * @param contentType,    type of content to be parsed
      */
     ParsedArticleText(long gossId, long templateId, String gossArticleText, ContentType contentType) {
         super(gossId, templateId, gossArticleText);
@@ -48,14 +53,32 @@ public class ParsedArticleText extends ParsedArticle {
         checkSections(body);
         defaultNode = extractRichTextElement(INTRO_AND_SECTIONS);
         introduction = extractIntroduction();
-        if(null != introduction && !StringUtils.isEmpty(introduction.getContent())
-                && ContentType.SERVICE != contentType && ContentType.PUBLICATION != contentType
-                && GossImporter.processingDigital){
+        topTasks = extractTopTasks();
+        if (null != introduction && !StringUtils.isEmpty(introduction.getContent())
+                && SERVICE != contentType && ContentType.PUBLICATION != contentType
+                && GossImporter.processingDigital) {
             sections = new ArrayList<>();
             sections.add(new Section("Content", SectionTypes.DEFAULT.getTypeName(), introduction));
         }
+        // Some articles have stuff in top tasks, but our template has no top tasks.
+        // If possible add then as a section.
+        if (addTopTasksToSections) {
+            HippoRichText tasks = extractRichTextElement(TOPTASKS);
+            if(null == sections){
+                sections = new ArrayList<>();
+            }
+            sections.add(new Section("Content", SectionTypes.DEFAULT.getTypeName(), tasks));
+        }
+        if(addTopTasksToDefaultNode){
+            HippoRichText tasks = extractRichTextElement(TOPTASKS);
+            if(null == defaultNode){
+                defaultNode = tasks;
+            }else{
+                defaultNode.setContent(tasks.getContent() + defaultNode.getContent());
+                defaultNode.getDocReferences().addAll(tasks.getDocReferences());
+            }
+        }
         extractSections();
-        topTasks = extractTopTasks();
         component = extractRichTextElement(COMPONENT);
         contactDetails = extractRichTextElement(CONTACT_INFO);
         keyFacts = extractRichTextElement(FACTS);
@@ -66,7 +89,7 @@ public class ParsedArticleText extends ParsedArticle {
         Element gossDefaultNode = body.selectFirst("#" + section.getId());
         HippoRichText result = null;
         if (gossDefaultNode != null) {
-            result = new HippoRichText(gossDefaultNode.html(), gossId, templateId);
+            result = new HippoRichText(gossDefaultNode.html(), gossId, templateId, section.getRef());
         }
         return result;
     }
@@ -131,7 +154,6 @@ public class ParsedArticleText extends ParsedArticle {
             }
         }
 
-
         if (haveIntro) {
             return new HippoRichText(result.toString(), gossId, templateId);
         }
@@ -150,16 +172,22 @@ public class ParsedArticleText extends ParsedArticle {
         List<HippoRichText> topTasks = null;
 
         if (null != gossTopTasksNode && gossTopTasksNode.children().size() > 0) {
-            topTasks = new ArrayList<>();
-            for (Element topTask : gossTopTasksNode.children()) {
-                // Assume all child nodes are <p>'s
-                if (!"p".equals(topTask.tagName())) {
-                    LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p' (it is {}). This is not expected.", gossId, topTask.tagName());
+            if (contentType == SERVICE) {
+                topTasks = new ArrayList<>();
+                for (Element topTask : gossTopTasksNode.children()) {
+                    // Assume all child nodes are <p>'s
+                    if (!"p".equals(topTask.tagName())) {
+                        LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p' (it is {}). This is not expected.", gossId, topTask.tagName());
+                    }
+
+                    topTasks.add(new HippoRichText(topTask.outerHtml(), gossId, templateId));
                 }
-                if(contentType != ContentType.SERVICE){
-                    LOGGER.warn("Article:{}.  Have top tasks, but not a Service page ({}).  This is lost.", gossId, contentType);
-                }
-                topTasks.add(new HippoRichText(topTask.outerHtml(), gossId, templateId));
+            } else if (contentType == GENERAL) {
+                addTopTasksToSections = true;
+            } else if (contentType == HUB) {
+                addTopTasksToDefaultNode = true;
+            } else {
+                LOGGER.warn("Article:{}.  Have top tasks, but not a Service, Hub or General page ({}).  This is lost.", gossId, contentType);
             }
         }
 
@@ -172,12 +200,11 @@ public class ParsedArticleText extends ParsedArticle {
      * If no h2's then promote any h3's to h2.
      * Anything before first h2 is the introduction and should have already been dealt with
      * and removed from tree.
-     *
      */
     private void extractSections() {
         Element gossSectionsNode = body.selectFirst("#" + INTRO_AND_SECTIONS.getId());
 
-        if(gossSectionsNode != null){
+        if (gossSectionsNode != null) {
             promoteH3s(gossSectionsNode);
 
             Section section;
