@@ -115,7 +115,7 @@ public class GossImporter {
         LOGGER.info("Writing Digital.");
         writeImportables(digitalData);
         processingDigital = false;
-        LOGGER.info("Writing Contnet.");
+        LOGGER.info("Writing Content.");
         writeImportables(contentData);
 
         processingDigital = true;

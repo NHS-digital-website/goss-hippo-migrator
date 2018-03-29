@@ -157,7 +157,7 @@ public class ParsedArticleText extends ParsedArticle {
                     LOGGER.warn("Top Tasks in Goss Article:{} has child elements not of tag 'p' (it is {}). This is not expected.", gossId, topTask.tagName());
                 }
                 if(contentType != ContentType.SERVICE){
-                    LOGGER.warn("Article:{}.  Have top tasks, but not a Service page.  This is lost.", gossId);
+                    LOGGER.warn("Article:{}.  Have top tasks, but not a Service page ({}).  This is lost.", gossId, contentType);
                 }
                 topTasks.add(new HippoRichText(topTask.outerHtml(), gossId, templateId));
             }

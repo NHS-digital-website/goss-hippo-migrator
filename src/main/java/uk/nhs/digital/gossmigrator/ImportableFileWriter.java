@@ -41,6 +41,11 @@ public class ImportableFileWriter {
 
         for (int i = 1; i <= importableItems.size(); i++) {
             Path targetDir;
+
+            if(i % 100 == 0){
+                LOGGER.info("Written:{}", i);
+            }
+
             final HippoImportable importableItem = importableItems.get(i - 1);
             if (Config.CONTENT_TARGET_FOLDER.equals(outputFolder)) {
                 if(importableItem instanceof Folder){

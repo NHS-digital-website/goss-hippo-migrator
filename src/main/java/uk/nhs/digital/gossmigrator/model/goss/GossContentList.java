@@ -93,8 +93,10 @@ public class GossContentList extends ArrayList<GossContent> {
                     p.setParentId(seriesId);
 
                 } else {
-                    LOGGER.warn("Publication:{}, {} has no series mapped.", p.getId(), pubId);
-                    p.getWarnings().add("Publication:" + p.getId() + ", " + pubId + " has no series mapped.");
+                    if(p.isRelevantContentFlag()) {
+                        LOGGER.warn("Publication:{}, {} has no series mapped.", p.getId(), pubId);
+                        p.getWarnings().add("Publication:" + p.getId() + ", " + pubId + " has no series mapped.");
+                    }
                     p.setJcrParentPath(Config.JCR_PUBLICATION_ROOT);
                     p.setDepth(1);
                 }

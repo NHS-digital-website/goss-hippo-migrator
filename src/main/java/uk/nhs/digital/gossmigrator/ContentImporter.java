@@ -29,8 +29,11 @@ public class ContentImporter {
     public void populateGossData(GossProcessedData gossData) {
         if (DIGITAL.equals(gossData.getType())) {
             JSONObject rootJsonObject = readGossExport(Config.GOSS_CONTENT_SOURCE_FILE);
+            LOGGER.info("Reading articles.");
             gossData.setArticlesContentList(populateGossContent(gossData, rootJsonObject));
+            LOGGER.info("Reading links.");
             gossData.setGossLinkMap(populateGossLinks(rootJsonObject));
+            LOGGER.info("Reading files.");
             gossData.setGossFileMap(populateGossFiles(rootJsonObject));
         } else if (CONTENT.equals(gossData.getType())) {
             JSONObject rootJsonObject = readGossExport(Config.REDIRECT_CONTENT_SOURCE_FILE);
