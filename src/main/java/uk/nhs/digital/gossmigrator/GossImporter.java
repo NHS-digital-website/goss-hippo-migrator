@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Properties;
@@ -39,7 +40,8 @@ public class GossImporter {
     public static GossProcessedData contentData = new GossProcessedData(CONTENT);
     public static HSSFWorkbook report = new HSSFWorkbook();
     public static HSSFWorkbook iframeReport = new HSSFWorkbook();
-    private static boolean skipAssets = true;
+    private static boolean skipAssets = false;
+    private static boolean skipS3Attachments = false;
     private ContentImporter contentImporter = new ContentImporter();
     public static boolean processingDigital;
 
@@ -49,6 +51,8 @@ public class GossImporter {
         Option propertiesFileOption = new Option("p", "properties", true, "Properties file path.");
         options.addOption(Option.builder().longOpt("skipAssets").hasArg(false).required(false)
                 .desc("Set to suppress processing assets.  Only useful in dev.").build());
+        options.addOption(Option.builder().longOpt("skipS3Attachments").hasArg(false).required(false)
+                .desc("Set to suppress copying s3 files.  Only useful in dev.").build());
         propertiesFileOption.setRequired(true);
         options.addOption(propertiesFileOption);
         CommandLineParser parser = new DefaultParser();
@@ -67,6 +71,9 @@ public class GossImporter {
             if(cmd.hasOption("skipAssets") || SKIP_DIGITAL){
                 skipAssets = true;
             }
+            if(cmd.hasOption("skipS3Attachments")){
+                skipS3Attachments = true;
+            }
 
         } catch (MissingOptionException e) {
             formatter.printHelp("GossImporter", options);
@@ -80,7 +87,6 @@ public class GossImporter {
     }
 
     private void run() {
-
         cleanOutputFolders();
 
         // Need an empty file in each content folder for publication external assets to work.
@@ -124,37 +130,50 @@ public class GossImporter {
         // in rich text in content.
         AssetImporter assetImporter = new AssetImporter();
         if(!skipAssets) {
-            LOGGER.info("Copying S3 required files.");
-            copyS3RequiredFiles();
             LOGGER.info("Writing Asset importables.");
             assetImporter.createAssetHippoImportables();
             int folders = assetImporter.writeHippoAssetImportables();
             for(int i = 0; i <= folders; i++){
                 LOGGER.info("Zipping asset folder {}.", i);
-                FolderHelper.zipFolder(Paths.get(ASSET_TARGET_FOLDER, Integer.toString(i)).toString());
+                String folder = Paths.get(ASSET_TARGET_FOLDER, Integer.toString(i)).toString();
+                FolderHelper.zipFolder(folder, getZipTarget(folder));
             }
         }
 
         digitalData.getContentTypeMap().logNeverReferenced();
         LOGGER.info("Zipping live json.");
-        FolderHelper.zipFolder(LIVE_CONTENT_TARGET_FOLDER);
+        FolderHelper.zipFolder(LIVE_CONTENT_TARGET_FOLDER, getZipTarget(LIVE_CONTENT_TARGET_FOLDER));
         LOGGER.info("Zipping not live json.");
-        FolderHelper.zipFolder(NON_LIVE_CONTENT_TARGET_FOLDER);
+        FolderHelper.zipFolder(NON_LIVE_CONTENT_TARGET_FOLDER, getZipTarget(NON_LIVE_CONTENT_TARGET_FOLDER));
         LOGGER.info("Zipping folders json.");
-        FolderHelper.zipFolder(FOLDERS_TARGET_FOLDER);
+        FolderHelper.zipFolder(FOLDERS_TARGET_FOLDER, getZipTarget(FOLDERS_TARGET_FOLDER));
         LOGGER.info("Zipping content rewrites.");
-        FolderHelper.zipFolder(URLREWRITE_CONTENT_TARGET_FOLDER);
+        FolderHelper.zipFolder(URLREWRITE_CONTENT_TARGET_FOLDER, getZipTarget(URLREWRITE_CONTENT_TARGET_FOLDER));
         LOGGER.info("Zipping digital rewrites.");
-        FolderHelper.zipFolder(URLREWRITE_DIGITAL_TARGET_FOLDER);
+        FolderHelper.zipFolder(URLREWRITE_DIGITAL_TARGET_FOLDER, getZipTarget(URLREWRITE_DIGITAL_TARGET_FOLDER));
+        if(!skipS3Attachments){
+            LOGGER.info("Copying S3 required files.");
+            copyS3RequiredFiles();
+        }
         LOGGER.info("Writing import report.");
         ReportWriter.writeFile();
-
     }
 
     private void copyS3RequiredFiles() {
+        int count = 0;
+        for(GossFile file : digitalData.getGossFileMap().values()){
+            if(file.getS3references().size()> 0){
+                count++;
+            }
+        }
+        int i = 0;
         for(GossFile file : digitalData.getGossFileMap().values()){
             if(file.getS3references().size() > 0){
                 try {
+                    if(count % 1000 == 0){
+                        LOGGER.info("Copied {} of {} s3 required files.", i, count);
+                    }
+                    i++;
                     Files.createDirectories(Paths.get(Config.S3_TARGET_FOLDER, file.getRelativeFilePathWithoutFileName()));
                     Files.copy(Paths.get(file.getFilePathOnDisk()), Paths.get(Config.S3_TARGET_FOLDER, file.getRelativeFilePath()));
                 } catch (IOException e) {
@@ -162,6 +181,7 @@ public class GossImporter {
                 }
             }
         }
+        LOGGER.info("Copied {} of {} to s3 required files.", i, count);
     }
 
     private void processGoss(GossProcessedData data){
@@ -198,5 +218,11 @@ public class GossImporter {
         FolderHelper.cleanFolder(Paths.get(URLREWRITE_CONTENT_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(URLREWRITE_DIGITAL_TARGET_FOLDER));
         FolderHelper.cleanFolder(Paths.get(S3_TARGET_FOLDER));
+        FolderHelper.cleanFolder(Paths.get(TARGET_FOLDER_ROOT, "s3jsonsync"));
+    }
+
+    private String getZipTarget(String zipFolder){
+        return zipFolder.replace(Config.TARGET_FOLDER_ROOT, Config.TARGET_FOLDER_ROOT + "s3jsonsync/");
+
     }
 }

@@ -58,7 +58,7 @@ public class ParsedArticleText extends ParsedArticle {
                 && SERVICE != contentType && ContentType.PUBLICATION != contentType
                 && GossImporter.processingDigital) {
             sections = new ArrayList<>();
-            sections.add(new Section("Content", SectionTypes.DEFAULT.getTypeName(), introduction));
+            sections.add(new Section("", SectionTypes.DEFAULT.getTypeName(), introduction));
         }
         // Some articles have stuff in top tasks, but our template has no top tasks.
         // If possible add then as a section.
@@ -67,7 +67,7 @@ public class ParsedArticleText extends ParsedArticle {
             if(null == sections){
                 sections = new ArrayList<>();
             }
-            sections.add(new Section("Content", SectionTypes.DEFAULT.getTypeName(), tasks));
+            sections.add(new Section("", SectionTypes.DEFAULT.getTypeName(), tasks));
         }
         if(addTopTasksToDefaultNode){
             HippoRichText tasks = extractRichTextElement(TOPTASKS);

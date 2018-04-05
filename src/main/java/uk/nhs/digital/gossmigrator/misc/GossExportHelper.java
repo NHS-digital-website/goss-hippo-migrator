@@ -130,8 +130,15 @@ public class GossExportHelper {
 
     public static boolean isImage(String file) {
         if (null == file) {
-            LOGGER.info("");
+            // In for making test data easier...
+            LOGGER.warn("IsImage called with null file? {}", file);
+            return false;
         }
+
+        if(file.endsWith(".svg")){
+            LOGGER.warn("svg file:{}", file);
+        }
+
         return (file.endsWith(".gif") || file.endsWith(".jpeg") || file.endsWith(".jpg")
                 || file.endsWith(".png") || file.endsWith(".svg"));
     }

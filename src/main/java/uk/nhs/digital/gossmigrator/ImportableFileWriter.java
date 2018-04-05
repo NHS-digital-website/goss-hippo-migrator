@@ -43,7 +43,7 @@ public class ImportableFileWriter {
             Path targetDir;
 
             if(i % 100 == 0){
-                LOGGER.info("Written:{}", i);
+                LOGGER.info("Written:{} of {}.", i, importableItems.size());
             }
 
             final HippoImportable importableItem = importableItems.get(i - 1);

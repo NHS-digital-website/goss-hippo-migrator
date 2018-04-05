@@ -27,6 +27,7 @@ public class AssetImporter {
     private long totalFileSize = 0;
 
     public void createAssetHippoImportables() {
+        LOGGER.info("Creating asset importables.");
         if (!Paths.get(ASSET_SOURCE_FOLDER).toFile().exists()) {
             LOGGER.warn("Assets file path does not exist:{}", Paths.get(ASSET_SOURCE_FOLDER));
         } else {
@@ -62,7 +63,6 @@ public class AssetImporter {
             }
         }
         LOGGER.info("Total asset size: {}Mb", totalFileSize / (1024 * 1024));
-        System.out.println("Total file size:" + totalFileSize / (1024 * 1024) + "Mb.");
     }
 
     private void createAsset(GossFile file) {

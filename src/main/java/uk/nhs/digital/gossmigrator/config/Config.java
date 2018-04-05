@@ -25,7 +25,7 @@ public class Config {
         GOSS_CONTENT_SOURCE_FILE_PROP("goss.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
         TARGET_FOLDER_PROP("target.folder", "File system folder to hold created content json hippo import files.", true, ""),
         REDIRECT_CONTENT_SOURCE_FILE_PROP("redirect.content.source.file", "Path including filename to Goss export. e.g. /home/xyz/goss1.json", true, ""),
-        JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/documents/corporate-website/", false, "/content/documents/corporate-website/data-and-information/publication-system/statistical/"),
+        JCR_PUBLICATION_ROOT_PROP("jcr.stats.pubs.doc.root", "Root jcr path for statistical publications. e.g. /content/documents/corporate-website/", false, "/content/documents/corporate-website/publication-system/statistical/"),
         SPLIT_ASSET_PATH_ON("split.asset.path.on", "For file nodes in goss export there is a path.  " +
                 "Need to match identify which part of the path maps to the folder on local disk holding the assets.", false, "live-media,pre-prod-media"),
         JCR_GALLERY_ROOT_PROP("jcr.media.doc.root", "Where to put images.", false, "/content/gallery/goss-legacy/"),
@@ -99,11 +99,12 @@ public class Config {
     public static String S3_ROOT_URL;
     public static Boolean PRINT_JCR_STRUCTURE;
     public static String TAXONOMY_KEYS_FILE;
+    public static String TARGET_FOLDER_ROOT;
 
     public static void parsePropertiesFile(Properties propertiesMap) {
         LOGGER.info("Properties used:");
         String CONFIG_FOLDER = getConfig(CONFIG_FOLDER_PROP, propertiesMap);
-        String TARGET_FOLDER_ROOT = getConfig(TARGET_FOLDER_PROP, propertiesMap);
+        TARGET_FOLDER_ROOT = getConfig(TARGET_FOLDER_PROP, propertiesMap);
 
         JCR_ASSET_ROOT = getConfig(JCR_ASSET_ROOT_PROP, propertiesMap);
         JCR_SERVICE_DOC_ROOT = getConfig(JCR_SERVICE_DOC_ROOT_PROP, propertiesMap);

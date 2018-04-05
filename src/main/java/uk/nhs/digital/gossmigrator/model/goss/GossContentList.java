@@ -68,6 +68,10 @@ public class GossContentList extends ArrayList<GossContent> {
     }
 
     private void createFolders() {
+        if(!GossImporter.processingDigital){
+            return;
+        }
+
         Set<GossFolder> folders = new HashSet<>();
         for (GossContent content : this) {
             if (content.getDepth() > 0

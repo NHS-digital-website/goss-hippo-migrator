@@ -49,10 +49,17 @@ public class Redirect extends HippoImportable {
         this.description = content.getHeading();
     }
 
+    private static String jcrPathPrefix(){
+        if(GossImporter.processingDigital){
+            return Config.JCR_REDIRECT_ROOT.concat("digital/");
+        }else {
+            return Config.JCR_REDIRECT_ROOT.concat("content/");
+        }
+    }
     public static Redirect getInstance(GossRedirectContent redirectContent) {
         Redirect redirect = new Redirect(redirectContent);
         redirect.ruleFrom = "^\\/article\\/".concat(redirect.getId().toString()).concat("(\\/.*)?$");
-        redirect.setJcrPath(Config.JCR_REDIRECT_ROOT.concat(TextHelper.toLowerCaseDashedValue(redirectContent.getHeading()))
+        redirect.setJcrPath(jcrPathPrefix().concat(TextHelper.toLowerCaseDashedValue(redirectContent.getHeading()))
                 .concat(redirectContent.getId().toString()));
         redirect.type = "ID";
         return redirect;
@@ -68,7 +75,7 @@ public class Redirect extends HippoImportable {
         redirect.fromFriendlyUrl = content.getFriendlyUrl();
         redirect.ruleFrom = "^\\/".concat(redirect.fromFriendlyUrl.concat("$"));
 
-        redirect.setJcrPath(Config.JCR_REDIRECT_ROOT.concat(TextHelper.toLowerCaseDashedValue(content.getHeading()))
+        redirect.setJcrPath(jcrPathPrefix().concat(TextHelper.toLowerCaseDashedValue(content.getHeading()))
                 .concat(content.getId().toString()).concat("friendly"));
         redirect.type = "FRIENDLY";
         return redirect;
