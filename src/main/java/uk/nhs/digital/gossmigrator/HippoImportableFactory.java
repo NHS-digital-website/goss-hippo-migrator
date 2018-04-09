@@ -74,7 +74,7 @@ public class HippoImportableFactory {
 
         if(gossContent.getFriendlyUrl() != null && !gossContent.getFriendlyUrl().isEmpty()){
             Redirect friendlyUrlRedirect = Redirect.getFriendlyUrlInstance(gossContent);
-            if(!friendlyUrlRedirect.getRuleTo().isEmpty()){
+            if(null != friendlyUrlRedirect && !friendlyUrlRedirect.getRuleTo().isEmpty()){
                 importables.add(friendlyUrlRedirect);
                 RedirectReportWriter.addRedirectRow(gossData.getType().getDescription(), friendlyUrlRedirect);
             }

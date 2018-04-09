@@ -1,5 +1,6 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
+import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.GossImporter;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.misc.TextHelper;
@@ -10,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Redirect extends HippoImportable {
-
+    private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Redirect.class);
     private String ruleFrom = "";
     private String ruleTo = "";
     private String description = "";
@@ -33,9 +34,16 @@ public class Redirect extends HippoImportable {
             this.description = redirectContent.getLink().getDescription();
             Matcher m = r.matcher(ruleTo);
             if (m.find()) {
-                this.ruleTo = m.group(1);
+                this.ruleTo = removeSlashContentSuffix(m.group(1));
             }
         }
+    }
+
+    private String removeSlashContentSuffix(String in) {
+        if (in.endsWith("/content")) {
+            return in.substring(0, in.length() - "/content".length());
+        }
+        return in;
     }
 
     private Redirect(GossContent content) {
@@ -44,21 +52,24 @@ public class Redirect extends HippoImportable {
         String path = content.getJcrPath();
         Matcher m = r.matcher(path);
         if (m.find()) {
-            this.ruleTo = m.group(1);
+            this.ruleTo = removeSlashContentSuffix(m.group(1));
         }
         this.description = content.getHeading();
     }
 
-    private static String jcrPathPrefix(){
-        if(GossImporter.processingDigital){
+    private static String jcrPathPrefix() {
+        if (GossImporter.processingDigital) {
             return Config.JCR_REDIRECT_ROOT.concat("digital/");
-        }else {
+        } else {
             return Config.JCR_REDIRECT_ROOT.concat("content/");
         }
     }
+
     public static Redirect getInstance(GossRedirectContent redirectContent) {
         Redirect redirect = new Redirect(redirectContent);
         redirect.ruleFrom = "^\\/article\\/".concat(redirect.getId().toString()).concat("(\\/.*)?$");
+        redirect.setJcrNodeName(TextHelper.toLowerCaseDashedValue(redirectContent.getHeading()
+                .concat(redirectContent.getId().toString())));
         redirect.setJcrPath(jcrPathPrefix().concat(TextHelper.toLowerCaseDashedValue(redirectContent.getHeading()))
                 .concat(redirectContent.getId().toString()));
         redirect.type = "ID";
@@ -74,10 +85,17 @@ public class Redirect extends HippoImportable {
         }
         redirect.fromFriendlyUrl = content.getFriendlyUrl();
         redirect.ruleFrom = "^\\/".concat(redirect.fromFriendlyUrl.concat("$"));
+        redirect.setJcrNodeName(TextHelper.toLowerCaseDashedValue(content.getHeading())
+                .concat(content.getId().toString()).concat("friendly"));
 
         redirect.setJcrPath(jcrPathPrefix().concat(TextHelper.toLowerCaseDashedValue(content.getHeading()))
                 .concat(content.getId().toString()).concat("friendly"));
         redirect.type = "FRIENDLY";
+        if (redirect.ruleTo.equals(redirect.fromFriendlyUrl)) {
+            LOGGER.info("Id:{}. Not creating friendly url as jcr path matches. {}", content.getId(), content.getFriendlyUrl());
+            return null;
+        }
+
         return redirect;
     }
 
