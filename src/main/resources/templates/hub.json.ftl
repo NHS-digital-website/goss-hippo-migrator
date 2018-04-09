@@ -66,7 +66,33 @@
 "multiple" : false,
 "values" : [ "${hub.body.content}" ]
 } ],
+"nodes" : [ <#list hub.body.docReferences as refs> {
+"name" : "${refs.nodeName}",
+"primaryType" : "hippo:facetselect",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippo:facets",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+}, {
+"name" : "hippo:values",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+}, {
+"name" : "hippo:docbase",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${refs.jcrPath}" ]
+}, {
+"name" : "hippo:modes",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+} ],
 "nodes" : [ ]
+}<#sep>, </#sep> </#list> ]
 }
 </#if>
 <#if hub.component??><#if firstNode==false>,<#else><#assign firstNode=false></#if>
@@ -80,7 +106,33 @@
 "multiple" : false,
 "values" : [ "${hub.component.content}" ]
 } ],
+"nodes" : [ <#list hub.component.docReferences as refs> {
+"name" : "${refs.nodeName}",
+"primaryType" : "hippo:facetselect",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippo:facets",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+}, {
+"name" : "hippo:values",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+}, {
+"name" : "hippo:docbase",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${refs.jcrPath}" ]
+}, {
+"name" : "hippo:modes",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+} ],
 "nodes" : [ ]
+}<#sep>, </#sep> </#list> ]
 }</#if>
 <#if hub.componentPaths?has_content> <#if firstNode==false>,<#else><#assign firstNode=false></#if>
 <#list hub.componentPaths as component>{

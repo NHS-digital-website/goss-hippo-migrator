@@ -122,6 +122,32 @@
 "multiple" : false,
 "values" : [ "${general.component.content}" ]
 } ],
+"nodes" : [ <#list general.component.docReferences as refs> {
+"name" : "${refs.nodeName}",
+"primaryType" : "hippo:facetselect",
+"mixinTypes" : [ ],
+"properties" : [ {
+"name" : "hippo:facets",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+}, {
+"name" : "hippo:values",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+}, {
+"name" : "hippo:docbase",
+"type" : "STRING",
+"multiple" : false,
+"values" : [ "${refs.jcrPath}" ]
+}, {
+"name" : "hippo:modes",
+"type" : "STRING",
+"multiple" : true,
+"values" : [ ]
+} ],
 "nodes" : [ ]
+}<#sep>, </#sep> </#list> ]
 }</#if>
 ]}
