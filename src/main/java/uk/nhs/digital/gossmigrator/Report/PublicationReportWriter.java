@@ -66,13 +66,16 @@ public class PublicationReportWriter {
     }
 
     public static void addPublicationFileRow(Long publicationId, S3File file){
-
         HSSFSheet sheet = report.getSheet("Publication Files");
         HSSFRow row = sheet.createRow(sheet.getPhysicalNumberOfRows());
         row.createCell(0).setCellValue(publicationId);
         row.createCell(1).setCellValue(file.getId());
         row.createCell(2).setCellValue(file.getLocalizedName());
-        row.createCell(3).setCellValue(file.getMimeType());
+        try {
+            row.createCell(3).setCellValue(file.getMimeType());
+        }catch(Exception e){
+            row.createCell(3).setCellValue("File-not-found");
+        }
         if(file.getWarnings().isEmpty()){
             row.createCell(4).setCellValue("Success");
         }else{

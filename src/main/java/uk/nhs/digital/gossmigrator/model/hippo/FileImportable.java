@@ -1,6 +1,8 @@
 package uk.nhs.digital.gossmigrator.model.hippo;
 
 import org.apache.tika.Tika;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.nhs.digital.gossmigrator.config.Config;
 import uk.nhs.digital.gossmigrator.model.goss.GossFile;
 
@@ -9,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public abstract class FileImportable extends HippoImportable {
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileImportable.class);
     private String filePath;
     private Path sourceFilePath;
     private String lastModifiedDate;
@@ -42,7 +45,9 @@ public abstract class FileImportable extends HippoImportable {
             Tika tika = new Tika();
             return tika.detect(sourceFilePath);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LOGGER.error("Can't get mime type:" + getFilePath(), e.getMessage());
+            LOGGER.warn("Returning application/pdf.  This was temporary at go live prior to getting files. Remove when got files!");
+            return "application/pdf";
         }
     }
 
