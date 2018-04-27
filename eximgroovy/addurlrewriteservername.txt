@@ -1,0 +1,81 @@
+import org.apache.commons.lang.text.StrSubstitutor
+import java.io.*
+import javax.jcr.*
+import org.apache.commons.lang.*
+import org.onehippo.repository.update.BaseNodeUpdateVisitor
+import org.onehippo.forge.content.exim.core.DocumentManager
+import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentManagerImpl
+import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentVariantImportTask
+
+/*
+query /jcr:root/content/urlrewriter/rules/digital//element(*,urlrewriter:advancedrule)
+parameter {"targetServer": "blah2.blah.com"}
+*/
+
+class AddServerConditionToAdvancedRewrites extends BaseNodeUpdateVisitor {
+
+  String targetServer
+  DocumentManager documentManager
+  WorkflowDocumentVariantImportTask importTask
+  //Session session
+
+  void initialize(Session session) {
+    //this.session = session
+
+    this.documentManager = new WorkflowDocumentManagerImpl(session)
+    importTask = new WorkflowDocumentVariantImportTask(documentManager)
+    importTask.setLogger(log)
+    importTask.start()
+
+    targetServer = StrSubstitutor.replaceSystemProperties(parametersMap.get("targetServer"))
+    log.info "Adding condition for server name of ${targetServer}"
+  }
+
+ boolean doUpdate(Node node) {
+   log.debug "Visiting ${node.path}"
+
+   final String documentPath = node.parent.path
+
+   NodeIterator i = node.getNodes()
+   Node n
+   while(i.hasNext()) {
+     n = i.nextNode()
+
+     if (n.getProperty("urlrewriter:conditiontype").getString().equals("server-name")) {
+       if (n.getProperty("urlrewriter:conditionvalue").getString().equals(targetServer)) {
+         log.info "Rewrite already set to target server name."
+         return true
+       }
+       n.setProperty("urlrewriter:conditionvalue", targetServer)
+       log.info "Existing server node updated."
+       documentManager.publishDocument(node.getParent().path)
+       log.debug "Published ${node.path}"
+
+       return true
+     }
+   }
+
+
+   log.debug('we are here')
+   // No condition so add one.
+   Node newCondition = node.addNode("urlrewriter:rulecondition", "urlrewriter:rulecondition")
+   newCondition.setProperty("urlrewriter:conditiontype", "server-name")
+   newCondition.setProperty("urlrewriter:conditionoperator", "equal")
+   newCondition.setProperty("urlrewriter:conditionvalue", targetServer)
+   newCondition.setProperty("urlrewriter:conditionname", "")
+   log.debug "Added Server condition to ${node.path}"
+
+   documentManager.publishDocument(node.getParent().path)
+
+   log.debug "Published ${node.path}"
+   return true
+ }
+
+ boolean undoUpdate(Node node) {
+   throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
+ }
+
+ void destroy() {
+ }
+
+}

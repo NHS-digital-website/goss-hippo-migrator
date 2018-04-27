@@ -1,0 +1,52 @@
+import org.apache.commons.lang.text.StrSubstitutor
+import java.io.*
+import javax.jcr.*
+import org.apache.commons.lang.*
+import org.onehippo.repository.update.BaseNodeUpdateVisitor
+import org.onehippo.forge.content.exim.core.DocumentManager
+import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentManagerImpl
+import org.onehippo.forge.content.exim.core.impl.WorkflowDocumentVariantImportTask
+
+/*
+query /jcr:root/content/urlrewriter/rules/digital//element(*,urlrewriter:advancedrule)[@hippostd:state = ‘unpublished’]
+parameter {"targetServer": "blah2.blah.com"}
+*/
+
+class AddServerConditionToAdvancedRewrites extends BaseNodeUpdateVisitor {
+
+  String targetServer
+  DocumentManager documentManager
+  WorkflowDocumentVariantImportTask importTask
+  int i = 0
+  void initialize(Session session) {
+
+    this.documentManager = new WorkflowDocumentManagerImpl(session)
+    importTask = new WorkflowDocumentVariantImportTask(documentManager)
+    importTask.setLogger(log)
+    importTask.start()
+
+   // targetServer = StrSubstitutor.replaceSystemProperties(parametersMap.get("targetServer"))
+   // log.info "Adding condition for server name of ${targetServer}"
+  }
+
+ boolean doUpdate(Node node) {
+   if(i < 1){
+     documentManager.publishDocument(node.path)
+     i++
+     log.debug "Published ${node.path}"
+     return true
+
+     log.debug "skipping doc"
+   }
+     return false
+
+ }
+
+ boolean undoUpdate(Node node) {
+   throw new UnsupportedOperationException('Updater does not implement undoUpdate method')
+ }
+
+ void destroy() {
+ }
+
+}
