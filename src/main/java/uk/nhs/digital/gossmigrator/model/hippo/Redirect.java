@@ -7,6 +7,8 @@ import uk.nhs.digital.gossmigrator.misc.TextHelper;
 import uk.nhs.digital.gossmigrator.model.goss.GossContent;
 import uk.nhs.digital.gossmigrator.model.goss.GossRedirectContent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +21,11 @@ public class Redirect extends HippoImportable {
     private String fromFriendlyUrl;
     private String type;
     private static Pattern r = Pattern.compile("/content/documents/corporate-website/(.*)(/content)?");
+
+    public static List<Long> digitalidurls = new ArrayList<>();
+    public static List<Long> contenidturls = new ArrayList<>();
+    public static List<String> digitalfriendlyurls = new ArrayList<>();
+    public static List<String> contentfriendlyurls = new ArrayList<>();
 
     private Redirect(GossRedirectContent redirectContent) {
         super(redirectContent);
@@ -73,6 +80,11 @@ public class Redirect extends HippoImportable {
         redirect.setJcrPath(jcrPathPrefix().concat(TextHelper.toLowerCaseDashedValue(redirectContent.getHeading()))
                 .concat(redirectContent.getId().toString()));
         redirect.type = "ID";
+        if(GossImporter.processingDigital){
+            digitalidurls.add(redirect.getId());
+        }else{
+            contenidturls.add(redirect.getId());
+        }
         return redirect;
     }
 
@@ -94,6 +106,12 @@ public class Redirect extends HippoImportable {
         if (redirect.ruleTo.equals(redirect.fromFriendlyUrl)) {
             LOGGER.info("Id:{}. Not creating friendly url as jcr path matches. {}", content.getId(), content.getFriendlyUrl());
             return null;
+        }else{
+            if(GossImporter.processingDigital){
+                digitalfriendlyurls.add(redirect.fromFriendlyUrl);
+            }else{
+                contentfriendlyurls.add(redirect.fromFriendlyUrl);
+            }
         }
 
         return redirect;

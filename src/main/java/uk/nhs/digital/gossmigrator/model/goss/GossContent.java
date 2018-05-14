@@ -313,4 +313,8 @@ public class GossContent implements Comparable<GossContent> {
     public String getJcrParentPath() {
         return jcrParentPath;
     }
+
+    public Date getDisplayDate() {
+        return displayDate;
+    }
 }
