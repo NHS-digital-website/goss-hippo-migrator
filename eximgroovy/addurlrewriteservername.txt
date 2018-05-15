@@ -55,8 +55,6 @@ class AddServerConditionToAdvancedRewrites extends BaseNodeUpdateVisitor {
      }
    }
 
-
-   log.debug('we are here')
    // No condition so add one.
    Node newCondition = node.addNode("urlrewriter:rulecondition", "urlrewriter:rulecondition")
    newCondition.setProperty("urlrewriter:conditiontype", "server-name")

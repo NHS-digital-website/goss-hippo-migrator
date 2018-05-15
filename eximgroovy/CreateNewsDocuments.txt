@@ -57,72 +57,77 @@ class CreateNewsDocuments extends BaseNodeUpdateVisitor {
 
     boolean doUpdate(Node node) {
 
-      log.debug "From: ${node.path}"
-      String to = node.path.replace(replacePathFrom, replacePathTo)
-      log.debug "To: ${to}"
+      try{
+          log.debug "From: ${node.path}"
+          String to = node.path.replace(replacePathFrom, replacePathTo)
+          log.debug "To: ${to}"
 
-      def handlePath = node.parent.path
-      def document = new Document(node.identifier)
-      def contentNode = exportTask.exportVariantToContentNode(document)
+          def handlePath = node.parent.path
+          def document = new Document(node.identifier)
+          def contentNode = exportTask.exportVariantToContentNode(document)
 
-      ContentNode newContentNode = new ContentNode(contentNode.getName(), "website:news")
+          ContentNode newContentNode = new ContentNode(contentNode.getName(), "website:news")
 
-      // Get properties required for the create
-      String locale = (contentNode.hasProperty("hippotranslation:locale")) ? contentNode.getProperty("hippotranslation:locale").getValue() : null
-      String primaryTypeName = "website:news"
-      String localizedName = contentNode.getProperty("jcr:localizedName").getValue()
+          // Get properties required for the create
+          String locale = (contentNode.hasProperty("hippotranslation:locale")) ? contentNode.getProperty("hippotranslation:locale").getValue() : null
+          String primaryTypeName = "website:news"
+          String localizedName = contentNode.getProperty("jcr:localizedName").getValue()
 
-      // Update jcr:path
-      String nodeFullPath = contentNode.getProperty("jcr:path").getValue()
-      nodeFullPath = nodeFullPath.replace(replacePathFrom, replacePathTo)
+          // Update jcr:path
+          String nodeFullPath = contentNode.getProperty("jcr:path").getValue()
+          nodeFullPath = nodeFullPath.replace(replacePathFrom, replacePathTo)
 
-      // Copy properties
-      List<ContentProperty> oldProperties = contentNode.getProperties()
-      for(ContentProperty oldProperty : oldProperties){
-        newContentNode.setProperty(oldProperty)
-      }
-      newContentNode.getProperty("jcr:path").setValue(nodeFullPath)
+          // Copy properties
+          List<ContentProperty> oldProperties = contentNode.getProperties()
+          for(ContentProperty oldProperty : oldProperties){
+            newContentNode.setProperty(oldProperty)
+          }
+          newContentNode.getProperty("jcr:path").setValue(nodeFullPath)
 
-      // Create body ContentNode
-      ContentNode bodyNode = new ContentNode("website:body", "hippostd:html")
+          // Create body ContentNode
+          ContentNode bodyNode = new ContentNode("website:body", "hippostd:html")
 
-      // Get concatenated sections
-      String bodyContent = ""
-      List<ContentNode> contentNodeList = contentNode.getNodes()
-      for(ContentNode n : contentNodeList){
+          // Get concatenated sections
+          String bodyContent = ""
+          List<ContentNode> contentNodeList = contentNode.getNodes()
+          for(ContentNode n : contentNodeList){
 
-         if("website:sections".equals(n.getName())) {
-           String sectionTitle = ""
-           if(null != n.getProperty("website:title")){
-             sectionTitle = n.getProperty("website:title").getValue()
-           }
+             if("website:sections".equals(n.getName())) {
+               String sectionTitle = ""
+               if(null != n.getProperty("website:title")){
+                 sectionTitle = n.getProperty("website:title").getValue()
+               }
 
-           String html = ""
-           ContentNode sectionHtml = n.getNode("website:html")
-           if(null != sectionHtml){
-             ContentProperty contentProperty = n.getNode("website:html").getProperty("hippostd:content")
-             if(null != contentProperty){
-               html = contentProperty.getValue()
+               String html = ""
+               ContentNode sectionHtml = n.getNode("website:html")
+               if(null != sectionHtml){
+                 ContentProperty contentProperty = n.getNode("website:html").getProperty("hippostd:content")
+                 if(null != contentProperty){
+                   html = contentProperty.getValue()
+                 }
+               }
+               bodyContent = bodyContent + "<h2>" + sectionTitle + "</h2>" + html
              }
-           }
-           bodyContent = bodyContent + "<h2>" + sectionTitle + "</h2>" + html
-         }
+          }
+
+          // Add the body node to the new document
+          bodyNode.setProperty("hippostd:content", bodyContent)
+          newContentNode.addNode(bodyNode)
+
+          // Create the new document
+          String pointer = importTask.createOrUpdateDocumentFromVariantContentNode(
+            newContentNode,
+            primaryTypeName,
+            nodeFullPath,
+            locale,
+            localizedName)
+          log.debug "Create: ${pointer}"
+
+          return true
+      }catch(Exception e){
+        log.error("Unexpected exception", e)
+        return false
       }
-
-      // Add the body node to the new document
-      bodyNode.setProperty("hippostd:content", bodyContent)
-      newContentNode.addNode(bodyNode)
-
-      // Cresate the new document
-      String pointer = importTask.createOrUpdateDocumentFromVariantContentNode(
-        newContentNode,
-        primaryTypeName,
-        nodeFullPath,
-        locale,
-        localizedName)
-      log.debug "Create: ${pointer}"
-
-      return true
     }
 
     boolean undoUpdate(Node node) {
@@ -131,8 +136,8 @@ class CreateNewsDocuments extends BaseNodeUpdateVisitor {
 
     void destroy() {
         importTask.stop()
-        importTask.logSummary()
+        // importTask.logSummary()
         exportTask.stop()
-        exportTask.logSummary()
+        // exportTask.logSummary()
     }
 }
